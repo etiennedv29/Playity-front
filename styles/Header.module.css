@@ -10,7 +10,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0px 30px 0px 15px;
 }
 
 .globalInfoLeft {
@@ -33,6 +32,13 @@
     width: 40%;
 }
 
+.userImage {
+    color: #F5C242;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
 .title {
 	font-size: 44px;
 	font-family: "Old London";
@@ -48,7 +54,6 @@
 
 .logoTitle {
     color: white;
-    font-family: 'Caveat Brush';
     font-size: 40px;
     margin: 0;
     letter-spacing: 2px;
@@ -56,8 +61,7 @@
 }
 
 .logoCatchPhrase {
-    color: #CFA75F;
-    /* font-family: 'Caveat Brush'; */
+    color: #F5C242;
     font-size: 15px;
     margin: 0;
     font-weight: 100;
@@ -83,6 +87,13 @@
     padding: 0 0 0 50px;
     font-family: 'Caveat Brush';
     font-size: 18px;
+    outline: none;
+}
+
+.avatarImage {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
 }
 
 .searchInput:hover {
@@ -91,6 +102,7 @@
 
 .searchInput:focus {
     border: 2px solid #F5C242;
+
 }
 
 .searchIcon {
@@ -131,6 +143,10 @@
 }
 
 .link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 	width: 150px;
 	cursor: pointer;
 	text-align: center;
@@ -143,7 +159,7 @@
 
 .link:-webkit-any-link {
   text-decoration: none;
-  color: white;
+  color: #F5C242;
   cursor: pointer;
 }
 

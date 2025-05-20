@@ -238,8 +238,12 @@ function Home() {
         <title>Playity | Home</title>
       </Head>
       <div className={styles.main}>
-        <Slider data={games} activeSlide={2}></Slider>
-        <div className={styles.gamesGridContainer}>GAMES GRID CONTAINER</div>
+        {/* <Slider data={games} activeSlide={2}>CARROUSEL CONTAINER</Slider> */}
+        <div className={styles.carrouselContainer}>CARROUSEL CONTAINER</div>
+        <div className={styles.gamesGridTitle}>Plus de jeux</div>
+        <div className={styles.gamesGridContainer}>
+          GAMES GRID CONTAINER
+        </div>
         <div className={styles.footer}></div>
       </div>
     </div>
