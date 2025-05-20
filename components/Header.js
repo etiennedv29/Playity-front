@@ -13,6 +13,7 @@ function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
   const username = useSelector((state) => state.users.value.username);
+  const avatar = useSelector((state) => state.users.value.avatar);
   const token = useSelector((state) => state.users.value.token);
 
   const handleLogout = () => {
@@ -52,10 +53,12 @@ function Header() {
             </Link>
           ) : (
             <Link href="/account" className={styles.link}>
-              <FontAwesomeIcon
-                icon={faUser}
-                className={styles.userImage}
-                style={{ color: "#1ad4ff", cursor: "pointer" }}
+              <Image
+                src={avatar}
+                alt="user avatar"
+                style={{ cursor: "pointer", borderRadius: "50%" }}
+                width={50}
+                height={50}
               />
             </Link>
           )}
