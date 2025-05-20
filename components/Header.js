@@ -24,62 +24,65 @@ function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.globalInfo}>
-        <Link href="/" className={styles.link}>
-          <Image
-            className={styles.logoImage}
-            src="/playity-logo.png"
-            alt="Playity logo"
-            width={133}
-            height={100}
-            style={{ cursor: "pointer" }}
-          />
-        </Link>
-        <div className={styles.titlesBox}>
-          <h1 className={styles.logoTitle}>
-            Playity
-          </h1>
-          <h2 className={styles.logoCatchPhrase}>
-            You'll never play alone
-            </h2>
+        <div className={styles.globalInfoLeft}>
+          <Link href="/" className={styles.link}>
+            <Image
+              className={styles.logoImage}
+              src="/playity-logo.png"
+              alt="Playity logo"
+              width={133}
+              height={100}
+              style={{ cursor: "pointer" }}
+            />
+          </Link>
+          <div className={styles.titlesBox}>
+            <h1 className={styles.logoTitle}>Playity</h1>
+            <h2 className={styles.logoCatchPhrase}>You'll never play alone</h2>
+          </div>
         </div>
 
-        <div className={styles.userInfoContainer}>
-          {token === "" ? (
-            <Link href="/login" className={styles.link}>
-              <FontAwesomeIcon
-                icon={faUser}
-                className={styles.userImage}
-                style={{ color: "#1ad4ff", cursor: "pointer" }}
-              />
-            </Link>
-          ) : (
-            <Link href="/account" className={styles.link}>
-              <Image
-                src={avatar}
-                alt="user avatar"
-                style={{ cursor: "pointer", borderRadius: "50%" }}
-                width={50}
-                height={50}
-              />
-            </Link>
-          )}
-          {token === "" ? (
-            <Link href="/login" className={styles.link}>
-              <div className={styles.userName}>Se connecter</div>
-            </Link>
-          ) : (
-            <Link href="/login" className={styles.link}>
-              <div className={styles.userName} onClick={() => handleLogout()}>
-                Déconnexion
-              </div>
-            </Link>
-          )}
-        <div className={styles.searchContainer}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon}/>
-          <input type="text" placeholder="Rechercher un jeu" className={styles.searchInput}></input>
+        <div className={styles.globalInfoRight}>
+          <div className={styles.userInfoContainer}>
+            {token === "" ? (
+              <Link href="/login" className={styles.link}>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className={styles.userImage}
+                  style={{ color: "#1ad4ff", cursor: "pointer" }}
+                />
+              </Link>
+            ) : (
+              <Link href="/account" className={styles.link}>
+                <Image
+                  src={avatar}
+                  alt="user avatar"
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                  width={50}
+                  height={50}
+                />
+              </Link>
+            )}
+            {token === "" ? (
+              <Link href="/login" className={styles.link}>
+                <div className={styles.userName}>Se connecter</div>
+              </Link>
+            ) : (
+              <Link href="/login" className={styles.link}>
+                <div className={styles.userName} onClick={() => handleLogout()}>
+                  Déconnexion
+                </div>
+              </Link>
+            )}
+          </div>
+          <div className={styles.searchContainer}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Rechercher un jeu"
+              className={styles.searchInput}
+            ></input>
+          </div>
         </div>
-         
-        <FontAwesomeIcon icon={faUser} className={styles.userSection}/>
       </div>
     </header>
   );
