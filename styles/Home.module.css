@@ -5,14 +5,14 @@
   align-items: center;
   min-height: 300vh;
   background-color: white;
-  padding: 0;
 }
 
 .carrouselContainer {
   width: 100vw;
-  height: 100vw;
+  height: 100vh;
   border: 1px solid red;
   background-color: #122846;
+  color: white;
 }
 
 .gamesGridContainer {
@@ -20,4 +20,5 @@
   height: 100vw;
   border:1px solid red;
   background-color: #122846;
+  color: white;
 }
