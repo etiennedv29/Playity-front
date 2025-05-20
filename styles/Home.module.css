@@ -4,21 +4,37 @@
   justify-content: center;
   align-items: center;
   min-height: 300vh;
-  background-color: white;
+  background-color: #122846
+}
+
+.gamesGridTitle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-bottom: 1px solid white;
+  width: 70%;
+  padding: 20px 0;
+  background-color: transparent;
 }
 
 .carrouselContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vh;
-  border: 1px solid red;
   background-color: #122846;
   color: white;
 }
 
 .gamesGridContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100vw;
   height: 100vw;
-  border:1px solid red;
   background-color: #122846;
   color: white;
 }
