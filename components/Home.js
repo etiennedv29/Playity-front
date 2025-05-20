@@ -1,5 +1,6 @@
 import styles from "../styles/Home.module.css";
-import Header from "./Header";
+import Slider from "./Slider";
+import Game from "./Game";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
@@ -222,13 +223,11 @@ function Home() {
   // }, [router.query]);
 
   // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
-  let games = gamesData.map((data, i) => {
+  let games = gamesMock.map((data, i) => {
     return (
-      <Fact
+      <Game
         key={i}
         {...data}
-        //factTitle={`${data.factId} ${data.factTitle}`}
-        gameImage={`https://picsum.photos/200/200?random=${i}`}
       />
     );
   });
@@ -236,13 +235,12 @@ function Home() {
   return (
     <div>
       <Head>
-        <title>Playity - Home</title>
+        <title>Playity | Home</title>
       </Head>
-
-      <div className={styles.mainContainer}>
-        {/* attention à adapter ci-dessous */}
-        <div className={styles.factsContainer}>{games}</div>
-        {/* Attention à adapter ci-dessus */}
+      <div className={styles.main}>
+        <Slider data={games} activeSlide={2}></Slider>
+        <div className={styles.gamesGridContainer}>GAMES GRID CONTAINER</div>
+        <div className={styles.footer}></div>
       </div>
     </div>
   );

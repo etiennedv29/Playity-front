@@ -1,0 +1,18 @@
+.gameContainer {
+  width: 362px;
+  height: 272px;
+  transition: transform 500ms ease 0s, opacity 500ms ease 0s,
+    visibility 500ms ease 0s;
+  position: absolute;
+  top: 0;
+  border-radius: 12px;
+}
+
+.gameTitle {
+
+}
+
+.image {
+
+}
+
