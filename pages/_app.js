@@ -34,6 +34,9 @@ function App({ Component, pageProps }) {
               content="initial-scale=1.0, width=device-width"
             ></meta>
             <link rel="icon" href="playity-logo.png"></link>
+            <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
+            <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet"></link>
           </Head>
           <Header />
           <Component {...pageProps} />
