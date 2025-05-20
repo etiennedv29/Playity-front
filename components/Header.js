@@ -1,6 +1,4 @@
 import styles from "../styles/Home.module.css";
-import Fact from "./Fact";
-import SubmitForm from "./SubmitForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
