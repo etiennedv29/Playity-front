@@ -13,6 +13,7 @@ function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
   const username = useSelector((state) => state.users.value.username);
+  const avatar = useSelector((state) => state.users.value.avatar);
   const token = useSelector((state) => state.users.value.token);
 
   const handleLogout = () => {
@@ -41,6 +42,38 @@ function Header() {
             You'll never play alone
             </h2>
         </div>
+
+        <div className={styles.userInfoContainer}>
+          {token === "" ? (
+            <Link href="/login" className={styles.link}>
+              <FontAwesomeIcon
+                icon={faUser}
+                className={styles.userImage}
+                style={{ color: "#1ad4ff", cursor: "pointer" }}
+              />
+            </Link>
+          ) : (
+            <Link href="/account" className={styles.link}>
+              <Image
+                src={avatar}
+                alt="user avatar"
+                style={{ cursor: "pointer", borderRadius: "50%" }}
+                width={50}
+                height={50}
+              />
+            </Link>
+          )}
+          {token === "" ? (
+            <Link href="/login" className={styles.link}>
+              <div className={styles.userName}>Se connecter</div>
+            </Link>
+          ) : (
+            <Link href="/login" className={styles.link}>
+              <div className={styles.userName} onClick={() => handleLogout()}>
+                Déconnexion
+              </div>
+            </Link>
+          )}
         <div className={styles.searchContainer}>
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon}/>
           <input type="text" placeholder="Rechercher un jeu" className={styles.searchInput}></input>
