@@ -57,21 +57,28 @@ function Header() {
                 <FontAwesomeIcon
                   icon={faUser}
                   className={styles.userImage}
-                  style={{ color: "#1ad4ff", cursor: "pointer" }}
                 />
               </Link>
             ) : (
+              <div>
               <Link href="/account" className={styles.link}>
                 <Image
                   src={avatar}
                   alt="user avatar"
                   style={{ cursor: "pointer", borderRadius: "50%" }}
+                  className={styles.avatarImage}
                   width={50}
                   height={50}
                 />
               </Link>
+              <Link href="/login" className={styles.link}>
+                <div className={styles.userName} onClick={() => handleLogout()}>
+                  Déconnexion
+                </div>
+              </Link>
+              </div>
             )}
-            {token === "" ? (
+            {/* {token ? (
               <Link href="/login" className={styles.link}>
                 <div className={styles.userName}>Se connecter</div>
               </Link>
@@ -81,7 +88,7 @@ function Header() {
                   Déconnexion
                 </div>
               </Link>
-            )}
+            )} */}
           </div>
         </div>
       </div>
