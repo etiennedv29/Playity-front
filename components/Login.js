@@ -1,3 +1,4 @@
+import styles from "../styles/Home.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -60,8 +61,9 @@ function Login() {
           login({
             _id: data._id,
             firstName: data.firstName,
-            username,
+            username:data.username,
             token: data.token,
+            avatar:data.avatar
           })
         );
         setUsername("");
@@ -133,7 +135,7 @@ function Login() {
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
-          login({ _id: data._id, firstName, username, token: data.token })
+          login({ _id: data._id, firstName, username, token: data.token,avatar:data.avatar })
         );
         setUsername("");
         setPassword("");
