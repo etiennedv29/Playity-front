@@ -74,12 +74,7 @@ function Header() {
               </div>
             </Link>
           )}
-        <div className={styles.searchContainer}>
-          <FontAwesomeIcon icon={faSearch} className={styles.searchIcon}/>
-          <input type="text" placeholder="Rechercher un jeu" className={styles.searchInput}></input>
         </div>
-         
-        <FontAwesomeIcon icon={faUser} className={styles.userSection}/>
       </div>
     </header>
   );
