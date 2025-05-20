@@ -285,6 +285,16 @@
   dependencies:
     tslib "^2.4.0"
 
+"@fontsource/caveat@^5.2.5":
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/@fontsource/caveat/-/caveat-5.2.5.tgz#a003b84bdf2b37fd881abfea682a28afe77eff71"
+  integrity sha512-h3WGWCDavAp9PPPlzSdhauEma9Cbb8L4Gf1olp67/OW91dI/JOzuK7kYYG3HN5DI9yKQ8s6mN1ZsGoNQLVhNeQ==
+
+"@fontsource/pacifico@^5.2.5":
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/@fontsource/pacifico/-/pacifico-5.2.5.tgz#872b77efcccf2dd330ac3117628237de485aba18"
+  integrity sha512-JpimzPRR6Hh2jIj3x+6Wzk8vBv9IdInuu2y0muGnpQQIOscyQdM4i8bSSszgOoH4WD3PuUpMGHCi4ZBNtoekWA==
+
 "@fortawesome/fontawesome-common-types@6.7.2":
   version "6.7.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.2.tgz#7123d74b0c1e726794aed1184795dbce12186470"
