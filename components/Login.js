@@ -1,4 +1,4 @@
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Login.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -61,17 +61,17 @@ function Login() {
           login({
             _id: data._id,
             firstName: data.firstName,
-            username:data.username,
+            username: data.username,
             token: data.token,
-            avatar:data.avatar
+            avatar: data.avatar,
           })
         );
         setUsername("");
         setPassword("");
         setEmail("");
         setCorrectCredentials(true);
-
         dispatch(rememberOrigin(""));
+        router.push("/")
       } else if (response.status === 401) {
         setCorrectCredentials(false);
       }
@@ -99,8 +99,8 @@ function Login() {
       setMissingFields(false);
     }
 
-     //abort signup process if password is not satisfying regex
-     if (!passwordRegex.test(password)) {
+    //abort signup process if password is not satisfying regex
+    if (!passwordRegex.test(password)) {
       return;
     }
 
@@ -135,15 +135,19 @@ function Login() {
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
-          login({ _id: data._id, firstName, username, token: data.token,avatar:data.avatar })
+          login({
+            _id: data._id,
+            firstName,
+            username,
+            token: data.token,
+            avatar: data.avatar,
+          })
         );
         setUsername("");
         setPassword("");
         setFirstName("");
         setLastName("");
         setEmail("");
-      
-       
       } else if (response.status === 409) {
         setExistingUser(true);
       }
@@ -183,46 +187,48 @@ function Login() {
               Crée un compte et rejoins Playity
             </h2>
             {existingUser && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: "lightcoral" }}>
                 {" "}
                 Il y en a déjà un qui a ton mail ou ton pseudo !
               </p>
             )}
             {missingFields && (
-              <p style={{ color: "red" }}>Remplis tous les champs stp</p>
+              <p style={{ color: "lightcoral" }}>Remplis tous les champs stp</p>
             )}
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Prénom"
-              id="signUpfirstName"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Nom"
-              id="signUpLastName"
-              onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Email"
-              id="signUpEmail"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Pseudo"
-              id="signUpUsername"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-            />
+            <div className={styles.inputFieldsArea}>
+              <input
+                className={styles.loginField}
+                type="text"
+                placeholder="Prénom"
+                id="signUpfirstName"
+                onChange={(e) => setFirstName(e.target.value)}
+                value={firstName}
+              />
+              <input
+                className={styles.loginField}
+                type="text"
+                placeholder="Nom"
+                id="signUpLastName"
+                onChange={(e) => setLastName(e.target.value)}
+                value={lastName}
+              />
+              <input
+                className={styles.loginField}
+                type="text"
+                placeholder="Email"
+                id="signUpEmail"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+              />
+              <input
+                className={styles.loginField}
+                type="text"
+                placeholder="Pseudo"
+                id="signUpUsername"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+            </div>
             <div className={styles.passwordArea}>
               <div className={styles.passwordAreaInput}>
                 <input
@@ -247,12 +253,13 @@ function Login() {
                   className={styles.toggleShowPassword}
                 >
                   {!showPassword ? (
-                    <FontAwesomeIcon icon={faEye} color="#1ad4ff" size={15} />
+                    <FontAwesomeIcon icon={faEye} color="#CFA75F" size="lg" style={{cursor:"pointer"}}/>
                   ) : (
                     <FontAwesomeIcon
                       icon={faEyeSlash}
-                      color="#1ad4ff"
-                      size={15}
+                      color="#CFA75F"
+                      size="lg"
+                      style={{cursor:"pointer"}}
                     />
                   )}
                 </div>
@@ -261,9 +268,9 @@ function Login() {
                 className={styles.passwordWarning}
                 style={
                   password.length < 8
-                    ? { color: "#1ad4ff" }
+                    ? { color: "#CFA75F" }
                     : passwordRegex.test(password)
-                    ? { color: "lightgreen" }
+                    ? { color: "#A7D8A2" }
                     : { color: "lightcoral" }
                 }
               >
@@ -276,7 +283,7 @@ function Login() {
               <div className={styles.agreeConditionsCheckbox}>
                 <input
                   type="checkbox"
-                  Checked={isCheckedCGU}
+                  checked={isCheckedCGU}
                   onChange={() => setIsCheckedCGU(!isCheckedCGU)}
                 />{" "}
                 <div className={styles.agreeConditionsText}>
@@ -311,22 +318,23 @@ function Login() {
           <div className={styles.registerSection}>
             <h2 className={styles.loginModalTitle}>Connexion</h2>
             {missingFields && (
-              <p style={{ color: "red" }}>Remplis tous les champs stp</p>
+              <p style={{ color: "lightcoral" }}>Remplis tous les champs stp</p>
             )}
             {!correctCredentials && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: "lightcoral" }}>
                 Ton email et/ou ton mot de passe semblent incorrects
               </p>
             )}
-
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Email"
-              id="signInEmail"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
+            <div className={styles.inputFieldsArea}>
+              <input
+                className={styles.loginField}
+                type="text"
+                placeholder="Email"
+                id="signInEmail"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+              />
+            </div>
             <div className={styles.passwordArea}>
               <div className={styles.passwordAreaInput}>
                 <input
@@ -349,12 +357,13 @@ function Login() {
                   className={styles.toggleShowPassword}
                 >
                   {!showPassword ? (
-                    <FontAwesomeIcon icon={faEye} color="#1ad4ff" size={15} />
+                    <FontAwesomeIcon icon={faEye} color="#CFA75F" size="lg" style={{cursor:"pointer"}} />
                   ) : (
                     <FontAwesomeIcon
                       icon={faEyeSlash}
-                      color="#1ad4ff"
-                      size={15}
+                      color="#CFA75F"
+                      size="lg"
+                      style={{cursor:"pointer"}}
                     />
                   )}
                 </div>
