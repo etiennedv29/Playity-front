@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
-import { rememberOrigin } from "../reducers/navigations";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,11 +12,11 @@ function Login() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setfirstName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [isSignupDisplay, setIsSignupDisplay] = useState(false);
-  const [showPassword, setshowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [incorrectPassword, setIncorrectPassword] = useState(false);
   const [existingUser, setExistingUser] = useState(false);
   const [correctCredentials, setCorrectCredentials] = useState(true);
@@ -30,18 +30,24 @@ function Login() {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$#!%*?&]{8,}$/;
 
   // User connection
-  // WARNING - adapter à playity
+
   async function handleSignin() {
     console.log("want to signin");
     if (password === "" || email === "") {
       setMissingFields(true);
       return;
+    } else {
+      setMissingFields(false);
     }
 
-    // WARNING - adapter à playity
+    //abort signin if password is not satisfying regex
+    if (!passwordRegex.test(password)) {
+      return;
+    }
+
     const response = await fetch(
-      //"http://localhost:3000/users/signin",
-      "https://useless-true-stuff-backend.vercel.app/users/signin",
+      "http://localhost:3000/users/login",
+      //"https://useless-true-stuff-backend.vercel.app/users/signin",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -62,8 +68,8 @@ function Login() {
         setUsername("");
         setPassword("");
         setEmail("");
-        setMissingFields(false);
-        router.push(`${previousPage}`);
+        setCorrectCredentials(true);
+
         dispatch(rememberOrigin(""));
       } else if (response.status === 401) {
         setCorrectCredentials(false);
@@ -88,16 +94,27 @@ function Login() {
       console.log("missing fields");
       setMissingFields(true);
       return;
+    } else {
+      setMissingFields(false);
+    }
+
+     //abort signup process if password is not satisfying regex
+     if (!passwordRegex.test(password)) {
+      return;
     }
 
     //CGU checkbox verification
     if (!isCheckedCGU) {
       setDisplayWarningCGU(true);
       return;
+    } else {
+      setDisplayWarningCGU(false);
     }
+
+    // calling register route
     const response = await fetch(
-      //"http://localhost:3000/users/signup",
-      "https://useless-true-stuff-backend.vercel.app/users/signup",
+      "http://localhost:3000/users/register",
+      //"https://useless-true-stuff-backend.vercel.app/users/signup",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -121,11 +138,11 @@ function Login() {
         );
         setUsername("");
         setPassword("");
-        setfirstName("");
+        setFirstName("");
         setLastName("");
         setEmail("");
-        setMissingFields(false);
-        router.push(`${previousPage}`);
+      
+       
       } else if (response.status === 409) {
         setExistingUser(true);
       }
@@ -134,9 +151,10 @@ function Login() {
     }
   }
 
-  // WARNING - adapter à playity
-  //forgot password functionality
-  async function handleForgotPasswordClick() {}
+  //forgot password functionality -> Nice to have
+  async function handleForgotPasswordClick() {
+    alert("this functionality is not available yet");
+  }
 
   //signin and signup box design
   let boxSize = {
@@ -151,7 +169,7 @@ function Login() {
 
   //switch to visible password and back
   const handleShowPassword = () => {
-    setshowPassword(!showPassword);
+    setShowPassword(!showPassword);
   };
 
   // WARNING - adapter à playity ()
@@ -177,7 +195,7 @@ function Login() {
               type="text"
               placeholder="Prénom"
               id="signUpfirstName"
-              onChange={(e) => setfirstName(e.target.value)}
+              onChange={(e) => setFirstName(e.target.value)}
               value={firstName}
             />
             <input
