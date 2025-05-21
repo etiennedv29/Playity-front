@@ -29,10 +29,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
+  width: 90vw;
   height: 100vh;
   background-color: #122846;
   color: white;
+  padding: 0;
 }
 
 .gamesGridContainer {

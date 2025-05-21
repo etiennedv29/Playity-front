@@ -3,8 +3,7 @@
   perspective: 1000px;
   transform-style: preserve-3d;
   width: 350px;
-  height: 90vh;
-  margin: 0 auto;
+  height: 70vh;
 }
 
 /* 3D reflection effect */
@@ -41,7 +40,7 @@
 }
 
 .btns {
-  padding-top: 100px;
+  padding-top: 20px;
 }
 
 .btns .btn {

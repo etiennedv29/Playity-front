@@ -79,7 +79,7 @@ function Slider(props) {
             <div
               className={styles.reflection}
               style={{
-              background: `linear-gradient(to bottom, ${item.bgColor}40, transparent)`,
+              background: `linear-gradient(to bottom, white 40, transparent)`,
               ...getStyles(i)
               }}
             />
