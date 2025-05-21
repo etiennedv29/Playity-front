@@ -1,7 +1,7 @@
-import Account from "../components/Account";
+import AccountComponent from "../components/AccountComponent";
 
 function Account() {
-  return <Account />;
+  return <AccountComponent />;
 }
 
 export default Account;

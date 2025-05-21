@@ -19,12 +19,14 @@ function Header() {
   const token = user.token;
 
   const handleLogout = () => {
+    router.push('/')
     if (user.connectionWithSocials === false) {
       dispatch(logout());
     } else if (user.connectionWithSocials === true) {
       googleLogout();
       dispatch(logout());
     }
+    
   };
 
   return (

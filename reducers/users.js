@@ -8,6 +8,8 @@ const initialState = {
     firstName: "",
     avatar: "",
     connectionWithSocials: "",
+    email: "",
+    roles:[],
   },
 };
 
@@ -23,6 +25,8 @@ export const usersSlice = createSlice({
       state.value.firstName = action.payload.firstName;
       state.value.avatar = action.payload.avatar;
       state.value.connectionWithSocials = action.payload.connectionWithSocials;
+      state.value.email = action.payload.email;
+      state.value.roles=action.payload.roles
     },
     logout: (state) => {
       state.value.token = "";
@@ -31,6 +35,8 @@ export const usersSlice = createSlice({
       state.value._id = "";
       state.value.avatar = "";
       state.value.connectionWithSocials = "";
+      state.value.email = "";
+      state.value.roles=[];
     },
   },
 });
