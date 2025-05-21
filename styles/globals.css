@@ -1,12 +1,42 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: Caveat Brush, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    font-weight: 100;
+  font-family: Caveat Brush, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-weight: 100;
   background-color: #122846;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.btnPlay {
+  background-color: #a7d8a2;
+  border: solid 1px #a7d8a2;
+  color: white;
+  border-radius: 3px;
+  height: 30px;
+}
+
+.btnPlay:hover {
+  color: #a7d8a2;
+  background-color: white;
+  border: solid 1px #a7d8a2;
+  border-radius: 3px;
+}
+
+.btnSecondary {
+  background-color: #cfa75f;
+  border: solid 1px #cfa75f;
+  color: white;
+  border-radius: 3px;
+  height: 30px;
+}
+
+.btnSecondary:hover {
+  color: #cfa75f;
+  background-color: white;
+  border: solid 1px #cfa75f;
+  border-radius: 3px;
 }
