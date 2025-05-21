@@ -1,10 +1,7 @@
-import Home from '../components/Home';
+import Account from "../components/Account";
 
 function Account() {
-  return
-<p>
-    bla
-</p>
+  return <Account />;
 }
 
 export default Account;

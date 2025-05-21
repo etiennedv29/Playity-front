@@ -1,9 +1,10 @@
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Login.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
-
+import { GoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -31,9 +32,8 @@ function Login() {
 
   // User connection
 
-  async function handleSignin() {
-    console.log("want to signin");
-    if (password === "" || email === "") {
+  async function handleSignin(email, password, connectionWithSocials = false) {
+    if ((!connectionWithSocials && password === "") || email === "") {
       setMissingFields(true);
       return;
     } else {
@@ -41,7 +41,7 @@ function Login() {
     }
 
     //abort signin if password is not satisfying regex
-    if (!passwordRegex.test(password)) {
+    if (!connectionWithSocials && !passwordRegex.test(password)) {
       return;
     }
 
@@ -51,7 +51,7 @@ function Login() {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, connectionWithSocials }),
       }
     );
     const data = await response.json();
@@ -61,9 +61,10 @@ function Login() {
           login({
             _id: data._id,
             firstName: data.firstName,
-            username:data.username,
+            username: data.username,
             token: data.token,
-            avatar:data.avatar
+            avatar: data.avatar,
+            connectionWithSocials: data.connectionWithSocials,
           })
         );
         setUsername("");
@@ -71,7 +72,7 @@ function Login() {
         setEmail("");
         setCorrectCredentials(true);
 
-        dispatch(rememberOrigin(""));
+        router.push("/");
       } else if (response.status === 401) {
         setCorrectCredentials(false);
       }
@@ -82,14 +83,20 @@ function Login() {
 
   // WARNING - adapter à playity
   //Create account
-  async function handleSignup() {
-    console.log("signup try");
+  async function handleSignup(
+    firstName,
+    lastName,
+    username,
+    password,
+    email,
+    connectionWithSocials = false
+  ) {
     //missing fields verification
     if (
       firstName === "" ||
       lastName === "" ||
       username === "" ||
-      password === "" ||
+      (!connectionWithSocials && password === "") ||
       email === ""
     ) {
       console.log("missing fields");
@@ -99,13 +106,13 @@ function Login() {
       setMissingFields(false);
     }
 
-     //abort signup process if password is not satisfying regex
-     if (!passwordRegex.test(password)) {
+    //abort signup process if password is not satisfying regex
+    if (!connectionWithSocials && passwordRegex.test(password)) {
       return;
     }
 
     //CGU checkbox verification
-    if (!isCheckedCGU) {
+    if (!connectionWithSocials && !isCheckedCGU) {
       setDisplayWarningCGU(true);
       return;
     } else {
@@ -125,6 +132,7 @@ function Login() {
           email,
           username,
           password,
+          connectionWithSocials,
         }),
       }
     );
@@ -135,15 +143,21 @@ function Login() {
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
-          login({ _id: data._id, firstName, username, token: data.token,avatar:data.avatar })
+          login({
+            _id: data._id,
+            firstName,
+            username,
+            token: data.token,
+            avatar: data.avatar,
+            connectionWithSocials: data.connectionWithSocials,
+          })
         );
         setUsername("");
         setPassword("");
         setFirstName("");
         setLastName("");
         setEmail("");
-      
-       
+        router.push("/");
       } else if (response.status === 409) {
         setExistingUser(true);
       }
@@ -159,7 +173,7 @@ function Login() {
 
   //signin and signup box design
   let boxSize = {
-    height: isSignupDisplay ? 550 : 300,
+    height: isSignupDisplay ? 580 : 410,
     transition: "height 0.15s ease-out",
   };
 
@@ -183,127 +197,176 @@ function Login() {
               Crée un compte et rejoins Playity
             </h2>
             {existingUser && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: "lightcoral" }}>
                 {" "}
                 Il y en a déjà un qui a ton mail ou ton pseudo !
               </p>
             )}
             {missingFields && (
-              <p style={{ color: "red" }}>Remplis tous les champs stp</p>
+              <p style={{ color: "lightcoral" }}>Remplis tous les champs stp</p>
             )}
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Prénom"
-              id="signUpfirstName"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Nom"
-              id="signUpLastName"
-              onChange={(e) => setLastName(e.target.value)}
-              value={lastName}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Email"
-              id="signUpEmail"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Pseudo"
-              id="signUpUsername"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-            />
-            <div className={styles.passwordArea}>
-              <div className={styles.passwordAreaInput}>
+            <div className={styles.traditionalSigninContainer}>
+              <div className={styles.inputFieldsArea}>
                 <input
-                  className={styles.loginFieldPassword}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Mot de passe"
-                  id="signUpPassword"
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setIncorrectPassword(passwordRegex.test(e.target.value));
-                    console.log(incorrectPassword);
-                  }}
-                  value={password}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSignup();
-                    }
-                  }}
+                  className={styles.loginField}
+                  type="text"
+                  placeholder="Prénom"
+                  id="signUpfirstName"
+                  onChange={(e) => setFirstName(e.target.value)}
+                  value={firstName}
                 />
+                <input
+                  className={styles.loginField}
+                  type="text"
+                  placeholder="Nom"
+                  id="signUpLastName"
+                  onChange={(e) => setLastName(e.target.value)}
+                  value={lastName}
+                />
+                <input
+                  className={styles.loginField}
+                  type="text"
+                  placeholder="Email"
+                  id="signUpEmail"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                />
+                <input
+                  className={styles.loginField}
+                  type="text"
+                  placeholder="Pseudo"
+                  id="signUpUsername"
+                  onChange={(e) => setUsername(e.target.value)}
+                  value={username}
+                />
+              </div>
+              <div className={styles.passwordArea}>
+                <div className={styles.passwordAreaInput}>
+                  <input
+                    className={styles.loginFieldPassword}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Mot de passe"
+                    id="signUpPassword"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setIncorrectPassword(passwordRegex.test(e.target.value));
+                    }}
+                    value={password}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSignup(
+                          firstName,
+                          lastName,
+                          username,
+                          password,
+                          email,
+                          (connectionWithSocials = false)
+                        );
+                      }
+                    }}
+                  />
+                  <div
+                    onClick={() => handleShowPassword()}
+                    className={styles.toggleShowPassword}
+                  >
+                    {!showPassword ? (
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        color="#F5C242"
+                        size="lg"
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faEyeSlash}
+                        color="#F5C242"
+                        size="lg"
+                        style={{ cursor: "pointer" }}
+                      />
+                    )}
+                  </div>
+                </div>
                 <div
-                  onClick={() => handleShowPassword()}
-                  className={styles.toggleShowPassword}
+                  className={styles.passwordWarning}
+                  style={
+                    password.length < 8
+                      ? { color: "#CFA75F" }
+                      : passwordRegex.test(password)
+                      ? { color: "#A7D8A2" }
+                      : { color: "lightcoral" }
+                  }
                 >
-                  {!showPassword ? (
-                    <FontAwesomeIcon icon={faEye} color="#1ad4ff" size={15} />
-                  ) : (
-                    <FontAwesomeIcon
-                      icon={faEyeSlash}
-                      color="#1ad4ff"
-                      size={15}
-                    />
-                  )}
+                  Le mot de passe doit contenir 1 minuscule, 1 majuscule, 1
+                  chiffre, 1 caractère parmi #@$!%*?& et être d'au moins 8
+                  caractères
                 </div>
               </div>
-              <div
-                className={styles.passwordWarning}
-                style={
-                  password.length < 8
-                    ? { color: "#1ad4ff" }
-                    : passwordRegex.test(password)
-                    ? { color: "lightgreen" }
-                    : { color: "lightcoral" }
+              <div className={styles.agreeConditionsCheckboxContainer}>
+                <div className={styles.agreeConditionsCheckbox}>
+                  <input
+                    type="checkbox"
+                    checked={isCheckedCGU}
+                    onChange={() => setIsCheckedCGU(!isCheckedCGU)}
+                  />{" "}
+                  <div className={styles.agreeConditionsText}>
+                    Accepter les CGU et la politique de confidentialité
+                  </div>
+                </div>
+                {displayWarningCGU && (
+                  <div className={styles.warningCGU}>
+                    Pour t'inscrire, il faut accepter les conditions
+                    d'utilisation du service !
+                  </div>
+                )}
+              </div>
+              <button
+                className={styles.modalSigninButton}
+                id="register"
+                onClick={() =>
+                  handleSignup(
+                    firstName,
+                    lastName,
+                    username,
+                    password,
+                    email,
+                    (connectionWithSocials = false)
+                  )
                 }
               >
-                Le mot de passe doit contenir 1 minuscule, 1 majuscule, 1
-                chiffre, 1 caractère parmi #@$!%*?& et être d'au moins 8
-                caractères
+                {" "}
+                Crée ton compte{" "}
+              </button>
+              <div
+                className={styles.switchSignup}
+                onClick={() => handleSwitchSignupClick()}
+              >
+                Déjà un compte ? Connecte-toi ici !
               </div>
             </div>
-            <div className={styles.agreeConditionsCheckboxContainer}>
-              <div className={styles.agreeConditionsCheckbox}>
-                <input
-                  type="checkbox"
-                  Checked={isCheckedCGU}
-                  onChange={() => setIsCheckedCGU(!isCheckedCGU)}
-                />{" "}
-                <div className={styles.agreeConditionsText}>
-                  Accepter les CGU et la politique de confidentialité
-                </div>
-              </div>
-              {displayWarningCGU && (
-                <div className={styles.warningCGU}>
-                  Pour t'inscrire, il faut accepter les conditions d'utilisation
-                  du service !
-                </div>
-              )}
+            <div className={styles.connectsSeparator}>
+              <div className={styles.connectsSeparatorLine}></div>
+              <p className={styles.connectsSeparatorText}>OU</p>
+              <div className={styles.connectsSeparatorLine}></div>
             </div>
-            <button
-              className={styles.modalSigninButton}
-              id="register"
-              onClick={() => handleSignup()}
-            >
-              {" "}
-              Crée ton compte{" "}
-            </button>
-            <div
-              className={styles.switchSignup}
-              onClick={() => handleSwitchSignupClick()}
-            >
-              Déjà un compte ? Connecte-toi ici !
+            <div className={styles.connectsContainer}>
+              <GoogleLogin
+                className={styles.googleConnect}
+                text="continue_with"
+                onSuccess={(credentialResponse) => {
+                  let googleUserInfo = jwtDecode(credentialResponse.credential);
+                  console.log(jwtDecode(credentialResponse.credential));
+                  handleSignup(
+                    googleUserInfo.given_name,
+                    googleUserInfo.family_name,
+                    googleUserInfo.name,
+                    "",
+                    googleUserInfo.email,
+                    true
+                  );
+                }}
+              />
             </div>
+
             <div className={styles.errorMsg}> {msg} </div>
           </div>
         )}
@@ -311,73 +374,105 @@ function Login() {
           <div className={styles.registerSection}>
             <h2 className={styles.loginModalTitle}>Connexion</h2>
             {missingFields && (
-              <p style={{ color: "red" }}>Remplis tous les champs stp</p>
+              <p style={{ color: "lightcoral" }}>Remplis tous les champs stp</p>
             )}
             {!correctCredentials && (
-              <p style={{ color: "red" }}>
+              <p style={{ color: "lightcoral" }}>
                 Ton email et/ou ton mot de passe semblent incorrects
               </p>
             )}
-
-            <input
-              className={styles.loginField}
-              type="text"
-              placeholder="Email"
-              id="signInEmail"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-            <div className={styles.passwordArea}>
-              <div className={styles.passwordAreaInput}>
+            <div className={styles.traditionalSigninContainer}>
+              <div className={styles.inputFieldsArea}>
                 <input
-                  className={styles.loginFieldPassword}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Mot de passe"
-                  id="signInPassword"
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                  value={password}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSignin();
-                    }
-                  }}
+                  className={styles.loginField}
+                  type="text"
+                  placeholder="Email"
+                  id="signInEmail"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
                 />
+              </div>
+              <div className={styles.passwordArea}>
+                <div className={styles.passwordAreaInput}>
+                  <input
+                    className={styles.loginFieldPassword}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Mot de passe"
+                    id="signInPassword"
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                    value={password}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSignin(
+                          email,
+                          password,
+                          (connectionWithSocials = false)
+                        );
+                      }
+                    }}
+                  />
+                  <div
+                    onClick={() => handleShowPassword()}
+                    className={styles.toggleShowPassword}
+                  >
+                    {!showPassword ? (
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        color="#CFA75F"
+                        size="lg"
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faEyeSlash}
+                        color="#CFA75F"
+                        size="lg"
+                        style={{ cursor: "pointer" }}
+                      />
+                    )}
+                  </div>
+                </div>
                 <div
-                  onClick={() => handleShowPassword()}
-                  className={styles.toggleShowPassword}
+                  className={styles.forgotPassword}
+                  onClick={() => handleForgotPasswordClick()}
                 >
-                  {!showPassword ? (
-                    <FontAwesomeIcon icon={faEye} color="#1ad4ff" size={15} />
-                  ) : (
-                    <FontAwesomeIcon
-                      icon={faEyeSlash}
-                      color="#1ad4ff"
-                      size={15}
-                    />
-                  )}
+                  Mot de passe oublié ?
                 </div>
               </div>
-              <div
-                className={styles.forgotPassword}
-                onClick={() => handleForgotPasswordClick()}
+              <button
+                className={styles.modalSigninButton}
+                id="connection"
+                onClick={() =>
+                  handleSignin(email, password, (connectionWithSocials = false))
+                }
               >
-                Mot de passe oublié ?
+                Connexion
+              </button>
+              <div
+                className={styles.switchSignup}
+                onClick={() => handleSwitchSignupClick()}
+              >
+                Toujours pas de compte ? Sois collaboratif et crées-en un !
               </div>
             </div>
-            <button
-              className={styles.modalSigninButton}
-              id="connection"
-              onClick={() => handleSignin()}
-            >
-              Connexion
-            </button>
-            <div
-              className={styles.switchSignup}
-              onClick={() => handleSwitchSignupClick()}
-            >
-              Toujours pas de compte ? Sois collaboratif et crées-en un !
+            <div className={styles.connectsSeparator}>
+              <div className={styles.connectsSeparatorLine}></div>
+              <p className={styles.connectsSeparatorText}>OU</p>
+              <div className={styles.connectsSeparatorLine}></div>
+            </div>
+            <div className={styles.connectsContainer}>
+              <GoogleLogin
+                className={styles.googleConnect}
+                text="continue_with"
+                onSuccess={(credentialResponse) => {
+                  let googleUserInfo = jwtDecode(credentialResponse.credential);
+                  //console.log(jwtDecode(credentialResponse.credential));
+
+                  handleSignin(googleUserInfo.email, "", true);
+                }}
+              />
             </div>
           </div>
         )}

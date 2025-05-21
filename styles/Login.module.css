@@ -1,0 +1,168 @@
+.connectSectionContainer {
+  width: 100svw;
+  height: 80svh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  background-color: #122846;
+  padding-top: 3vh;
+}
+.registerContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 500px;
+  transition: opacity 0.1s ease 0s;
+}
+
+.registerSection {
+  border: 1px solid #f5c242;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+  padding-bottom: 2vh;
+  border-radius: 8px;
+}
+.traditionalSigninContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+}
+.connectsSeparator {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.inputFieldsArea {
+  width: 289px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+}
+.passwordArea {
+  margin-bottom: 10px;
+  width: 289px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.loginField {
+  margin-bottom: 10px;
+  width: 289px;
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid #122846;
+  background: #fff;
+  font-family: 'Caveat Brush';
+}
+.loginField:focus {
+  border: 1px solid #f5c242;
+}
+.loginField:hover {
+  border: 1px solid #4a90e2;
+}
+.loginFieldPassword {
+  width: 249px;
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid #122846;
+  background: #fff;
+  font-family: 'Caveat Brush';
+}
+.loginFieldPassword:hover {
+  border: 1px solid #4a90e2;
+}
+.loginFieldPassword:focus {
+  border: 1px solid #f5c242;
+}
+
+.passwordAreaInput {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.toggleShowPassword {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: 15%;
+}
+.passwordWarning {
+  font-size: 9px;
+  width: 80%;
+  margin-top: 2px;
+}
+.forgotPassword {
+  font-size: 9px;
+  cursor: pointer;
+  color: #f5c242;
+}
+.agreeConditionsCheckboxContainer {
+  display: flex;
+  flex-direction: column;
+}
+.agreeConditionsText {
+  text-align: left;
+}
+.agreeConditionsCheckbox {
+  color: #f5c242;
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+.warningCGU {
+  color: lightcoral;
+  font-size: 12px;
+}
+.loginModalTitle {
+  color: #f5c242;
+  text-align: center;
+  font-size: 60;
+}
+
+.modalSigninButton {
+  background-color: #f5c242;
+  color: #122846;
+  margin-top: 10px;
+  font-weight: 800;
+  width: 186px;
+  height: 42.028px;
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+.modalSigninButton:hover {
+  color: #fff;
+  background-color: #cfa75f;
+}
+.switchSignup {
+  color: #f5c242;
+  cursor: pointer;
+}
+
+.modalSigninButton {
+  cursor: pointer;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.connectsSeparatorLine {
+  height: 1px;
+  width: 40%;
+  border: 1px solid #f5c242;
+  margin: 3px;
+}
+.connectsSeparatorText {
+  color: #f5c242;
+}

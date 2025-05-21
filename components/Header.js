@@ -8,17 +8,23 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/users";
 import { useRouter } from "next/router";
+import { googleLogout } from "@react-oauth/google";
 
 function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const username = useSelector((state) => state.users.value.username);
-  const avatar = useSelector((state) => state.users.value.avatar);
-  const token = useSelector((state) => state.users.value.token);
+  const user = useSelector((state) => state.users.value);
+  const username = user.username;
+  const avatar = user.avatar;
+  const token = user.token;
 
   const handleLogout = () => {
-    dispatch(logout());
-    router.push("/");
+    if (user.connectionWithSocials === false) {
+      dispatch(logout());
+    } else if (user.connectionWithSocials === true) {
+      googleLogout();
+      dispatch(logout());
+    }
   };
 
   return (
@@ -30,50 +36,21 @@ function Header() {
               className={styles.logoImage}
               src="/playity-logo.png"
               alt="Playity logo"
-              width={133}
+              width={100}
               height={100}
               style={{ cursor: "pointer" }}
             />
           </Link>
-          <div className={styles.titlesBox}>
-            <h1 className={styles.logoTitle}>Playity</h1>
-            <h2 className={styles.logoCatchPhrase}>You'll never play alone</h2>
-          </div>
+          <Link href="/" className={styles.link}>
+            <div className={styles.titlesBox}>
+              <h1 className={styles.logoTitle}>Playity</h1>
+              <h2 className={styles.logoCatchPhrase}>
+                You'll never play alone
+              </h2>
+            </div>
+          </Link>
         </div>
-
         <div className={styles.globalInfoRight}>
-          <div className={styles.userInfoContainer}>
-            {token === "" ? (
-              <Link href="/login" className={styles.link}>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className={styles.userImage}
-                  style={{ color: "#1ad4ff", cursor: "pointer" }}
-                />
-              </Link>
-            ) : (
-              <Link href="/account" className={styles.link}>
-                <Image
-                  src={avatar}
-                  alt="user avatar"
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                  width={50}
-                  height={50}
-                />
-              </Link>
-            )}
-            {token === "" ? (
-              <Link href="/login" className={styles.link}>
-                <div className={styles.userName}>Se connecter</div>
-              </Link>
-            ) : (
-              <Link href="/login" className={styles.link}>
-                <div className={styles.userName} onClick={() => handleLogout()}>
-                  Déconnexion
-                </div>
-              </Link>
-            )}
-          </div>
           <div className={styles.searchContainer}>
             <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
             <input
@@ -81,6 +58,45 @@ function Header() {
               placeholder="Rechercher un jeu"
               className={styles.searchInput}
             ></input>
+          </div>
+          <div className={styles.userInfoContainer}>
+            {token === "" ? (
+              <Link href="/login" className={styles.link}>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className={styles.userImage}
+                />
+              </Link>
+            ) : (
+              <div>
+              <Link href="/account" className={styles.link}>
+                <Image
+                  src={avatar}
+                  alt="user avatar"
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                  className={styles.avatarImage}
+                  width={50}
+                  height={50}
+                />
+              </Link>
+              <Link href="/login" className={styles.link}>
+                <div className={styles.userName} onClick={() => handleLogout()}>
+                  Déconnexion
+                </div>
+              </Link>
+              </div>
+            )}
+            {/* {token ? (
+              <Link href="/login" className={styles.link}>
+                <div className={styles.userName}>Se connecter</div>
+              </Link>
+            ) : (
+              <Link href="/" className={styles.link}>
+                <div className={styles.userName} onClick={() => handleLogout()}>
+                  Déconnexion
+                </div>
+              </Link>
+            )} */}
           </div>
         </div>
       </div>

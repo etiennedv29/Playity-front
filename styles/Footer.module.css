@@ -1,6 +1,71 @@
 .footerContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
-    height: 20vw;
-    border: 1px solid red;
+    height: 35vh;
     background-color: #122846;
+}
+
+.topLine {
+    border-top: 1px solid white;
+    width: 80%;
+    background-color: white;
+}
+
+.playityPhrase {
+    font-weight: 0;
+    color: white;
+}
+
+.footerLinkscontainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 100px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.singleLinkContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+}
+
+.footerNav {
+    font-weight: 0;
+    font-size: 18px;
+}
+
+.link {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 7px 0;
+}
+
+.brandLink:-webkit-any-link {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.link:-webkit-any-link {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.link:hover {
+    color: #F5C242;
 }

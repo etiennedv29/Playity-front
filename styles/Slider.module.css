@@ -1,21 +1,19 @@
 .slideC {
-  position: relative;
+  display: flex;
   perspective: 1000px;
   transform-style: preserve-3d;
-  width: 362px;
+  width: 350px;
   height: 90vh;
   margin: 0 auto;
 }
 
 /* 3D reflection effect */
 .reflection {
-  position: absolute;
   width: 100%;
   height: 60px;
   bottom: -60px;
   border-radius: 12px;
-  transition: transform 500ms ease 0s, opacity 500ms ease 0s,
-    visibility 500ms ease 0s;
+  transition: transform 500ms ease 0s, opacity 500ms ease 0s, visibility 500ms ease 0s;
 }
 
 .slide {
@@ -24,32 +22,14 @@
   align-items: center;
 }
 
-.sliderContent {
-  display: flex;
-  flex-direction: column;
-  color: white;
-  padding: 30px;
-  align-items: flex-start;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
-.sliderContent h2 {
-  margin: 16px 0;
-}
-.sliderContent p {
-  margin: 0;
-  margin-bottom: 16px;
-}
-
 /* normal css  */
 
-body {
+/* .body {
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
   background: #111;
-}
+} */
 
 .center {
   display: flex;
