@@ -1,0 +1,22 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300vh;
+  background-color: white;
+  padding: 0;
+}
+
+.playerLobbyContainer {
+  border: 1px solid red;
+  display: flex;
+  align-items: center;
+}
+
+.gamesGridContainer {
+  width: 100vw;
+  height: 100vw;
+  border: 1px solid red;
+  background-color: #122846;
+}
