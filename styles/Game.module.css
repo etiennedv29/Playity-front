@@ -1,18 +1,28 @@
 .gameContainer {
-  width: 362px;
-  height: 272px;
-  transition: transform 500ms ease 0s, opacity 500ms ease 0s,
-    visibility 500ms ease 0s;
-  position: absolute;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  padding: 30px;
+  align-items: flex-start;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   top: 0;
   border-radius: 12px;
 }
 
 .gameTitle {
-
+  width: 75%;
+  text-align: center;
+  font-size: 40px;
+  font-size: 20px;
+  margin: 16px 0;
 }
-
+.description {
+  font-size: 10px;
+  margin: 0;
+  margin-bottom: 16px;
+}
 .image {
-
+  color: 'FFF';
 }
 

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import Game from "./Game";
+import styles from "../styles/Slider.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
   faChevronLeft
 } from "@fortawesome/free-solid-svg-icons";
 
-export default (props) => {
+function Slider(props) {
   const [activeSlide, setactiveSlide] = useState(props.activeSlide);
 
   const next = () =>
@@ -61,24 +63,24 @@ export default (props) => {
   return (
     <>
       {/* carousel */}
-      <div className="slideC">
+      <div className={styles.slideC}>
         {props.data.map((item, i) => (
           <React.Fragment key={item.id}>
             <div
-              className="slide"
+              className={styles.slide}
               style={{
-                background: item.bgColor,
-                boxShadow: `0 5px 20px ${item.bgColor}30`,
-                ...getStyles(i)
+              backgroundImage: item.image,
+              boxShadow: `0 5px 20px white 30`,
+              ...getStyles(i)
               }}
             >
-              <SliderContent {...item} />
+              <Game {...item} />
             </div>
             <div
-              className="reflection"
+              className={styles.reflection}
               style={{
-                background: `linear-gradient(to bottom, ${item.bgColor}40, transparent)`,
-                ...getStyles(i)
+              background: `linear-gradient(to bottom, ${item.bgColor}40, transparent)`,
+              ...getStyles(i)
               }}
             />
           </React.Fragment>
@@ -86,16 +88,16 @@ export default (props) => {
       </div>
       {/* carousel */}
 
-      <div className="btns">
+      <div className={styles.btns}>
         <FontAwesomeIcon
-          className="btn"
+          className={styles.btn}
           onClick={prev}
           icon={faChevronLeft}
           color="#fff"
           size="2x"
         />
         <FontAwesomeIcon
-          className="btn"
+          className={styles.btn}
           onClick={next}
           icon={faChevronRight}
           color="#fff"
@@ -106,12 +108,5 @@ export default (props) => {
   );
 };
 
-const SliderContent = (props) => {
-  return (
-    <div className="sliderContent">
-      {props.icon}
-      <h2>{props.title}</h2>
-      <p>{props.desc}</p>
-    </div>
-  );
-};
+
+export default Slider;
