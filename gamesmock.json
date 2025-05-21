@@ -1,0 +1,384 @@
+[
+  {
+    "id": "1",
+    "name": "Treasure Hunt",
+    "description": "Partez à la recherche de trésors cachés dans un monde ouvert fantastique.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1", "extension2"],
+    "gamePartDetails": {
+      "base": "Jeu de base - 4 cartes et 2 dés",
+      "extension1": "Extension Îles Perdues - 2 cartes supplémentaires",
+      "extension2": "Extension Pirates - 3 nouveaux personnages"
+    },
+    "tutorial": {
+      "title": "À l'abordage !",
+      "description": "Apprenez à naviguer et à déchiffrer les cartes aux trésors.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/treasure-hunt",
+    "maxPlayers": 4,
+    "tags": ["aventure", "stratégie", "premium"]
+  },
+  {
+    "id": "2",
+    "name": "Cosmic Race",
+    "description": "Course spatiale frénétique entre différentes galaxies.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Jeu complet avec 8 vaisseaux"
+    },
+    "tutorial": {
+      "title": "Décollage Immédiat",
+      "description": "Maîtrisez les commandes de votre vaisseau spatial.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/cosmic-race",
+    "maxPlayers": 8,
+    "tags": ["course", "espace", "rapide"]
+  },
+  {
+    "id": "3",
+    "name": "Puzzle Express",
+    "description": "Assemblez des puzzles en temps réel avec vos amis.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "Assembler rapidement",
+      "description": "Travaillez ensemble pour compléter le puzzle avant la fin du chrono.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/puzzle-express",
+    "maxPlayers": 6,
+    "tags": ["topGame", "puzzle"]
+  },
+  {
+    "id": "4",
+    "name": "Mystères Anciens",
+    "description": "Explorez des ruines antiques et résolvez des énigmes millénaires.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1"],
+    "gamePartDetails": {
+      "base": "Jeu de base - 5 temples",
+      "extension1": "Extension Pyramides - 3 nouveaux sites"
+    },
+    "tutorial": {
+      "title": "Déchiffrer les Hiéroglyphes",
+      "description": "Apprenez à interpréter les symboles anciens pour progresser.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/mysteres-anciens",
+    "maxPlayers": 4,
+    "tags": ["énigme", "histoire", "premium"]
+  },
+  {
+    "id": "5",
+    "name": "Battle Royale Arena",
+    "description": "Affrontez d'autres joueurs dans une arène où un seul survivra.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Arène complète avec 12 personnages jouables"
+    },
+    "tutorial": {
+      "title": "Techniques de Combat",
+      "description": "Maîtrisez les techniques de combat essentielles pour survivre.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/battle-royale",
+    "maxPlayers": 100,
+    "tags": ["topGame", "action", "compétitif"]
+  },
+  {
+    "id": "6",
+    "name": "Simulation Ferme",
+    "description": "Créez et gérez votre propre ferme écologique.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "La Main Verte",
+      "description": "Apprenez les bases de l'agriculture et de l'élevage.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/simulation-ferme",
+    "maxPlayers": 1,
+    "tags": ["simulation", "détente", "nature"]
+  },
+  {
+    "id": "7",
+    "name": "Mystery Manor",
+    "description": "Enquêtez sur des mystères dans un manoir hanté.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1", "extension2", "extension3"],
+    "gamePartDetails": {
+      "base": "Manoir principal - 10 salles",
+      "extension1": "Extension Jardin - 5 nouvelles zones",
+      "extension2": "Extension Cave - 3 nouveaux mystères",
+      "extension3": "Extension Spectres - 7 nouveaux fantômes"
+    },
+    "tutorial": {
+      "title": "Détective en Herbe",
+      "description": "Développez vos compétences d'observation et de déduction.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/mystery-manor",
+    "maxPlayers": 6,
+    "tags": ["mystère", "horreur", "premium"]
+  },
+  {
+    "id": "8",
+    "name": "Football Manager",
+    "description": "Gérez votre équipe de football et menez-la à la victoire.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Jeu complet avec 50 équipes internationales"
+    },
+    "tutorial": {
+      "title": "Tactiques Gagnantes",
+      "description": "Développez des stratégies efficaces pour dominer le terrain.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/football-manager",
+    "maxPlayers": 2,
+    "tags": ["sport", "stratégie", "gestion"]
+  },
+  {
+    "id": "9",
+    "name": "Cuisine Royale",
+    "description": "Affrontez d'autres chefs dans des défis culinaires.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "Les Bases de la Gastronomie",
+      "description": "Apprenez à maîtriser les techniques culinaires de base.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/cuisine-royale",
+    "maxPlayers": 8,
+    "tags": ["simulation", "compétitif", "cuisine"]
+  },
+  {
+    "id": "10",
+    "name": "Skyline Architect",
+    "description": "Construisez et gérez votre propre ville futuriste.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1"],
+    "gamePartDetails": {
+      "base": "Jeu de base - ville terrestre",
+      "extension1": "Extension Colonies Spatiales - construction dans l'espace"
+    },
+    "tutorial": {
+      "title": "Urbanisme 101",
+      "description": "Apprenez les principes fondamentaux de la planification urbaine.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/skyline-architect",
+    "maxPlayers": 1,
+    "tags": ["topGame", "construction", "gestion", "premium"]
+  },
+  {
+    "id": "11",
+    "name": "Jungle Adventure",
+    "description": "Explorez une jungle dense remplie de dangers et de trésors.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Jeu complet avec 5 biomes différents"
+    },
+    "tutorial": {
+      "title": "Survie en Milieu Hostile",
+      "description": "Apprenez à survivre face aux dangers de la jungle.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/jungle-adventure",
+    "maxPlayers": 4,
+    "tags": ["aventure", "exploration", "action"]
+  },
+  {
+    "id": "12",
+    "name": "Melody Master",
+    "description": "Créez votre propre musique et partagez-la avec le monde.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1", "extension2"],
+    "gamePartDetails": {
+      "base": "Studio de base - 20 instruments",
+      "extension1": "Extension Percussion - 15 nouveaux instruments",
+      "extension2": "Extension Électronique - 12 synthétiseurs"
+    },
+    "tutorial": {
+      "title": "Composition 101",
+      "description": "Apprenez les bases de la composition musicale.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/melody-master",
+    "maxPlayers": 4,
+    "tags": ["musique", "créatif", "premium"]
+  },
+  {
+    "id": "13",
+    "name": "Speed Racers",
+    "description": "Course de voitures à haute vitesse sur des pistes futuristes.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "Conduite Extrême",
+      "description": "Maîtrisez les techniques de pilotage avancées.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/speed-racers",
+    "maxPlayers": 12,
+    "tags": ["course", "action", "rapide"]
+  },
+  {
+    "id": "14",
+    "name": "Medieval Kingdom",
+    "description": "Développez votre royaume médiéval et étendez votre influence.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1"],
+    "gamePartDetails": {
+      "base": "Royaume de base - 1 continent",
+      "extension1": "Extension Nouveau Monde - nouveau continent à explorer"
+    },
+    "tutorial": {
+      "title": "L'Art de Gouverner",
+      "description": "Apprenez à gérer efficacement votre royaume.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/medieval-kingdom",
+    "maxPlayers": 8,
+    "tags": ["stratégie", "gestion", "histoire", "premium"]
+  },
+  {
+    "id": "15",
+    "name": "Pixel Painters",
+    "description": "Créez des œuvres d'art pixel par pixel et partagez-les.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "L'Art du Pixel",
+      "description": "Découvrez les techniques de base du pixel art.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/pixel-painters",
+    "maxPlayers": 16,
+    "tags": ["créatif", "art", "collaboratif"]
+  },
+  {
+    "id": "16",
+    "name": "Zombie Survival",
+    "description": "Survivez dans un monde post-apocalyptique envahi par les zombies.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Jeu complet avec 3 cartes différentes"
+    },
+    "tutorial": {
+      "title": "Survivre à Tout Prix",
+      "description": "Apprenez les techniques essentielles de survie.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/zombie-survival",
+    "maxPlayers": 50,
+    "tags": ["topGame", "horreur", "action", "survie"]
+  },
+  {
+    "id": "17",
+    "name": "Detective Stories",
+    "description": "Résolvez des affaires criminelles complexes dans différentes époques.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1", "extension2", "extension3"],
+    "gamePartDetails": {
+      "base": "Jeu de base - 5 enquêtes",
+      "extension1": "Extension 1920 - 3 nouvelles enquêtes",
+      "extension2": "Extension Futur - 3 enquêtes futuristes",
+      "extension3": "Extension Historique - 4 enquêtes dans l'Antiquité"
+    },
+    "tutorial": {
+      "title": "Méthodologie d'Enquête",
+      "description": "Développez votre sens de l'observation et de déduction.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/detective-stories",
+    "maxPlayers": 4,
+    "tags": ["mystère", "réflexion", "narratif", "premium"]
+  },
+  {
+    "id": "18",
+    "name": "Space Colony",
+    "description": "Établissez et développez une colonie spatiale sur différentes planètes.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": ["base"],
+    "gamePartDetails": {
+      "base": "Jeu complet avec 7 planètes colonisables"
+    },
+    "tutorial": {
+      "title": "Colonisation 101",
+      "description": "Apprenez les bases de la survie et du développement dans l'espace.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/space-colony",
+    "maxPlayers": 12,
+    "tags": ["espace", "gestion", "construction"]
+  },
+  {
+    "id": "19",
+    "name": "Fantasy Heroes",
+    "description": "Formez une équipe de héros et partez à l'aventure dans un monde fantastique.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": true,
+    "parts": ["base", "extension1"],
+    "gamePartDetails": {
+      "base": "Jeu de base - 20 héros jouables",
+      "extension1": "Extension Dragons - 5 nouveaux héros et 3 dragons"
+    },
+    "tutorial": {
+      "title": "Formation d'Équipe",
+      "description": "Apprenez à constituer une équipe équilibrée et efficace.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/fantasy-heroes",
+    "maxPlayers": 5,
+    "tags": ["topGame", "RPG", "fantaisie", "premium"]
+  },
+  {
+    "id": "20",
+    "name": "Chess Master",
+    "description": "Jeu d'échecs classique avec différents modes et défis.",
+    "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg",
+    "isPremium": false,
+    "parts": [],
+    "gamePartDetails": null,
+    "tutorial": {
+      "title": "Stratégies d'Ouverture",
+      "description": "Maîtrisez les ouvertures classiques aux échecs.",
+      "image": "https://scienceline.org/wp-content/uploads/2020/01/tetris.jpg"
+    },
+    "demo": "https://example.com/demo/chess-master",
+    "maxPlayers": 2,
+    "tags": ["stratégie", "classique", "réflexion"]
+  }
+]
