@@ -82,14 +82,21 @@ export default function Lobby() {
 
   return (
     <div className={styles.lobbyContainer}>
-      <div className={styles.demoContainer}>
-        {game && <YoutubeVideo videoId={game.demo} />}
-      </div>
-      <div className={styles.playersContainer}>
-        <h1>Players</h1>
-        {playerElements}
-        {playersWaiting}
-        <button>Share Code {code}</button>
+      <div className={styles.mainContainer}>
+        <div className={styles.leftContainer}>
+          {game && <YoutubeVideo videoId={game.demo} />}
+          <button className={`btnPlay ${styles.btnPlay}`}>
+            Lancer la partie
+          </button>
+        </div>
+        <div className={styles.rightContainer}>
+          <h1>Players</h1>
+          {playerElements}
+          {playersWaiting}
+          <button className={`btnSecondary ${styles.btnSecondary}`}>
+            Share {code}
+          </button>
+        </div>
       </div>
     </div>
   );
