@@ -2,7 +2,8 @@ import "../styles/globals.css";
 import Head from "next/head";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
+//imports google connect
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 //imports redux
 import { Provider } from "react-redux";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
@@ -22,27 +23,36 @@ const persistor = persistStore(store);
 function App({ Component, pageProps }) {
   return (
     <>
-      <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <Head>
-            <meta
-              name="description"
-              content="Play fun and new collaborative games with your friends ! "
-            ></meta>
-            <meta
-              name="viewport"
-              content="initial-scale=1.0, width=device-width"
-            ></meta>
-            <link rel="icon" href="playity-logo.png"></link>
-            <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin></link>
-            <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet"></link>
-          </Head>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </PersistGate>
-      </Provider>
+      <GoogleOAuthProvider clientId="989907452331-35nuap8qhtt317b0j93dkt2d0u6u0svl.apps.googleusercontent.com">
+        <Provider store={store}>
+          <PersistGate persistor={persistor}>
+            <Head>
+              <meta
+                name="description"
+                content="Play fun and new collaborative games with your friends ! "
+              ></meta>
+              <meta
+                name="viewport"
+                content="initial-scale=1.0, width=device-width"
+              ></meta>
+              <link rel="icon" href="playity-logo.png"></link>
+              <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+              <link
+                rel="preconnect"
+                href="https://fonts.gstatic.com"
+                crossorigin
+              ></link>
+              <link
+                href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap"
+                rel="stylesheet"
+              ></link>
+            </Head>
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+          </PersistGate>
+        </Provider>
+      </GoogleOAuthProvider>
     </>
   );
 }
