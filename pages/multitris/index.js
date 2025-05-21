@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import YoutubeVideo from "../../components/YoutubeVideo";
+import styles from "../../styles/Multitris.module.css";
 import { getGameNameFromUrl } from "../../utils/url";
 
 export default function HomePage() {
@@ -15,7 +17,7 @@ export default function HomePage() {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.post(
+      const res = await axios.get(
         "http://localhost:3000/games?name=" + gameName
       );
 
@@ -54,37 +56,55 @@ export default function HomePage() {
 
   return (
     <div>
-      <h1>Accueil</h1>
-      <div>
-        <label htmlFor="mySelect">Choisis une option :</label>
-        <select
-          id="mySelect"
-          value={playerNumber}
-          onChange={setPlayerNumber}
-          required={true}
-        >
-          <option value="">-- Choisir --</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-      </div>
-      <button onClick={handleCreateLobby}>Créer un lobby</button>
+      <div className={styles.lobbyContainer}>
+        <div className={styles.mainContainer}>
+          <div className={styles.leftContainer}>
+            {game && <YoutubeVideo videoId={game.demo} />}
+          </div>
+          <div className={styles.rightContainer}>
+            <h1>Multitris</h1>
+            <div>
+              <label htmlFor="mySelect">Choisis une option :</label>
+              <select
+                id="mySelect"
+                value={playerNumber}
+                onChange={setPlayerNumber}
+                required={true}
+              >
+                <option value="">-- Choisir --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <button
+              className={`btnPlay ${styles.btnPlay}`}
+              onClick={handleCreateLobby}
+            >
+              Créer un lobby
+            </button>
 
-      <form onSubmit={handleJoinSubmit} style={{ marginTop: "20px" }}>
-        <label>Code du lobby :</label>
-        <input
-          type="text"
-          value={joinCode}
-          onChange={(e) => setJoinCode(e.target.value)}
-          maxLength={5}
-          style={{ textTransform: "uppercase", marginLeft: "10px" }}
-        />
-        <button type="submit" style={{ marginLeft: "10px" }}>
-          Rejoindre
-        </button>
-      </form>
+            <form onSubmit={handleJoinSubmit} style={{ marginTop: "20px" }}>
+              <label>Code du lobby :</label>
+              <input
+                type="text"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+                maxLength={5}
+                style={{ textTransform: "uppercase", marginLeft: "10px" }}
+              />
+              <button
+                className={`btnSecondary ${styles.btnSecondary}`}
+                type="submit"
+                style={{ marginLeft: "10px" }}
+              >
+                Rejoindre
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
