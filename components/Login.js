@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -33,7 +33,6 @@ function Login() {
   // User connection
 
   async function handleSignin(email, password, connectionWithSocials = false) {
-    console.log("want to signin");
     if ((!connectionWithSocials && password === "") || email === "") {
       setMissingFields(true);
       return;
@@ -65,13 +64,14 @@ function Login() {
             username: data.username,
             token: data.token,
             avatar: data.avatar,
+            connectionWithSocials: data.connectionWithSocials,
           })
         );
         setUsername("");
         setPassword("");
         setEmail("");
         setCorrectCredentials(true);
-        dispatch(rememberOrigin(""));
+
         router.push("/");
       } else if (response.status === 401) {
         setCorrectCredentials(false);
@@ -91,9 +91,7 @@ function Login() {
     email,
     connectionWithSocials = false
   ) {
-    console.log("signup try");
     //missing fields verification
-
     if (
       firstName === "" ||
       lastName === "" ||
@@ -151,6 +149,7 @@ function Login() {
             username,
             token: data.token,
             avatar: data.avatar,
+            connectionWithSocials: data.connectionWithSocials,
           })
         );
         setUsername("");
@@ -251,7 +250,6 @@ function Login() {
                     onChange={(e) => {
                       setPassword(e.target.value);
                       setIncorrectPassword(passwordRegex.test(e.target.value));
-                      console.log(incorrectPassword);
                     }}
                     value={password}
                     onKeyDown={(e) => {
@@ -353,6 +351,7 @@ function Login() {
             <div className={styles.connectsContainer}>
               <GoogleLogin
                 className={styles.googleConnect}
+                text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
                   console.log(jwtDecode(credentialResponse.credential));
@@ -406,7 +405,11 @@ function Login() {
                     value={password}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        handleSignin(email, password, (connectionWithSocials = false));
+                        handleSignin(
+                          email,
+                          password,
+                          (connectionWithSocials = false)
+                        );
                       }
                     }}
                   />
@@ -462,9 +465,10 @@ function Login() {
             <div className={styles.connectsContainer}>
               <GoogleLogin
                 className={styles.googleConnect}
+                text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
-                  console.log(jwtDecode(credentialResponse.credential));
+                  //console.log(jwtDecode(credentialResponse.credential));
 
                   handleSignin(googleUserInfo.email, "", true);
                 }}
