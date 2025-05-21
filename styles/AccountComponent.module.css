@@ -1,0 +1,181 @@
+.accountContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* border: 1px solid red */
+}
+.accountLeft {
+  width: 300px;
+  color: white;
+  padding-left: 10px;
+}
+
+.sectionTitleNav {
+  color: #F5C242;
+  width: 100%;
+}
+
+.accountRight {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+}
+
+.sectionContainer {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding-bottom:5px
+}
+
+.sectionTitle {
+  border-bottom: 1px solid #f5c242;
+  text-align: center;
+  color: #f5c242;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.detailedInfoData {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.detailedInfoDataLeft {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-left: 40px;
+}
+
+.detailedInfoDataRight {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.detailedInfoFieldName,
+.detailedInfoUserDataContainer {
+  height: 50px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 18px;
+}
+.detailedInfoUserDataField {
+  height: 46px;
+  width: 289px;
+  border-radius: 8px;
+  border: 1px solid #122846;
+  background: #fff;
+  font-family: "Caveat Brush";
+  font-size: 18px;
+  outline: none;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  align-items: center;
+
+  color: black;
+}
+.detailedInfoUserDataField:hover {
+  border: 1px solid #4a90e2;
+}
+.modifyAccountInfoIcon {
+  margin-left: 10px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.modifyPasswordButton {
+  background-color: #f5c242;
+  color: #122846;
+  font-weight: 800;
+  width: 186px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-family: "Caveat Brush";
+  font-size: 18px;
+  margin-left: 10px;
+}
+.modifyPasswordButton:hover {
+  color: #fff;
+  background-color: #cfa75f;
+}
+
+.profileSection{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+
+}
+.profileLeft {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profileRight {
+  width: 50%;
+}
+
+.profileAvatarUsername {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.profileAvatarPicture {
+  border-radius: 50%;
+  border: 1px solid #F5C242;
+  margin-right: 15px;
+}
+.profileUsername {
+  font-size: 25px;
+  color: #F5C242
+}
+.profileChangeAvatarContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.modifyAvatarPictureButton{
+    background-color: #f5c242;
+  color: #122846;
+  font-weight: 800;
+  width: 186px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-family: "Caveat Brush";
+  font-size: 18px;
+}
+.modifyAvatarPictureButton:hover {
+  color: #fff;
+  background-color: #cfa75f;
+}
+.warningAvatarChangePremiumOnly{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 18px;
+    
+}
+.avatarChangePremiumIcon{
+    margin-right: 5px;
+}
+
+

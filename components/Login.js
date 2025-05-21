@@ -47,7 +47,6 @@ function Login() {
 
     const response = await fetch(
       "http://localhost:3000/users/login",
-      //"https://useless-true-stuff-backend.vercel.app/users/signin",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,6 +54,7 @@ function Login() {
       }
     );
     const data = await response.json();
+    console.log("data after signin route:",data)
     try {
       if (response.status === 200) {
         dispatch(
@@ -65,6 +65,8 @@ function Login() {
             token: data.token,
             avatar: data.avatar,
             connectionWithSocials: data.connectionWithSocials,
+            email: data.email,
+            roles: data.roles,
           })
         );
         setUsername("");
@@ -91,6 +93,7 @@ function Login() {
     email,
     connectionWithSocials = false
   ) {
+    
     //missing fields verification
     if (
       firstName === "" ||
@@ -107,22 +110,21 @@ function Login() {
     }
 
     //abort signup process if password is not satisfying regex
-    if (!connectionWithSocials && passwordRegex.test(password)) {
+    if (!connectionWithSocials && !passwordRegex.test(password)) {
       return;
     }
 
-    //CGU checkbox verification
+    //CGU checkbox verification  
     if (!connectionWithSocials && !isCheckedCGU) {
       setDisplayWarningCGU(true);
       return;
     } else {
       setDisplayWarningCGU(false);
     }
-
+console.log("going to call feth register")
     // calling register route
     const response = await fetch(
       "http://localhost:3000/users/register",
-      //"https://useless-true-stuff-backend.vercel.app/users/signup",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,10 +138,10 @@ function Login() {
         }),
       }
     );
-
     const data = await response.json();
 
     try {
+      console.log("data after signup:",data)
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
@@ -150,6 +152,8 @@ function Login() {
             token: data.token,
             avatar: data.avatar,
             connectionWithSocials: data.connectionWithSocials,
+            email: data.email,
+            roles: data.roles,
           })
         );
         setUsername("");
@@ -329,7 +333,7 @@ function Login() {
                     username,
                     password,
                     email,
-                    (connectionWithSocials = false)
+                    false
                   )
                 }
               >
@@ -445,7 +449,7 @@ function Login() {
                 className={styles.modalSigninButton}
                 id="connection"
                 onClick={() =>
-                  handleSignin(email, password, (connectionWithSocials = false))
+                  handleSignin(email, password, false)
                 }
               >
                 Connexion
