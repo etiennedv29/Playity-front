@@ -4,12 +4,12 @@ import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare,faCrown } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faCrown } from "@fortawesome/free-solid-svg-icons";
 
 function AccountComponent(props) {
   let userData = useSelector((state) => state.users.value);
 
-  console.log("userData=",userData)
+  console.log("userData=", userData);
 
   return (
     <div className={styles.accountContainer}>
@@ -35,15 +35,24 @@ function AccountComponent(props) {
                   height={150}
                 />
                 <div className={styles.profileUsername}>
-                  {" "}
                   {userData.username}
                 </div>
               </div>
               <div className={styles.profileChangeAvatarContainer}>
-                <button className={styles.modifyAvatarPictureButton}>Changer d'avatar</button>
-                <div className = {styles.warningAvatarChangePremiumOnly}>
-                  <FontAwesomeIcon icon={faCrown} className={styles.avatarChangePremiumIcon}/>
-                  <div className={styles.warningAvaterChangePremiumOnlyText}>Premium</div>
+                <button
+                  className={styles.modifyAvatarPictureButton}
+                  onClick={() => {}}
+                >
+                  Changer d'avatar
+                </button>
+                <div className={styles.warningAvatarChangePremiumOnly}>
+                  <FontAwesomeIcon
+                    icon={faCrown}
+                    className={styles.avatarChangePremiumIcon}
+                  />
+                  <div className={styles.warningAvatarChangePremiumOnlyText}>
+                    Premium
+                  </div>
                 </div>
               </div>
             </div>
@@ -67,6 +76,7 @@ function AccountComponent(props) {
                 <input
                   value={userData.username}
                   className={styles.detailedInfoUserDataField}
+                  onChange={() => {}}
                 />
                 <FontAwesomeIcon
                   icon={faPenToSquare}
@@ -76,10 +86,11 @@ function AccountComponent(props) {
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
                 <input
-                  value={userData.password}
+                  onChange={() => {}}
+                  defaultValue="***********"
                   className={styles.detailedInfoUserDataField}
                   type="password"
-                  disabled={true}
+                  disabled={userData.connectionWithSocials}
                   style={
                     userData.connectionWithSocials
                       ? { backgroundColor: "gray" }
@@ -89,13 +100,8 @@ function AccountComponent(props) {
                 <button
                   className={styles.modifyPasswordButton}
                   id="modifyPassword"
-                  //onClick={() => handleChangePassword(password, email)}
+                  onClick={() => {}}
                   disabled={userData.connectionWithSocials}
-                  style={
-                    userData.connectionWithSocials && {
-                      backgroundColor: "gray",
-                    }
-                  }
                 >
                   Changer ton mot de passe
                 </button>
@@ -106,12 +112,14 @@ function AccountComponent(props) {
                   value={userData.dateOfBirth}
                   type="date"
                   className={styles.detailedInfoUserDataField}
+                  onChange={() => {}}
                 />
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
                 <input
                   value={userData.email}
                   className={styles.detailedInfoUserDataField}
+                  onChange={() => {}}
                 />
                 <FontAwesomeIcon
                   icon={faPenToSquare}
@@ -121,9 +129,7 @@ function AccountComponent(props) {
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
                 <div className={styles.detailedInfoUserDataField}>
-                  {userData.roles.map((role, i) => {
-                    return `${role}, `;
-                  })}
+                  {userData.roles.join(", ")}
                 </div>
               </div>
             </div>
