@@ -83,9 +83,7 @@ export default function Lobby() {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(
-        window.location.href + "/lobby/" + code
-      );
+      await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
