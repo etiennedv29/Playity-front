@@ -4,10 +4,12 @@
   justify-content: top;
   align-items: center;
   min-height: 300vh;
-  background-color: #122846
+  width: 100vw;
+  background-color: #122846;
 }
 
 .gamesGridTitle {
+  font-size: 17px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,10 +31,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  background-color: #122846;
+  width: 90vw;
+  height: 60vh;
   color: white;
+  margin-top: 80px;
 }
 
 .gamesGridContainer {
@@ -41,7 +43,9 @@
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background-color: transparent;
   color: white;
+  padding: 0 100px;
+  overflow: auto;
 }
