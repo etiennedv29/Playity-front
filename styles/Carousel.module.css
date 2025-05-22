@@ -36,6 +36,12 @@
   border-radius: 12px;
 }
 
+.slide:hover {
+  transform: scale(1.1);
+  transition: all 0.15s linear;
+  cursor: pointer;
+}
+
 .slideTitle {
   position: absolute;
   top: 15px;
