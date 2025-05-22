@@ -17,36 +17,38 @@ export default function HomePage() {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(
-        "http://localhost:3000/games?name=" + gameName
-      );
-      console.log(res.data[0]);
-      setGame(res.data[0]);
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/games?name=" + gameName
+        );
+        setGame(res.data[0]);
+      } catch (e) {}
     })();
   }, []);
 
   const handleCreateLobby = async () => {
-    try {
-      //Je crée le lobby dans mongo
-      console.log("creer lobby", playerNumber, game["_id"]);
-      const res = await axios.post(
-        "http://localhost:3000/lobbies",
-        { nbPlayers: playerNumber, gameId: game["_id"] },
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
+    if (game) {
+      try {
+        //Je crée le lobby dans mongo
+        const res = await axios.post(
+          "http://localhost:3000/lobbies",
+          { nbPlayers: playerNumber, gameId: game["_id"] },
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        );
 
-      const code = res.data.code;
-      router.push(`/multitris/lobby/${code}`);
-    } catch (err) {
-      console.error("Erreur lors de la création du lobby :", err);
+        const code = res.data.code;
+        router.push(`/multitris/lobby/${code}`);
+      } catch (err) {
+        console.error("Erreur lors de la création du lobby :", err);
+      }
     }
   };
 
-  const handleJoinSubmit = (e) => {
+  const handleJoinClick = (e) => {
     e.preventDefault();
     if (joinCode.trim().length === 5) {
       router.push(`/lobby/${joinCode.toUpperCase()}`);
@@ -55,54 +57,70 @@ export default function HomePage() {
     }
   };
 
+  const generateOptionsPlayerNumberElement = () => {
+    let elements = [];
+    if (game) {
+      for (let i = 1; i <= game.maxPlayers; i++) {
+        elements.push(<option value={i}>{i}</option>);
+      }
+    }
+
+    return elements;
+  };
+
+  const selectPlayerNumberElements = generateOptionsPlayerNumberElement();
+
   return (
     <div>
       <div className={styles.lobbyContainer}>
+        <h1 className="gameTitle">Multitris</h1>
         <div className={styles.mainContainer}>
           <div className={styles.leftContainer}>
             {game && <YoutubeVideo videoId={game.demo} />}
           </div>
-          <div className={styles.rightContainer}>
-            <h1>Multitris</h1>
-            <div>
-              <label htmlFor="mySelect">Choisis une option :</label>
-              <select
-                id="mySelect"
-                value={playerNumber}
-                onChange={setPlayerNumber}
-                required={true}
-              >
-                <option value="">-- Choisir --</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </div>
-            <button
-              className={`btnPlay ${styles.btnPlay}`}
-              onClick={handleCreateLobby}
-            >
-              Créer un lobby
-            </button>
+          <div className={styles.rightContainerBorderless}>
+            <div className={styles.rightTopContainer}>
+              <div>
+                <label htmlFor="mySelect">Players</label>
+                <select
+                  id="mySelect"
+                  value={String(playerNumber)}
+                  onChange={(e) => setPlayerNumber(e.target.value)}
+                  required={true}
+                >
+                  {selectPlayerNumberElements}
+                </select>
+              </div>
 
-            <form onSubmit={handleJoinSubmit} style={{ marginTop: "20px" }}>
-              <label>Code du lobby :</label>
-              <input
-                type="text"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-                maxLength={5}
-                style={{ textTransform: "uppercase", marginLeft: "10px" }}
-              />
               <button
-                className={`btnSecondary ${styles.btnSecondary}`}
+                className={`btnPlay ${styles.btnCreateGame}`}
+                onClick={handleCreateLobby}
+              >
+                Créer un lobby
+              </button>
+            </div>
+
+            <div className={styles.rightBottomContainer}>
+              <div>
+                <label>Code du lobby</label>
+                <input
+                  className={styles.inputCode}
+                  type="text"
+                  value={joinCode}
+                  onChange={(e) => setJoinCode(e.target.value)}
+                  maxLength={5}
+                  style={{ textTransform: "uppercase", marginLeft: "10px" }}
+                />
+              </div>
+
+              <button
+                className={`btnSecondary ${styles.btnJoin}`}
                 type="submit"
-                style={{ marginLeft: "10px" }}
+                onClick={handleJoinClick}
               >
                 Rejoindre
               </button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

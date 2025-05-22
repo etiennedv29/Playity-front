@@ -40,3 +40,8 @@ body {
   border: solid 1px #cfa75f;
   border-radius: 3px;
 }
+
+.gameTitle {
+  font-size: 30px;
+  color: white;
+}

@@ -16,31 +16,30 @@ export default function Lobby() {
   const [players, setPlayers] = useState([]);
   const [game, setGame] = useState(null);
   const [lobby, setLobby] = useState(null);
+  const [copied, setCopied] = useState(false);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
+  let isAdmin = false;
+  let playersWaiting;
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(
-        "http://localhost:3000/games?name=" + gameName
-      );
-      console.log(res.data[0]);
-      setGame(res.data[0]);
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/games?name=" + gameName
+        );
+        console.log(res.data[0]);
+        setGame(res.data[0]);
+      } catch (e) {}
     })();
   }, []);
 
   useEffect(() => {
+    if (!router.isReady || !code || !userId) return;
+
     socket.connect();
 
-    // Rejoindre automatiquement le lobby à l’arrivée sur la page
-    socket.emit("joinLobby", { code, userId }, (res) => {
-      if (res?.success === false) {
-        console.log("Erreur de lobby:", res.error);
-      } else {
-        setPlayers(res.lobby.players);
-        setLobby(res.lobby);
-      }
-    });
+    socket.emit("register", userId);
 
     // Quand un autre joueur rejoint
     socket.on("userJoined", ({ lobby }) => {
@@ -50,17 +49,24 @@ export default function Lobby() {
 
     // Quand un joueur quitte
     socket.on("userLeft", ({ lobby }) => {
+      console.log("userLeft", lobby);
       setPlayers(lobby.players);
       setLobby(lobby);
     });
 
-    return () => {
-      // Déconnexion propre (optionnel)
-      socket.emit("leaveLobby", { code, userId }, (res) => {});
+    // Rejoindre automatiquement le lobby à l’arrivée sur la page
+    socket.emit("joinLobby", { code, userId }, (res) => {
+      if (res?.success === false) {
+        console.log("Erreur de lobby:", res.error);
+      }
+    });
 
+    return () => {
+      // window.removeEventListener("beforeunload", handleUnload);
+      socket.emit("leaveLobby", { code, userId }, (res) => {});
       socket.disconnect();
     };
-  }, [code, userId]);
+  }, [router.isReady, code, userId]);
 
   const playerElements = players.map((player, index) => (
     <PlayerLobby key={index} {...player} />
@@ -75,28 +81,48 @@ export default function Lobby() {
     return elements;
   };
 
-  let playersWaiting;
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        window.location.href + "/lobby/" + code
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Erreur lors de la copie", err);
+    }
+  };
 
   if (lobby) {
     playersWaiting = buildPlayerWaiting();
+    isAdmin = lobby.admin === userId;
   }
 
   return (
     <div className={styles.lobbyContainer}>
+      <h1 className="gameTitle">Multitris</h1>
       <div className={styles.mainContainer}>
         <div className={styles.leftContainer}>
           {game && <YoutubeVideo videoId={game.demo} />}
-          <button className={`btnPlay ${styles.btnPlay}`}>
-            Lancer la partie
-          </button>
+          {lobby && isAdmin && (
+            <button className={`btnPlay ${styles.btnPlay}`}>
+              Lancer la partie
+            </button>
+          )}
         </div>
         <div className={styles.rightContainer}>
-          <h1>Players</h1>
+          <h1>Lobby: #{code}</h1>
           {playerElements}
           {playersWaiting}
-          <button className={`btnSecondary ${styles.btnSecondary}`}>
-            Share {code}
+          <button
+            onClick={handleCopy}
+            className={`btnSecondary ${styles.btnSecondary}`}
+          >
+            Share Code
           </button>
+          {copied && (
+            <span style={{ marginLeft: "10px", color: "green" }}>Copié ✅</span>
+          )}
         </div>
       </div>
     </div>
