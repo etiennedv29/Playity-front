@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import YoutubeVideo from "../../components/YoutubeVideo";
 import styles from "../../styles/Multitris.module.css";
 import { getGameNameFromUrl } from "../../utils/url";
@@ -10,8 +11,7 @@ export default function HomePage() {
   const [playerNumber, setPlayerNumber] = useState(3);
   const [game, setGame] = useState(null);
 
-  const token = "6cLGKs8VmwJwH_jyKHUVO9M7EIy84YZc";
-  const gameId = "682c8de77543175bff80f8c8";
+  const token = useSelector((state) => state.users.value.token);
   const router = useRouter();
   const gameName = getGameNameFromUrl();
 
@@ -20,7 +20,7 @@ export default function HomePage() {
       const res = await axios.get(
         "http://localhost:3000/games?name=" + gameName
       );
-
+      console.log(res.data[0]);
       setGame(res.data[0]);
     })();
   }, []);
@@ -28,9 +28,10 @@ export default function HomePage() {
   const handleCreateLobby = async () => {
     try {
       //Je crée le lobby dans mongo
+      console.log("creer lobby", playerNumber, game["_id"]);
       const res = await axios.post(
         "http://localhost:3000/lobbies",
-        { nbPlayers: playerNumber, gameId },
+        { nbPlayers: playerNumber, gameId: game["_id"] },
         {
           headers: {
             Authorization: `${token}`,

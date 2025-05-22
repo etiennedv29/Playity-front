@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { socket } from "../../../../client/socketClient";
 import PlayerLobby from "../../../../components/multitris/PlayerLobby";
 import WaitingPlayerLobby from "../../../../components/multitris/WaitingPlayerLobby";
@@ -12,11 +13,11 @@ import { getGameNameFromUrl } from "../../../../utils/url";
 export default function Lobby() {
   const router = useRouter();
   const { code } = router.query;
-  const userId = "682ca849937b360a352516b5"; // remplace par ton user réel
   const [players, setPlayers] = useState([]);
   const [game, setGame] = useState(null);
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
+  const userId = useSelector((state) => state.users.value["_id"]);
 
   useEffect(() => {
     (async () => {
@@ -44,13 +45,13 @@ export default function Lobby() {
     // Quand un autre joueur rejoint
     socket.on("userJoined", ({ lobby }) => {
       setPlayers(lobby.players);
-      setLobby(res.lobby);
+      setLobby(lobby);
     });
 
     // Quand un joueur quitte
     socket.on("userLeft", ({ lobby }) => {
       setPlayers(lobby.players);
-      setLobby(res.lobby);
+      setLobby(lobby);
     });
 
     return () => {
