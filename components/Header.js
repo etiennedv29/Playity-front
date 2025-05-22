@@ -8,17 +8,25 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/users";
 import { useRouter } from "next/router";
+import { googleLogout } from "@react-oauth/google";
 
 function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const username = useSelector((state) => state.users.value.username);
-  const avatar = useSelector((state) => state.users.value.avatar);
-  const token = useSelector((state) => state.users.value.token);
+  const user = useSelector((state) => state.users.value);
+  const username = user.username;
+  const avatar = user.avatar;
+  const token = user.token;
 
   const handleLogout = () => {
-    router.push("/");
-    dispatch(logout());
+    router.push('/')
+    if (user.connectionWithSocials === false) {
+      dispatch(logout());
+    } else if (user.connectionWithSocials === true) {
+      googleLogout();
+      dispatch(logout());
+    }
+    
   };
 
   return (
@@ -35,10 +43,12 @@ function Header() {
               style={{ cursor: "pointer" }}
             />
           </Link>
-          <Link href="/" className={styles.link}>          
+          <Link href="/" className={styles.link}>
             <div className={styles.titlesBox}>
               <h1 className={styles.logoTitle}>Playity</h1>
-              <h2 className={styles.logoCatchPhrase}>You'll never play alone</h2>
+              <h2 className={styles.logoCatchPhrase}>
+                You'll never play alone
+              </h2>
             </div>
           </Link>
         </div>
@@ -83,7 +93,7 @@ function Header() {
                 <div className={styles.userName}>Se connecter</div>
               </Link>
             ) : (
-              <Link href="/login" className={styles.link}>
+              <Link href="/" className={styles.link}>
                 <div className={styles.userName} onClick={() => handleLogout()}>
                   Déconnexion
                 </div>

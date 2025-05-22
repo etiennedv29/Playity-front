@@ -2,7 +2,7 @@ import styles from "../styles/Footer.module.css";
 import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faFacebookF, faInstagram, faTiktok} from "@fortawesome/free-brands-svg-icons";
+import { faFacebookF, faInstagram, faTiktok} from "@fortawesome/free-brands-svg-icons";
 
 
 function Footer() {

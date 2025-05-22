@@ -1,0 +1,50 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300vh;
+  background-color: white;
+  padding: 0;
+}
+
+.lobbyContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.leftContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  margin-left: 15px;
+}
+
+.rightContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 320px;
+  color: white;
+  border: solid 1px white;
+  border-radius: 10px;
+  margin-left: 15px;
+  width: 220px;
+}
+
+.btnPlay {
+  margin-top: 15px;
+}
+
+.btnSecondary {
+  margin-top: auto;
+  margin-bottom: 15px;
+}
