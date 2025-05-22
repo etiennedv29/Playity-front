@@ -70,6 +70,7 @@
   flex-direction: row;
   align-items: center;
   font-size: 18px;
+  
 }
 .detailedInfoUserDataField {
   height: 46px;
@@ -82,13 +83,15 @@
   outline: none;
   padding-left: 10px;
   padding-right: 10px;
-
   align-items: center;
-
   color: black;
+  cursor:default
 }
 .detailedInfoUserDataField:hover {
   border: 1px solid #4a90e2;
+}
+.detailedInfoUSerDataField:disabled{
+    caret-color: transparent;
 }
 .modifyAccountInfoIcon {
   margin-left: 10px;
@@ -107,10 +110,16 @@
   font-family: "Caveat Brush";
   font-size: 18px;
   margin-left: 10px;
+  cursor: pointer;
 }
 .modifyPasswordButton:hover {
   color: #fff;
   background-color: #cfa75f;
+}
+.modifyPasswordButton:disabled{
+    background-color: gray;
+    color:#122846;
+    cursor: default;
 }
 
 .profileSection{
