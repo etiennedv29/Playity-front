@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Carousel from "./Carousel";
-import Game from "./Game";
+import GameMiniature from "./GameMiniature";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
@@ -30,7 +30,7 @@ function Home() {
     // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
     let games = gamesData.map((data, i) => {
       return (
-        <Game
+        <GameMiniature
           key={i}
           {...data}
         />
