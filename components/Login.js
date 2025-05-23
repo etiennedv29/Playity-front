@@ -424,14 +424,14 @@ console.log("going to call feth register")
                     {!showPassword ? (
                       <FontAwesomeIcon
                         icon={faEye}
-                        color="#CFA75F"
+                        color="#F5C242"
                         size="lg"
                         style={{ cursor: "pointer" }}
                       />
                     ) : (
                       <FontAwesomeIcon
                         icon={faEyeSlash}
-                        color="#CFA75F"
+                        color="#F5C242"
                         size="lg"
                         style={{ cursor: "pointer" }}
                       />

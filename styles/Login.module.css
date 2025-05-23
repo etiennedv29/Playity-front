@@ -1,6 +1,6 @@
 .connectSectionContainer {
-  width: 100svw;
-  height: 80svh;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

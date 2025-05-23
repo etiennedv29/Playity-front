@@ -1,93 +1,42 @@
-.main {
+/* multitris.module.css */
+
+.container {
+  background-color: #122846; /* Fond sombre demandé */
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  min-height: 300vh;
-  background-color: white;
-  padding: 0;
+  justify-content: flex-start;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.lobbyContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-  flex-direction: column;
-}
-
-.mainContainer {
-  display: flex;
-  flex-direction: row;
-}
-
-.leftContainer {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.title {
   color: white;
-  margin-left: 15px;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-.rightContainer {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 320px;
-  color: white;
-  border: solid 1px white;
-  border-radius: 10px;
-  margin-left: 15px;
-  width: 220px;
+.grid {
+  display: grid;
+  width: 60%;
+  max-height: 80vh;
+  aspect-ratio: calc(var(--cols) / 20); /* Pour s'adapter à la hauteur */
+  border: 2px solid white;
+  gap: 0.5px; /* Espace entre cellules */
+  background-color: #000000;
 }
 
-.rightBottomContainer,
-.rightTopContainer {
-  padding-top: 20px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 320px;
-  color: white;
-  border: solid 1px white;
-  border-radius: 10px;
-  margin-left: 15px;
-  width: 200px;
-}
-.rightBottomContainer {
-  margin-top: 10px;
-}
-.rightContainerBorderless {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 320px;
-  color: white;
-  margin-left: 15px;
-  width: 220px;
+.cell {
+  aspect-ratio: 1 / 1;
+  background-color: #1f1f1f;
 }
 
-.btnPlay {
-  margin-top: 15px;
+.filled {
+  background-color: #00d9ff; /* Couleur temporaire pour bloc rempli */
 }
 
-.btnCreateGame {
-  margin-top: auto;
-  margin-bottom: 15px;
-  width: 90%;
-}
-
-.btnSecondary {
-  margin-top: auto;
-  margin-bottom: 15px;
-}
-
-.btnJoin {
-  margin-top: auto;
-  margin-bottom: 15px;
-  width: 90%;
-}
-
-.inputCode {
-  width: 50px;
+.empty {
+  background-color: transparent;
 }
