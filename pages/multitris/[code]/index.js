@@ -17,14 +17,11 @@ export default function LobbyPage() {
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
-<<<<<<< HEAD
   const [partId, setPartId] = useState('');
-=======
   let isAdmin = false;
   if (lobby) {
     isAdmin = lobby.admin === userId;
   }
->>>>>>> 4e449648b68d13b5d88f47a8d820a9d8bb95d3bf
 
   useEffect(() => {
     (async () => {
