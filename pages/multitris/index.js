@@ -41,7 +41,7 @@ export default function HomePage() {
         );
 
         const code = res.data.code;
-        router.push(`/multitris/lobby/${code}`);
+        router.push(`/multitris/${code}`);
       } catch (err) {
         console.error("Erreur lors de la création du lobby :", err);
       }
@@ -51,7 +51,7 @@ export default function HomePage() {
   const handleJoinClick = (e) => {
     e.preventDefault();
     if (joinCode.trim().length === 5) {
-      router.push(`/lobby/${joinCode.toUpperCase()}`);
+      router.push(`/${joinCode.toUpperCase()}`);
     } else {
       alert("Code invalide");
     }
