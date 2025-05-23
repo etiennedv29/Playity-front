@@ -62,6 +62,15 @@ export default function Lobby() {
     };
   }, [code, userId]);
 
+  const handlePartLaunch = async () => {
+    const response = await fetch('http://localhost:3000/parts/start', {
+      method: 'POST',
+      body: JSON.stringify({ gameId: game.id, lobbyCode: lobby})
+    });
+    const data = await response.json();
+
+  }
+
   const playerElements = players.map((player, index) => (
     <PlayerLobby key={index} {...player} />
   ));
@@ -86,7 +95,7 @@ export default function Lobby() {
       <div className={styles.mainContainer}>
         <div className={styles.leftContainer}>
           {game && <YoutubeVideo videoId={game.demo} />}
-          <button className={`btnPlay ${styles.btnPlay}`}>
+          <button className={`btnPlay ${styles.btnPlay}`} onClick={() => handlePartLaunch()}>
             Lancer la partie
           </button>
         </div>
