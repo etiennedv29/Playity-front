@@ -1,14 +1,12 @@
-import styles from "../styles/Header.module.css";
+import { faSearch, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { googleLogout } from "@react-oauth/google";
 import Image from "next/image";
-import Head from "next/head";
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/users";
-import { useRouter } from "next/router";
-import { googleLogout } from "@react-oauth/google";
+import styles from "../styles/Header.module.css";
 
 function Header() {
   const router = useRouter();
@@ -17,16 +15,16 @@ function Header() {
   const username = user.username;
   const avatar = user.avatar;
   const token = user.token;
+  const isGuest = !user.roles.includes("member");
 
   const handleLogout = () => {
-    router.push('/')
+    router.push("/");
     if (user.connectionWithSocials === false) {
       dispatch(logout());
     } else if (user.connectionWithSocials === true) {
       googleLogout();
       dispatch(logout());
     }
-    
   };
 
   return (
@@ -62,30 +60,30 @@ function Header() {
             ></input>
           </div>
           <div className={styles.userInfoContainer}>
-            {token === "" ? (
+            {isGuest || !token ? (
               <Link href="/login" className={styles.link}>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className={styles.userImage}
-                />
+                <FontAwesomeIcon icon={faUser} className={styles.userImage} />
               </Link>
             ) : (
               <div>
-              <Link href="/account" className={styles.link}>
-                <Image
-                  src={avatar}
-                  alt="user avatar"
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                  className={styles.avatarImage}
-                  width={50}
-                  height={50}
-                />
-              </Link>
-              <Link href="/login" className={styles.link}>
-                <div className={styles.userName} onClick={() => handleLogout()}>
-                  Déconnexion
-                </div>
-              </Link>
+                <Link href="/account" className={styles.link}>
+                  <Image
+                    src={avatar}
+                    alt="user avatar"
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                    className={styles.avatarImage}
+                    width={50}
+                    height={50}
+                  />
+                </Link>
+                <Link href="/login" className={styles.link}>
+                  <div
+                    className={styles.userName}
+                    onClick={() => handleLogout()}
+                  >
+                    Déconnexion
+                  </div>
+                </Link>
               </div>
             )}
             {/* {token ? (
