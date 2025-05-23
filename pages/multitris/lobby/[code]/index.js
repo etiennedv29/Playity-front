@@ -18,6 +18,7 @@ export default function Lobby() {
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
+  const [partId, setPartId] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -65,12 +66,18 @@ export default function Lobby() {
   const handlePartLaunch = async () => {
     const response = await fetch('http://localhost:3000/parts/start', {
       method: 'POST',
-      body: JSON.stringify({ gameId: game.id, lobbyCode: lobby})
+      body: JSON.stringify({ gameId: game.id, lobbyCode: lobby, maxPlayers: game.maxPlayers})
     });
+
+    // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
 
+    // On ajoute cet id dans un état
+    setPartId(data.partId);
+    console.log(partId);
   }
 
+  
   const playerElements = players.map((player, index) => (
     <PlayerLobby key={index} {...player} />
   ));
