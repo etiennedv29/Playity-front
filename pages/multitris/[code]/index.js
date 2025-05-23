@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../../../client/socketClient";
-import Lobby from "../../../components/multitris/Lobby";
+import Lobby from "../../../components/multitris/lobby";
 import styles from "../../../styles/Lobby.module.css";
 import { getGameNameFromUrl } from "../../../utils/url";
 
@@ -16,6 +16,7 @@ export default function LobbyPage() {
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
+  const [partId, setPartId] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -61,17 +62,34 @@ export default function LobbyPage() {
     };
   }, [router.isReady, code, userId]);
 
-  const startGame = () => {
+  const handlePartLaunch = async () => {
+
+    const response = await fetch('http://localhost:3000/parts/start', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id, maxPlayers: game.maxPlayers})
+    });
+
+    // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
+    const data = await response.json();
+    console.log('réponse obtenue du back : ', data);
+    // On ajoute cet id dans un état
+    setPartId(data.partId);
+    
+    
+
     console.log("gameStarted");
     setGameStarted(true);
-  };
+  }
+
+  console.log('Nouvelle partie créée : ', partId);
 
   return (
     <div className={styles.lobbyContainer}>
       <h1 className="gameTitle">Multitris</h1>
       <div className={styles.mainContainer}>
         {!gameStarted && lobby && (
-          <Lobby game={game} lobby={lobby} code={code} startGame={startGame} />
+          <Lobby game={game} lobby={lobby} code={code} startGame={handlePartLaunch} />
         )}
       </div>
     </div>
