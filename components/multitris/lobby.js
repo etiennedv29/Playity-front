@@ -40,14 +40,17 @@ export default function Lobby({ lobby, game, code, startGame }) {
     isAdmin = lobby.admin === userId;
   }
 
+  const disableBtnPlay = lobby.players.length < 2;
+
   return (
     <>
       <div className={styles.leftContainer}>
         {game && <YoutubeVideo videoId={game.demo} />}
-        {lobby && isAdmin && lobby.players.length > 1 && (
+        {lobby && isAdmin && (
           <button
             onClick={() => startGame()}
             className={`btnPlay ${styles.btnPlay}`}
+            disabled={disableBtnPlay}
           >
             Lancer la partie
           </button>
