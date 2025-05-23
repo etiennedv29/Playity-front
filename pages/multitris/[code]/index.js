@@ -7,6 +7,7 @@ import { socket } from "../../../client/socketClient";
 import Lobby from "../../../components/multitris/lobby";
 import styles from "../../../styles/Lobby.module.css";
 import { getGameNameFromUrl } from "../../../utils/url";
+import Multitris from "../../../components/Multitris";
 
 export default function LobbyPage() {
   const router = useRouter();
@@ -16,7 +17,14 @@ export default function LobbyPage() {
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
+<<<<<<< HEAD
   const [partId, setPartId] = useState('');
+=======
+  let isAdmin = false;
+  if (lobby) {
+    isAdmin = lobby.admin === userId;
+  }
+>>>>>>> 4e449648b68d13b5d88f47a8d820a9d8bb95d3bf
 
   useEffect(() => {
     (async () => {
@@ -55,6 +63,15 @@ export default function LobbyPage() {
       }
     });
 
+    //ecoute de début de la partie
+    if (!isAdmin) {
+      socket.on("gameStartedNow", (gameStarted) => {
+        if (gameStarted.gameStartInfo) {
+          setGameStarted(true);
+        }
+      });
+    }
+
     return () => {
       // window.removeEventListener("beforeunload", handleUnload);
       socket.emit("leaveLobby", { code, userId }, (res) => {});
@@ -90,6 +107,9 @@ export default function LobbyPage() {
       <div className={styles.mainContainer}>
         {!gameStarted && lobby && (
           <Lobby game={game} lobby={lobby} code={code} startGame={handlePartLaunch} />
+        )}
+        {gameStarted && lobby && (
+          <Multitris game={game} lobby={lobby} code={code} socket={socket} />
         )}
       </div>
     </div>

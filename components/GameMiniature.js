@@ -1,7 +1,7 @@
-import styles from "../styles/Game.module.css";
+import styles from "../styles/GameMiniature.module.css";
 import Image from "next/image";
 
-function Game(props) {
+function GameMiniature(props) {
     return (
         <div className={styles.gameContainer}>
             <div className={styles.imageContainer} style={{position: "relative"}}>
@@ -14,4 +14,4 @@ function Game(props) {
     )
 }
 
-export default Game;
+export default GameMiniature;
