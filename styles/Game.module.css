@@ -12,6 +12,12 @@
   margin: 10px;
 }
 
+.gameContainer:hover {
+  transform: scale(1.05);
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
 .imageContainer {
   background-color: black;
   border-radius: 12px;
