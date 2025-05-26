@@ -5,7 +5,7 @@ import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
-const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
+const TICK_INTERVAL = 1500; // 500 ms par intervalle de descente des pièces
 
 // Pièces
 const TETROMINOES = {
@@ -39,6 +39,7 @@ const TETROMINOES = {
 function MultitrisGame(props) {
   const user = useSelector((state) => state.users.value);
   const [grid, setGrid] = useState([]);
+  const [myMovingPiece, setMyMovingPiece] = useState({});
   const socket = props.socket;
   let isAdmin = props?.lobby?.admin === user._id;
 
@@ -53,6 +54,9 @@ function MultitrisGame(props) {
     setGrid(newGrid);
   };
 
+  const isCollision = (x, y, shape) => {
+    return false;
+  };
   // Connexion socket et initialisation
   useEffect(() => {
     (async () => {
@@ -73,7 +77,7 @@ function MultitrisGame(props) {
     };
   }, []);
 
-  const spawnInitialPieces = async () => {
+  const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
     if (grid.length === 0) {
       return;
@@ -86,45 +90,301 @@ function MultitrisGame(props) {
     await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
   };
 
-  useEffect(() => {
-    // au cas où la grille initiale n'est pas générée :
-    socket && spawnInitialPieces();
+  const handleReceivedPiece = (oldPiece, newPiece) => {
+    if (grid.length === 0) {
+      return;
+    }
+    console.log("received handleReceivedPiece=", { oldPiece }, { newPiece });
 
-    //reception d'une piece générée (par le currentplayer ou un autre)
-    const handlePiece = (newPiece) => {
-      if (grid.length === 0) {
-        return;
-      }
+    //décomposition des infos de la pièce reçue
+    const { playerIndex, newShape, newRow, newCol } = newPiece;
+    const { oldShape, oldRow, oldCol } = oldPiece;
 
-      const { playerIndex, receivedPiece, pieceRow, pieceCol } = newPiece;
+    // Si c'est la pièce du currentPlayer, on la définit comme myMovingPiece
+    let currentPlayerIndex = props.lobby.players.findIndex(
+      (player) => player._id === user._id
+    );
 
-      // copie de la grille pour travailler dessus
+    if (playerIndex === currentPlayerIndex) {
+      setMyMovingPiece({
+        playerIndex,
+        pieceShape:newShape,
+        pieceRow:newRow,
+        pieceCol:newCol,
+      });
+    }
+
+    // copie de la grille pour travailler dessus
+    const newGrid = [...grid];
+
+    // on enlève les cases coloriées de l'ancienne position
+    if (oldRow !== "") {
+      // au cas où l'ancienne postion n'existe pas parce que c'est une spawn
+      oldShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[oldRow + rowIndex][oldCol + colIndex] = 0;
+        });
+      });
+    }
+
+    //on met les pièces dans la grille (si un bloc de la pièce = 1 alors on donne une valeur à la cellule de la grid)
+    newShape.forEach((row, pieceRowIndex) => {
+      row.forEach((block, pieceColIndex) => {
+        if (block === 1) {
+          newGrid[newRow + pieceRowIndex][newCol + pieceColIndex] =
+            1 + playerIndex; //si =1 alors player 1, si =2 alors player 2...
+        }
+      });
+    });
+
+    console.log({ playerIndex, newGrid });
+    setGrid(newGrid);
+  };
+
+  const handleMoveDown = (movingPiece) => {
+    console.log("handleMovedown old piece",{movingPiece})
+    const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
+    let newRow = pieceRow + 1;
+    const newMovedPiece = {
+      playerIndex,
+      pieceShape,
+      pieceRow: newRow,
+      pieceCol,
+    };
+    console.log("handleMovedown",{newMovedPiece})
+
+    // envoyer nouvelle position : forme, x, y de la nouvelle position.
+    if (isCollision(pieceCol, newRow, pieceShape)) {
+      return;
+    } else {
       const newGrid = [...grid];
 
-      //on met les pièces dans la grille (si un bloc de la pièce = 1 alors on donne une valeur à la cellule de la grid)
-      console.log("avant positionnement de la pièce ", {
-        playerIndex,
-        newGrid,
-      });
-      receivedPiece.forEach((row, pieceRowIndex) => {
-        row.forEach((block, pieceColIndex) => {
-          if (block === 1) {
-            newGrid[pieceRowIndex][pieceCol + pieceColIndex] = 1 + playerIndex; //si =1 alors player 1, si =2 alors player 2...
-          }
+      //mettre à 0 les cases de l'ancienne position
+      pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[pieceRow + rowIndex][pieceCol + colIndex] = 0;
         });
       });
 
-      console.log({ playerIndex, newGrid });
+      //déplacer la pièce
+      newMovedPiece.pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[newMovedPiece.pieceRow + rowIndex][
+            newMovedPiece.pieceCol + colIndex
+          ] = 1 + playerIndex;
+        });
+      });
+      //mise à jour de myMovingPiece
+      setMyMovingPiece(newMovedPiece);
+      //envoi aux autres joueurs
+
+      emitPieceMove(movingPiece, newMovedPiece);
+      //mettre la grille aux nouvelles valeurs
       setGrid(newGrid);
+    }
+  };
+
+  const handleMoveLeft = (movingPiece) => {
+    const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
+    let newCol = pieceCol - 1;
+    const newMovedPiece = {
+      playerIndex,
+      pieceShape,
+      pieceRow,
+      pieceCol: newCol,
     };
-    socket.on("receive_piece", (newPiece) => handlePiece(newPiece));
+
+    // envoyer nouvelle position : forme, x, y de la nouvelle position.
+    if (isCollision(newCol, pieceRow, pieceShape)) {
+      return;
+    } else {
+      const newGrid = [...grid];
+
+      //mettre à 0 les cases de l'ancienne position
+      pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[pieceRow + rowIndex][pieceCol + colIndex] = 0;
+        });
+      });
+
+      //déplacer la pièce
+      newMovedPiece.pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[newMovedPiece.pieceRow + rowIndex][
+            newMovedPiece.pieceCol + colIndex
+          ] = 1 + playerIndex;
+        });
+      });
+      //mise à jour de myMovingPiece
+      setMyMovingPiece(newMovedPiece);
+      //envoi aux autres joueurs
+      emitPieceMove(movingPiece, newMovedPiece);
+      //mettre la grille aux nouvelles valeurs
+      setGrid(newGrid);
+    }
+  };
+
+  const handleMoveRight = (movingPiece) => {
+    const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
+    let newCol = pieceCol + 1;
+    const newMovedPiece = {
+      playerIndex,
+      pieceShape,
+      pieceRow,
+      pieceCol: newCol,
+    };
+    console.log({ newMovedPiece });
+    // envoyer nouvelle position : forme, x, y de la nouvelle position.
+    if (isCollision(newCol, pieceRow, pieceShape)) {
+      return;
+    } else {
+      const newGrid = [...grid];
+      console.log("pieceShape move right:", newMovedPiece);
+      //mettre à 0 les cases de l'ancienne position
+      pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[pieceRow + rowIndex][pieceCol + colIndex] = 0;
+        });
+      });
+
+      //déplacer la pièce
+      newMovedPiece.pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[newMovedPiece.pieceRow + rowIndex][
+            newMovedPiece.pieceCol + colIndex
+          ] = 1 + playerIndex;
+        });
+      });
+      //mise à jour de myMovingPiece
+      setMyMovingPiece(newMovedPiece);
+      //envoi aux autres joueurs
+      emitPieceMove(movingPiece, newMovedPiece);
+      //mettre la grille aux nouvelles valeurs
+      setGrid(newGrid);
+    }
+  };
+
+  const handleMoveUp = (movingPiece) => {
+    const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
+    // Fonction pour faire pivoter une matrice 2D dans le sens horaire
+    const rotateMatrix = (matrix) => {
+      return matrix[0].map((_, colIndex) =>
+        matrix.map((row) => row[colIndex]).reverse()
+      );
+    };
+
+    const rotatedShape = rotateMatrix(pieceShape);
+    const newMovedPiece = {
+      playerIndex,
+      pieceShape: rotatedShape,
+      pieceRow,
+      pieceCol,
+    };
+
+    if (isCollision(pieceCol, pieceRow, rotatedShape)) {
+      return;
+    } else {
+      const newGrid = [...grid];
+
+      //mettre à 0 les cases de l'ancienne position
+      pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[pieceRow + rowIndex][pieceCol + colIndex] = 0;
+        });
+      });
+
+      //déplacer la pièce
+      newMovedPiece.pieceShape.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          newGrid[newMovedPiece.pieceRow + rowIndex][
+            newMovedPiece.pieceCol + colIndex
+          ] = 1 + playerIndex;
+        });
+      });
+      //mise à jour de myMovingPiece
+      setMyMovingPiece(newMovedPiece);
+      //envoi aux autres joueurs
+      emitPieceMove(movingPiece, newMovedPiece);
+      //mettre la grille aux nouvelles valeurs
+      setGrid(newGrid);
+    }
+  };
+
+  const emitPieceMove = (previousPiece, newPiece) => {
+    console.log("movingpiece emitted:", newPiece);
+    const { playerIndex, pieceShape, pieceRow, pieceCol } = newPiece;
+    socket.emit("move_piece", [
+      {
+        oldShape: previousPiece.pieceShape,
+        oldRow: previousPiece.pieceRow,
+        oldCol: previousPiece.pieceCol,
+      },
+      {
+        playerIndex: newPiece.playerIndex,
+        newShape: newPiece.pieceShape,
+        newRow: newPiece.pieceRow,
+        newCol: newPiece.pieceCol,
+        code: props.code,
+      },
+    ]);
+  };
+
+  //Descente automatique tous les T millisecondes -> à toi de jouer chatgpt
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleMoveDown(myMovingPiece);
+    }, TICK_INTERVAL);
+
+    return () => clearInterval(interval); // Nettoyage si le composant est démonté
+  }, [myMovingPiece, grid]);
+
+  //réception de toutes les pièces (nouvelles, mouvement, descente)
+  useEffect(() => {
+    // au cas où la grille initiale n'est pas générée :
+    socket && spawnInitialPiece();
+
+    //reception d'une piece générée (par le currentplayer ou un autre)
+    socket.on("receive_piece", ([oldPiece, newPiece]) =>
+      handleReceivedPiece(oldPiece, newPiece)
+    );
 
     return () => {
-      socket.off("receive_piece", (newPiece) => handlePiece(newPiece));
+      socket.off("receive_piece");
     };
   }, [grid.length, socket]);
 
-  // Tu feras la logique socket de réception/émission dans spawnInitialPieces
+  //gestion des touches par le joueur
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      //sécurité que myMovingPiece existe
+      if (!myMovingPiece?.pieceShape) {
+        return;
+      }
+      switch (e.key) {
+        case "ArrowLeft":
+          e.preventDefault();
+          handleMoveLeft(myMovingPiece);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          console.log("handle move Right", { myMovingPiece });
+          handleMoveRight(myMovingPiece);
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          handleMoveDown(myMovingPiece);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          handleMoveUp(myMovingPiece);
+          break;
+        default:
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [myMovingPiece]);
 
   const isCollision = (x, y, tetrimino) => {
     let gridPositionX;
