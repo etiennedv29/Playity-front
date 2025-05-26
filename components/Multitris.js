@@ -106,7 +106,7 @@ function MultitrisGame(props) {
   };
 
 
-  useEffect(() => {
+
 
     // On récupère les scores de l'équipe
     socket.on("gameScores", (allScores) => {
@@ -115,7 +115,7 @@ function MultitrisGame(props) {
     })
 
     // au cas où la grille initiale n'est pas générée :
-    socket && spawnInitialPieces();
+    // socket && spawnInitialPieces();
 
   const handleReceivedPiece = (oldPiece, newPiece) => {
     if (grid.length === 0) {
@@ -413,6 +413,8 @@ function MultitrisGame(props) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece]);
+
+
 
   // composant grille intégré
   const gridToDisplay = () => {
