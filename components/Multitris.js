@@ -54,9 +54,6 @@ function MultitrisGame(props) {
     setGrid(newGrid);
   };
 
-  const isCollision = (x, y, shape) => {
-    return false;
-  };
   // Connexion socket et initialisation
   useEffect(() => {
     (async () => {
@@ -108,9 +105,9 @@ function MultitrisGame(props) {
     if (playerIndex === currentPlayerIndex) {
       setMyMovingPiece({
         playerIndex,
-        pieceShape:newShape,
-        pieceRow:newRow,
-        pieceCol:newCol,
+        pieceShape: newShape,
+        pieceRow: newRow,
+        pieceCol: newCol,
       });
     }
 
@@ -142,7 +139,7 @@ function MultitrisGame(props) {
   };
 
   const handleMoveDown = (movingPiece) => {
-    console.log("handleMovedown old piece",{movingPiece})
+    console.log("handleMovedown old piece", { movingPiece });
     const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
     let newRow = pieceRow + 1;
     const newMovedPiece = {
@@ -151,10 +148,13 @@ function MultitrisGame(props) {
       pieceRow: newRow,
       pieceCol,
     };
-    console.log("handleMovedown",{newMovedPiece})
+    console.log("handleMovedown", { newMovedPiece });
 
     // envoyer nouvelle position : forme, x, y de la nouvelle position.
-    if (isCollision(pieceCol, newRow, pieceShape)) {
+
+    if (
+      isCollision(pieceCol, pieceRow, pieceCol, newRow, pieceShape, pieceShape)
+    ) {
       return;
     } else {
       const newGrid = [...grid];
@@ -195,7 +195,9 @@ function MultitrisGame(props) {
     };
 
     // envoyer nouvelle position : forme, x, y de la nouvelle position.
-    if (isCollision(newCol, pieceRow, pieceShape)) {
+    if (
+      isCollision(pieceCol, pieceRow, newCol, pieceRow, pieceShape, pieceShape)
+    ) {
       return;
     } else {
       const newGrid = [...grid];
@@ -235,7 +237,10 @@ function MultitrisGame(props) {
     };
     console.log({ newMovedPiece });
     // envoyer nouvelle position : forme, x, y de la nouvelle position.
-    if (isCollision(newCol, pieceRow, pieceShape)) {
+
+    if (
+      isCollision(pieceCol, pieceRow, newCol, pieceRow, pieceShape, pieceShape)
+    ) {
       return;
     } else {
       const newGrid = [...grid];
@@ -281,7 +286,16 @@ function MultitrisGame(props) {
       pieceCol,
     };
 
-    if (isCollision(pieceCol, pieceRow, rotatedShape)) {
+    if (
+      isCollision(
+        pieceCol,
+        pieceRow,
+        pieceCol,
+        pieceRow,
+        pieceShape,
+        rotatedShape
+      )
+    ) {
       return;
     } else {
       const newGrid = [...grid];
@@ -386,35 +400,65 @@ function MultitrisGame(props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece]);
 
-  const isCollision = (x, y, tetrimino) => {
+  //ALEX
+  const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
+    //pieceX et pieceY = position top left de la pièce après mouvement
     let gridPositionX;
     let gridPositionY;
-    //Gestion gauche et droite des limites de la grille
-    if (x < 0 || x >= numberOfCols - 1) {
-      return true;
+
+    let tempGrid = [...grid];
+
+    //clear oldPiece from grid to avoid collision with himself
+    for (let i = 0; i <= oldShape.length - 1; i++) {
+      for (let j = 0; j <= oldShape[i].length - 1; j++) {
+        gridPositionX = oldX + j;
+        gridPositionY = oldY + i;
+
+        if (oldShape[i][j] === 0) {
+          continue;
+        }
+
+        tempGrid[gridPositionY][gridPositionX] = 0;
+      }
     }
 
-    tetrimino.forEach((tetriminoRow, indexRow) => {
-      tetriminoRow.forEach((tetriminoCol, indexCol) => {
-        gridPositionX = x + indexCol;
-        gridPositionY = y + indexRow;
+    for (let i = 0; i <= newShape.length - 1; i++) {
+      for (let j = 0; j <= newShape[i].length - 1; j++) {
+        if (newShape[i][j] === 0) {
+          continue;
+        }
+        console.log("tetrimino FALSE");
+        gridPositionX = pieceX + j;
+        gridPositionY = pieceY + i;
 
         //gestion si ça dépasse la grille en bas
-        if (gridPositionX > ROWS - 1) {
+        //console.log(gridPositionY > ROWS - 1);
+        if (gridPositionY > ROWS - 1) {
+          console.log("A");
           return true;
         }
 
         //gestion si ça dépasse la grille à droite
+        //console.log(gridPositionX > numberOfCols - 1);
         if (gridPositionX > numberOfCols - 1) {
+          console.log("B");
+
           return true;
         }
 
-        //est ce que la nouvelle position est occupée dans la grid ?
-        if (tetriminoCol === 1 && grid[gridPositionX][gridPositionY] != 0) {
+        //gestion si ça dépasse la grille à gauche
+        //console.log(gridPositionX < 0);
+        if (gridPositionX < 0) {
+          console.log("C");
+
           return true;
         }
-      });
-    });
+
+        if (tempGrid[gridPositionY][gridPositionX] !== 0) {
+          return true;
+        }
+      }
+    }
 
     return false;
   };
