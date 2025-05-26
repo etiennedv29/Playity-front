@@ -40,6 +40,10 @@ const TETROMINOES = {
 function MultitrisGame(props) {
   const user = useSelector((state) => state.users.value);
   const [grid, setGrid] = useState([]);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [completedLines, setCompletedLines] = useState(0);
+  const [teamScore, setTeamScore] = useState(0);
+  const [teamLines, setTeamLines] = useState(0);
   const socket = props.socket;
   let isAdmin = props?.lobby?.admin === user._id;
 
@@ -74,6 +78,16 @@ function MultitrisGame(props) {
     };
   }, []);
 
+  // Fonction d'update du score du joueur chez tout le monde
+  const updateScore = async () => {
+    let score = {
+      player: user._id,
+      currentScore: currentScore,
+      completedLines: completedLines
+    }
+    await socket.emit("playerScore", score);
+  }
+
   const spawnInitialPieces = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
     if (grid.length === 0) {
@@ -88,6 +102,13 @@ function MultitrisGame(props) {
   };
 
   useEffect(() => {
+
+    // On récupère les scores de l'équipe
+    socket.on("gameScores", (allScores) => {
+      setTeamScore(allScores.teamScore);
+      setTeamLines(allScores.completedLines);
+    })
+
     // au cas où la grille initiale n'est pas générée :
     socket && spawnInitialPieces();
 
@@ -146,6 +167,14 @@ function MultitrisGame(props) {
 
   return (
     <div className={styles.container}>
+      <div className={styles.gameScores}>
+        <div className={styles.personalScores}>
+          <h2><span>Score perso : {currentScore} </span> <span>Nb lignes perso : {completedLines} </span></h2>
+        </div>
+        <div className={styles.teamScores}>
+          <h2><span>Score équipe : {teamScore} </span> <span>Nb lignes équipe : {teamLines} </span></h2>
+        </div>
+      </div>
       <h2 className={styles.title}>Multitris</h2>
       {gridToDisplay()}
     </div>

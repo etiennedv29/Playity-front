@@ -82,7 +82,7 @@ export default function LobbyPage() {
     const response = await fetch('http://localhost:3000/parts/start', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id, maxPlayers: game.maxPlayers})
+      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id})
     });
 
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
