@@ -19,6 +19,7 @@ export default function LobbyPage() {
   const userId = useSelector((state) => state.users.value["_id"]);
   const [partId, setPartId] = useState('');
   let isAdmin = false;
+  
   if (lobby) {
     isAdmin = lobby.admin === userId;
   }

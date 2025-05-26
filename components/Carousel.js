@@ -9,7 +9,7 @@ import 'swiper/css';
 import Slide from './Slide';
 
 function Slider() {
-
+  
   const swiperRef = useRef(null);
   const [topGames, setTopGames] = useState([]);
 
@@ -18,6 +18,7 @@ function Slider() {
     const data = await response.json();
     const topGamesData = data.filter((e) => e.tags.includes("topGame"))
     setTopGames(topGamesData);
+    console.log(topGamesData);
   }
 
   useEffect(() => {
