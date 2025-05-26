@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { io } from "socket.io-client";
-import styles from "../styles/Multitris.module.css";
 import { useSelector } from "react-redux";
-import { current } from "@reduxjs/toolkit";
+import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -126,6 +125,61 @@ function MultitrisGame(props) {
   }, [grid.length, socket]);
 
   // Tu feras la logique socket de réception/émission dans spawnInitialPieces
+
+  const isCollision = (x, y, tetrimino) => {
+    let gridPositionX;
+    let gridPositionY;
+    //Gestion gauche et droite des limites de la grille
+    if (x < 0 || x >= numberOfCols - 1) {
+      return true;
+    }
+
+    tetrimino.forEach((tetriminoRow, indexRow) => {
+      tetriminoRow.forEach((tetriminoCol, indexCol) => {
+        gridPositionX = x + indexCol;
+        gridPositionY = y + indexRow;
+
+        //gestion si ça dépasse la grille en bas
+        if (gridPositionX > ROWS - 1) {
+          return true;
+        }
+
+        //gestion si ça dépasse la grille à droite
+        if (gridPositionX > numberOfCols - 1) {
+          return true;
+        }
+
+        //est ce que la nouvelle position est occupée dans la grid ?
+        if (tetriminoCol === 1 && grid[gridPositionX][gridPositionY] != 0) {
+          return true;
+        }
+      });
+    });
+
+    return false;
+  };
+
+  const clearCompletedLines = () => {
+    return grid.filter((val) => val.some((val) => val === 0));
+  };
+
+  const rebuildGridAfterClearingLines = (gridTemp) => {
+    const newGrid = Array.from({ length: ROWS - gridTemp.length }, () =>
+      Array(numberOfCols).fill(0)
+    );
+
+    setGrid([...newGrid, ...gridTemp]);
+  };
+
+  const checkGridAndUpdate = () => {
+    const clearGrid = clearCompletedLines();
+    rebuildGridAfterClearingLines(clearGrid);
+
+    //sendScoreUpdate
+    //updateScoreLocal avec clearGrid
+    //checkEndGame
+    //emitEndGame
+  };
 
   // composant grille intégré
   const gridToDisplay = () => {
