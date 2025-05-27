@@ -63,6 +63,11 @@ function MultitrisGame(props) {
     gridRef.current = newGrid;
     setGrid(newGrid);
   };
+
+  const updateMyMovingPiece = (newMyMovingPiece) => {
+    myMovingPieceRef.current = newMyMovingPiece;
+    setMyMovingPiece(newMyMovingPiece);
+  };
   // Initialisation de la grille vide
   const initializeGrid = async () => {
     const newGrid = Array.from({ length: ROWS }, () =>
@@ -103,14 +108,20 @@ function MultitrisGame(props) {
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
-    if (grid.length === 0) {
+    console.log("ALEX A");
+
+    if (gridRef.current.length === 0) {
+      console.log("ALEX A IN");
       return;
     }
+    console.log("ALEX B");
     let currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
 
     //demande de spawn de pièce par le player currentPlayer
+    console.log("EMIT", { currentPlayerIndex, code: props.code });
+
     await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
   };
 
@@ -138,11 +149,8 @@ function MultitrisGame(props) {
     );
 
     if (playerIndex === currentPlayerIndex) {
-      setMyMovingPiece({
+      updateMyMovingPiece({
         playerIndex,
-        pieceShape: newShape,
-        pieceRow: newRow,
-        pieceCol: newCol,
         pieceShape: newShape,
         pieceRow: newRow,
         pieceCol: newCol,
@@ -215,12 +223,13 @@ function MultitrisGame(props) {
         });
       });
       //mise à jour de myMovingPiece
-      setMyMovingPiece(newMovedPiece);
+      updateMyMovingPiece(newMovedPiece);
       //envoi aux autres joueurs
 
-      emitPieceMove(movingPiece, newMovedPiece);
       //mettre la grille aux nouvelles valeurs
       updateGrid(newGrid);
+
+      emitPieceMove(movingPiece, newMovedPiece);
     }
   };
 
@@ -260,7 +269,7 @@ function MultitrisGame(props) {
         });
       });
       //mise à jour de myMovingPiece
-      setMyMovingPiece(newMovedPiece);
+      updateMyMovingPiece(newMovedPiece);
       //envoi aux autres joueurs
       emitPieceMove(movingPiece, newMovedPiece);
       //mettre la grille aux nouvelles valeurs
@@ -303,7 +312,7 @@ function MultitrisGame(props) {
         });
       });
       //mise à jour de myMovingPiece
-      setMyMovingPiece(newMovedPiece);
+      updateMyMovingPiece(newMovedPiece);
       //envoi aux autres joueurs
       emitPieceMove(movingPiece, newMovedPiece);
       //mettre la grille aux nouvelles valeurs
@@ -360,7 +369,7 @@ function MultitrisGame(props) {
         });
       });
       //mise à jour de myMovingPiece
-      setMyMovingPiece(newMovedPiece);
+      updateMyMovingPiece(newMovedPiece);
       //envoi aux autres joueurs
       emitPieceMove(movingPiece, newMovedPiece);
       //mettre la grille aux nouvelles valeurs
@@ -386,17 +395,30 @@ function MultitrisGame(props) {
     ]);
   };
 
-  //use effect avec useref pour éviter que le use effect du tick_interval ne se remette à 0 à chaque mouvement de pièce
-  useEffect(() => {
-    myMovingPieceRef.current = myMovingPiece;
-  }, [myMovingPiece]);
-
   //Descente automatique tous les TICK_INTERVAL ms
   useEffect(() => {
     const interval = setInterval(() => {
-      if (myMovingPieceRef.current?.pieceShape)
-        console.log("movingpieceRefcurrent=", myMovingPieceRef.current);
-      handleMoveDown(myMovingPieceRef.current);
+      if (myMovingPieceRef.current?.pieceShape) {
+        const { playerIndex, pieceShape, pieceRow, pieceCol } =
+          myMovingPieceRef.current;
+        let newRow = pieceRow + 1;
+
+        if (
+          isCollision(
+            pieceCol,
+            pieceRow,
+            pieceCol,
+            newRow,
+            pieceShape,
+            pieceShape
+          )
+        ) {
+          spawnInitialPiece();
+        } else {
+          console.log("movingpieceRefcurrent=", myMovingPieceRef.current);
+          handleMoveDown(myMovingPieceRef.current);
+        }
+      }
     }, TICK_INTERVAL);
 
     return () => clearInterval(interval); // Nettoyage si le composant est démonté
@@ -455,7 +477,7 @@ function MultitrisGame(props) {
     let gridPositionX;
     let gridPositionY;
 
-    let tempGrid = [...grid];
+    let tempGrid = [...gridRef.current];
 
     //clear oldPiece from grid to avoid collision with himself
     for (let i = 0; i <= oldShape.length - 1; i++) {
@@ -466,7 +488,6 @@ function MultitrisGame(props) {
         if (oldShape[i][j] === 0) {
           continue;
         }
-
         tempGrid[gridPositionY][gridPositionX] = 0;
       }
     }
@@ -476,30 +497,21 @@ function MultitrisGame(props) {
         if (newShape[i][j] === 0) {
           continue;
         }
-        console.log("tetrimino FALSE");
         gridPositionX = pieceX + j;
         gridPositionY = pieceY + i;
 
         //gestion si ça dépasse la grille en bas
-        //console.log(gridPositionY > ROWS - 1);
         if (gridPositionY > ROWS - 1) {
-          console.log("A");
           return true;
         }
 
         //gestion si ça dépasse la grille à droite
-        //console.log(gridPositionX > numberOfCols - 1);
         if (gridPositionX > numberOfCols - 1) {
-          console.log("B");
-
           return true;
         }
 
         //gestion si ça dépasse la grille à gauche
-        //console.log(gridPositionX < 0);
         if (gridPositionX < 0) {
-          console.log("C");
-
           return true;
         }
 
