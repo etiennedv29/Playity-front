@@ -99,10 +99,10 @@ function MultitrisGame(props) {
   const emitPlayerScore = () => {
   const playerId = user._id;
   socket.emit("part_scores", {
-    code,           // identifiant unique de la partie
-    playerId,       // id du joueur
-    completedLines, // 1 à 4
-    piecesPlaced    // 1 typiquement, ou cumul
+    code: props.code,           // identifiant unique de la partie
+    playerId: "682eef5ad4c8a63a48013e06",       // id du joueur
+    completedLines: 1, // 1 à 4
+    piecesPlaced: 2    // 1 typiquement, ou cumul
   });
   }
 
