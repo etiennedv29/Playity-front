@@ -82,14 +82,28 @@ function MultitrisGame(props) {
     };
   }, []);
 
-  // Fonction d'update du score du joueur chez tout le monde
-  const updateScore = async () => {
-    let score = {
-      player: user._id,
-      currentScore: currentScore,
-      completedLines: completedLines
-    }
-    await socket.emit("playerScore", score);
+  // On écoute le tableau des scores transmis depuis le serveur
+  useEffect(() => {
+  socket.on("part_scores", (data) => {
+
+    const player = data.playersStats.find((p) => p.player === user._id)
+    setTeamScore(data.teamScore);
+    setTeamLines(data.completedLines);
+    setCurrentScore(player.score);
+    setCompletedLines(player.completedLines);
+  })}, [])
+
+};
+
+  // Fonction d'envoie des nouveaux points au serveur
+  const emitPlayerScore = () => {
+  const playerId = user._id;
+  socket.emit("part_scores", {
+    code,           // identifiant unique de la partie
+    playerId,       // id du joueur
+    completedLines, // 1 à 4
+    piecesPlaced    // 1 typiquement, ou cumul
+  });
   }
 
   const spawnInitialPiece = async () => {
@@ -104,15 +118,6 @@ function MultitrisGame(props) {
     //demande de spawn de pièce par le player currentPlayer
     await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
   };
-
-
-
-
-    // On récupère les scores de l'équipe
-    socket.on("gameScores", (allScores) => {
-      setTeamScore(allScores.teamScore);
-      setTeamLines(allScores.completedLines);
-    })
 
     // au cas où la grille initiale n'est pas générée :
     // socket && spawnInitialPieces();
@@ -414,7 +419,10 @@ function MultitrisGame(props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece]);
 
-
+  // Lorsqu'une pièce est posée
+  useEffect(() => {
+    emitPlayerScore();
+  }, [currentScore])
 
   // composant grille intégré
   const gridToDisplay = () => {
@@ -437,16 +445,15 @@ function MultitrisGame(props) {
     <div className={styles.container}>
       <div className={styles.gameScores}>
         <div className={styles.personalScores}>
-          <h2><span>Score perso : {currentScore} </span> <span>Nb lignes perso : {completedLines} </span></h2>
+          <h3><span>Score perso : {currentScore} </span> <span>Nb lignes perso : {completedLines} </span></h3>
         </div>
         <div className={styles.teamScores}>
-          <h2><span>Score équipe : {teamScore} </span> <span>Nb lignes équipe : {teamLines} </span></h2>
+          <h3><span>Score équipe : {teamScore} </span> <span>Nb lignes équipe : {teamLines} </span></h3>
         </div>
       </div>
       <h2 className={styles.title}>Multitris</h2>
       {gridToDisplay()}
     </div>
   );
-}
 
 export default MultitrisGame;
