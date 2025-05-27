@@ -98,27 +98,26 @@ function MultitrisGame(props) {
 
   // On écoute le tableau des scores transmis depuis le serveur
   useEffect(() => {
-  socket.on("part_scores", (data) => {
-
-    const player = data.playersStats.find((p) => p.player === user._id)
-    setTeamScore(data.teamScore);
-    setTeamLines(data.completedLines);
-    setCurrentScore(player.score);
-    setCompletedLines(player.completedLines);
-  })}, []);
-
-
+    socket.on("part_scores", (data) => {
+      const player = data.playersStats.find((p) => p.player === user._id);
+      console.log("player => ", player)
+      setTeamScore(data.teamScore);
+      setTeamLines(data.completedLines);
+      player && setCurrentScore(player.score);
+      player && setCompletedLines(player.completedLines);
+    });
+  }, []);
 
   // Fonction d'envoie des nouveaux points au serveur
   const emitPlayerScore = () => {
-  const playerId = user._id;
-  socket.emit("part_scores", {
-    code: props.code,           // identifiant unique de la partie
-    playerId: "682eef5ad4c8a63a48013e06",       // id du joueur
-    completedLines: 1, // 1 à 4
-    piecesPlaced: 2    // 1 typiquement, ou cumul
-  });
-  }
+    const playerId = user._id;
+    socket.emit("part_scores", {
+      code: props.code, // identifiant unique de la partie
+      playerId: "682eef5ad4c8a63a48013e06", // id du joueur
+      completedLines: 1, // 1 à 4
+      piecesPlaced: 2, // 1 typiquement, ou cumul
+    });
+  };
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
@@ -139,8 +138,8 @@ function MultitrisGame(props) {
     await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
   };
 
-    // au cas où la grille initiale n'est pas générée :
-    // socket && spawnInitialPieces();
+  // au cas où la grille initiale n'est pas générée :
+  // socket && spawnInitialPieces();
 
   const handleReceivedPiece = (oldPiece, newPiece) => {
     if (grid.length === 0) {
@@ -479,11 +478,10 @@ function MultitrisGame(props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece]);
 
-
   // Lorsqu'une pièce est posée
   useEffect(() => {
     emitPlayerScore();
-  }, [currentScore])
+  }, [currentScore]);
 
   //ALEX
   const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
