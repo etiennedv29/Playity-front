@@ -105,9 +105,9 @@ function MultitrisGame(props) {
     setTeamLines(data.completedLines);
     setCurrentScore(player.score);
     setCompletedLines(player.completedLines);
-  })}, [])
+  })}, []);
 
-};
+
 
   // Fonction d'envoie des nouveaux points au serveur
   const emitPlayerScore = () => {
@@ -597,5 +597,6 @@ function MultitrisGame(props) {
       {gridToDisplay()}
     </div>
   );
+}
 
 export default MultitrisGame;
