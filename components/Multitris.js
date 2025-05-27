@@ -477,7 +477,7 @@ function MultitrisGame(props) {
     let gridPositionX;
     let gridPositionY;
 
-    let tempGrid = [...gridRef.current];
+    let tempGrid = JSON.parse(JSON.stringify(gridRef.current));
 
     //clear oldPiece from grid to avoid collision with himself
     for (let i = 0; i <= oldShape.length - 1; i++) {
