@@ -86,13 +86,13 @@ function MultitrisGame(props) {
 
   // HENRI
   // Fonction d'envoie des nouveaux points au serveur
-  const emitPlayerScore = () => {
+  const emitPlayerScore = (numberOfPiecesSpawned, numberOfCompletedLines) => {
     const playerId = user._id;
     socket.emit("player_scores", {
       code: props.code, // identifiant unique de la partie
       playerId: playerId, // id du joueur
-      completedLines: 1, // 1 à 4,
-      piecesSpawned: 0, //
+      completedLines: numberOfCompletedLines, // 1 à 4,
+      piecesSpawned: numberOfPiecesSpawned, //
     });
   };
 
@@ -117,13 +117,7 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
-
-    await socket.emit("player_scores", {
-      code: props.code,
-      playerId: user._id,
-      completedLines: 0,
-      piecesSpawned: 1,
-    });
+    await emitPlayerScore(1, 0);
   };
 
   // au cas où la grille initiale n'est pas générée :
@@ -529,11 +523,6 @@ function MultitrisGame(props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece, gameOver]);
 
-  // Lorsqu'une pièce est posée
-  useEffect(() => {
-    emitPlayerScore();
-  }, [myMovingPiece]);
-
   const isCollisionWithMovingPieces = (gridPositionX, gridPositionY) => {
     console.log("----------------------------------------------");
 
@@ -696,6 +685,8 @@ function MultitrisGame(props) {
 
     //S'il y a des lignes validés on les supprime
     if (ROWS - clearedGrid.length > 0) {
+      // Lorsqu'une pièce est posée -> quand une ligne est posée
+      emitPlayerScore(0, clearedGrid.length);
       const newTab = rebuildGridAfterClearingLines(clearedGrid);
       updateGrid(newTab);
     }
