@@ -64,12 +64,11 @@ export default function LobbyPage() {
 
     //ecoute de début de la partie
     //if (!isAdmin) { // maintenant tous les joueurs, pas uniquement les non admin, écoutent le début de partie
-
     !gameStarted && // sécurité car le back renvoie 2 fois le lancement de la game (double réception côté socket.on("gameStarted"))
       socket.on("gameStartedNow", (gameStarted) => {
         if (gameStarted.gameStartInfo) {
           console.log("gamestarted via socket.on('gameStartedNow'=>", {
-            isAdmin,
+            startedby:gameStarted.startedBy
           });
           setGameStarted(true);
         }
@@ -90,7 +89,7 @@ export default function LobbyPage() {
       body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
     });
 
-    console.log('id du lobby : ', lobby._id);
+    console.log("id du lobby : ", lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
     console.log("partie créée par le back=> ", data);
