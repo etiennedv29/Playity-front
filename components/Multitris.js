@@ -80,13 +80,13 @@ function MultitrisGame(props) {
   // Connexion socket et initialisation
   useEffect(() => {
     (async () => {
-      if (isAdmin) {
-        //transmettre à tous les joueurs que la partie a commencé
-        await socket.emit("gameStart", {
-          code: props.code,
-          startedBy: user.username,
-        });
-      }
+      // if (isAdmin) { // avant seul l'admin émittait l'info de gameStart, mais cette info est fired côté index dorénavant
+      //   //transmettre à tous les joueurs que la partie a commencé
+      //   await socket.emit("gameStart", {
+      //     code: props.code,
+      //     startedBy: user.username,
+      //   });
+      // }
       // au mount du composant Multitris, initialisation de la grille vide
       await initializeGrid();
     })();
@@ -119,11 +119,11 @@ function MultitrisGame(props) {
     });
   };
 
-  const endGame = () => {
-    socket.emit("end_game", {
-      code: props.code,
-    })
-  }
+  // const endGame = () => {
+  //   socket.emit("end_game", {
+  //     code: props.code,
+  //   })
+  // }
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
@@ -429,7 +429,7 @@ function MultitrisGame(props) {
   //Descente automatique tous les TICK_INTERVAL ms
   useEffect(() => {
     console.log("gameOver", gameOver);
-    // if (gameOver)return
+    if(JSON.stringify(myMovingPiece) === "{}"){spawnInitialPiece()}
     const interval = setInterval(() => {
       if (myMovingPieceRef.current?.pieceShape && !gameOver) {
         const { playerIndex, pieceShape, pieceRow, pieceCol } =
@@ -461,7 +461,7 @@ function MultitrisGame(props) {
     if (gridRef.current.length === 0) return;
     //console.log("spawn appelé dans le useEffect rappelé sur gridLength", {isAdmin})
     // au cas où la grille initiale n'est pas générée :
-    gridRef.current.length > 0 && socketRef.current && spawnInitialPiece();
+    //gridRef.current.length > 0 && socketRef.current && spawnInitialPiece();
 
     //reception d'une piece générée (par le currentplayer ou un autre)
     socketRef.current.on("receive_piece", ([oldPiece, newPiece]) => {
