@@ -46,7 +46,7 @@ function Home() {
         <div className={styles.carrouselContainer}>
           <Carousel data={gamesMock} activeSlide={2} className={styles.slider}></Carousel>
         </div>
-        <div className={styles.gamesGridTitle}>Plus de jeux</div>
+        <h3 className={styles.gamesGridTitle}>Plus de jeux</h3>
         <div className={styles.gamesGridContainer}>
           {games}
         </div>

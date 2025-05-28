@@ -44,31 +44,35 @@ export default function Lobby({ lobby, game, code, startGame }) {
 
   return (
     <>
-      <div className={styles.leftContainer}>
-        {game && <YoutubeVideo videoId={game.demo} />}
-        {lobby && isAdmin && (
+      <div className={styles.globalContainer}>
+        <div className={styles.leftContainer}>
+          <div className={styles.demoContainer}>
+          {game && <YoutubeVideo videoId={game.demo} />}
+          </div>
+          {lobby && isAdmin && (
+            <button
+              onClick={() => startGame()}
+              className={`btnPlay ${styles.btnPlay}`}
+              // disabled={disableBtnPlay}
+            >
+              Lancer la partie
+            </button>
+          )}
+        </div>
+        <div className={styles.rightContainer}>
+          <h1>Lobby: #{code}</h1>
+          {playerElements}
+          {playersWaiting}
           <button
-            onClick={() => startGame()}
-            className={`btnPlay ${styles.btnPlay}`}
-            // disabled={disableBtnPlay}
+            onClick={handleCopy}
+            className={`btnSecondary ${styles.btnSecondary}`}
           >
-            Lancer la partie
+            Share Code
           </button>
-        )}
-      </div>
-      <div className={styles.rightContainer}>
-        <h1>Lobby: #{code}</h1>
-        {playerElements}
-        {playersWaiting}
-        <button
-          onClick={handleCopy}
-          className={`btnSecondary ${styles.btnSecondary}`}
-        >
-          Share Code
-        </button>
-        {copied && (
-          <span style={{ marginLeft: "10px", color: "green" }}>Copié ✅</span>
-        )}
+          {copied && (
+            <span style={{ marginLeft: "10px", color: "green" }}>Copié ✅</span>
+          )}
+        </div>
       </div>
     </>
   );
