@@ -117,23 +117,14 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
+
     await socket.emit("player_scores", {
       code: props.code,
       playerId: user._id,
       completedLines: 0,
       piecesSpawned: 1,
     });
-
-    //console.log("EMIT", { currentPlayerIndex, code: props.code });
-
-    await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
   };
-
-  // On récupère les scores de l'équipe
-  socket.on("gameScores", (allScores) => {
-    setTeamScore(allScores.teamScore);
-    setTeamLines(allScores.completedLines);
-  });
 
   // au cas où la grille initiale n'est pas générée :
   // socket && spawnInitialPieces();
@@ -436,6 +427,7 @@ function MultitrisGame(props) {
         const { playerIndex, pieceShape, pieceRow, pieceCol } =
           myMovingPieceRef.current;
         let newRow = pieceRow + 1;
+        checkGridAndUpdate();
 
         if (
           isCollision(
@@ -447,8 +439,6 @@ function MultitrisGame(props) {
             pieceShape
           )
         ) {
-          checkGridAndUpdate();
-
           !gameOver && spawnInitialPiece();
         } else {
           !gameOver && handleMoveDown(myMovingPieceRef.current);
