@@ -17,9 +17,10 @@ export default function LobbyPage() {
   const [lobby, setLobby] = useState(null);
   const gameName = getGameNameFromUrl();
   const userId = useSelector((state) => state.users.value["_id"]);
-  const [partId, setPartId] = useState('');
+  const user = useSelector((state) => state.users.value);
+  const [partId, setPartId] = useState("");
   let isAdmin = false;
-  
+
   if (lobby) {
     isAdmin = lobby.admin === userId;
   }
@@ -62,13 +63,18 @@ export default function LobbyPage() {
     });
 
     //ecoute de début de la partie
-    if (!isAdmin) {
+    //if (!isAdmin) { // maintenant tous les joueurs, pas uniquement les non admin, écoutent le début de partie
+    !gameStarted && // sécurité car le back renvoie 2 fois le lancement de la game (double réception côté socket.on("gameStarted"))
       socket.on("gameStartedNow", (gameStarted) => {
         if (gameStarted.gameStartInfo) {
+          console.log("gamestarted via socket.on('gameStartedNow'=>", {
+            startedby: gameStarted.startedBy,
+          });
           setGameStarted(true);
+          setPartId(gameStarted.partId);
         }
       });
-    }
+    //}
 
     return () => {
       // window.removeEventListener("beforeunload", handleUnload);
@@ -78,36 +84,50 @@ export default function LobbyPage() {
   }, [router.isReady, code, userId]);
 
   const handlePartLaunch = async () => {
-
-    const response = await fetch('http://localhost:3000/parts/start', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id})
+    const response = await fetch("http://localhost:3000/parts/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
     });
 
+    console.log("id du lobby : ", lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
-    console.log('réponse obtenue du back : ', data);
-    // On ajoute cet id dans un état
-    setPartId(data.partId);
-    
-    
+    console.log("partie créée par le back=> ", data);
 
+    // on envoie à tout le monde que la partie commence
+    socket.emit("gameStart", {
+      code,
+      startedBy: user.username,
+      partId: data.partId,
+    });
     console.log("gameStarted");
-    setGameStarted(true);
-  }
+    //setGameStarted(true);// avant on settait la partie à setGameStarted(true) directement en tant qu'admin
 
-  console.log('Nouvelle partie créée : ', partId);
+    // On ajoute cet id dans un état
+    // setPartId(data.partId);
+  };
 
   return (
     <div className={styles.lobbyContainer}>
       <h1 className="gameTitle">Multitris</h1>
       <div className={styles.mainContainer}>
         {!gameStarted && lobby && (
-          <Lobby game={game} lobby={lobby} code={code} startGame={handlePartLaunch} />
+          <Lobby
+            game={game}
+            lobby={lobby}
+            code={code}
+            startGame={handlePartLaunch}
+          />
         )}
-        {gameStarted && lobby && (
-          <Multitris game={game} lobby={lobby} code={code} socket={socket} />
+        {gameStarted && lobby && partId && (
+          <Multitris
+            game={game}
+            lobby={lobby}
+            code={code}
+            socket={socket}
+            part={partId}
+          />
         )}
       </div>
     </div>
