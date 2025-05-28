@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 // import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
-import useInterval from "use-interval";
 import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
@@ -93,7 +92,7 @@ function MultitrisGame(props) {
       code: props.code, // identifiant unique de la partie
       playerId: playerId, // id du joueur
       completedLines: 1, // 1 à 4,
-      piecesSpawned:0 //
+      piecesSpawned: 0, //
     });
   };
 
@@ -118,9 +117,13 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
-    await socket.emit("player_scores",
-      { code: props.code, playerId: user._id, completedLines:0, piecesSpawned: 1 });
-  };
+    await socket.emit("player_scores", {
+      code: props.code,
+      playerId: user._id,
+      completedLines: 0,
+      piecesSpawned: 1,
+    });
+
     //console.log("EMIT", { currentPlayerIndex, code: props.code });
 
     await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
@@ -466,10 +469,10 @@ function MultitrisGame(props) {
     //reception d'une piece générée (par le currentplayer ou un autre)
     socketRef.current.on("receive_piece", ([oldPiece, newPiece]) => {
       movingPiecesRef.current[newPiece.playerIndex] = { newPiece, oldPiece };
- {
+
       console.log("handleReceivedPiece=", oldPiece, newPiece);
-      handleReceivedPiece(oldPiece, newPiece);;
-    }});
+      handleReceivedPiece(oldPiece, newPiece);
+    });
 
     return () => {
       socketRef.current && socketRef.current.off("receive_piece");
@@ -577,7 +580,8 @@ function MultitrisGame(props) {
   //useEffect attendant écoutant le game Over
   useEffect(() => {
     socketRef.current.on("end_game", (code) => {
-      if (code === props.code) {// si le back a bien envoyé le bon code?
+      if (code === props.code) {
+        // si le back a bien envoyé le bon code?
         setGameOver(true);
       }
     });
