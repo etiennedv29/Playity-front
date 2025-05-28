@@ -5,36 +5,9 @@ import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
-const TICK_INTERVAL = 1000; // 500 ms par intervalle de descente des pièces
+const TICK_INTERVAL = 2000; // 500 ms par intervalle de descente des pièces
 
-// Pièces
-const TETROMINOES = {
-  I: [[1, 1, 1, 1]],
-  O: [
-    [1, 1],
-    [1, 1],
-  ],
-  T: [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  S: [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  Z: [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  J: [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  L: [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
-};
+const DOWN_MOVE = "down";
 
 function MultitrisGame(props) {
   const user = useSelector((state) => state.users.value);
@@ -50,6 +23,9 @@ function MultitrisGame(props) {
   const myMovingPieceRef = useRef(null);
   const gridRef = useRef([]); // nécessaire pour compenser le set_interval qui utilise sinon grid ===[]
   let isAdmin = props?.lobby?.admin === user._id;
+
+  //Liste des pieces controlées par les users
+  const movingPiecesRef = useRef({});
 
   // largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
@@ -116,7 +92,7 @@ function MultitrisGame(props) {
       code: props.code, // identifiant unique de la partie
       playerId: playerId, // id du joueur
       completedLines: 1, // 1 à 4,
-      piecesSpawned:0 //
+      piecesSpawned: 0, //
     });
   };
 
@@ -128,13 +104,10 @@ function MultitrisGame(props) {
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
-    console.log("la grille existe ? gridRef", gridRef.current.length, {
-      isAdmin,
-    });
+
     if (gridRef.current.length === 0) {
       return;
     }
-
     let currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
@@ -144,8 +117,13 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
-    await socket.emit("player_scores",
-      { code: props.code, playerId: user._id, completedLines:0, piecesSpawned: 1 });
+
+    await socket.emit("player_scores", {
+      code: props.code,
+      playerId: user._id,
+      completedLines: 0,
+      piecesSpawned: 1,
+    });
   };
 
   // au cas où la grille initiale n'est pas générée :
@@ -175,7 +153,7 @@ function MultitrisGame(props) {
     }
 
     // copie de la grille pour travailler dessus
-    const newGrid = [...grid];
+    const newGrid = gridRef.current.map((e) => [...e]);
 
     // on enlève les cases coloriées de l'ancienne position
     if (oldRow !== "") {
@@ -230,14 +208,23 @@ function MultitrisGame(props) {
       pieceRow: newRow,
       pieceCol,
     };
+    // envoyer nouvelle position : forme, x, y de la nouvelle position.
 
     if (
-      isCollision(pieceCol, pieceRow, pieceCol, newRow, pieceShape, pieceShape)
+      isCollision(
+        pieceCol,
+        pieceRow,
+        pieceCol,
+        newRow,
+        pieceShape,
+        pieceShape,
+        DOWN_MOVE
+      )
     ) {
       return;
     } else {
       //on exécute seulement s'il n'y a pas de collision
-      const newGrid = [...gridRef.current];
+      const newGrid = gridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne position
       pieceShape.forEach((row, rowIndex) => {
@@ -283,7 +270,7 @@ function MultitrisGame(props) {
     ) {
       return;
     } else {
-      const newGrid = [...grid];
+      const newGrid = gridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne position
       pieceShape.forEach((row, rowIndex) => {
@@ -327,7 +314,7 @@ function MultitrisGame(props) {
     ) {
       return;
     } else {
-      const newGrid = [...grid];
+      const newGrid = gridRef.current.map((e) => [...e]);
       //mettre à 0 les cases de l'ancienne position
       pieceShape.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
@@ -383,7 +370,7 @@ function MultitrisGame(props) {
     ) {
       return;
     } else {
-      const newGrid = [...grid];
+      const newGrid = gridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne position
       pieceShape.forEach((row, rowIndex) => {
@@ -440,6 +427,7 @@ function MultitrisGame(props) {
         const { playerIndex, pieceShape, pieceRow, pieceCol } =
           myMovingPieceRef.current;
         let newRow = pieceRow + 1;
+        checkGridAndUpdate();
 
         if (
           isCollision(
@@ -470,6 +458,8 @@ function MultitrisGame(props) {
 
     //reception d'une piece générée (par le currentplayer ou un autre)
     socketRef.current.on("receive_piece", ([oldPiece, newPiece]) => {
+      movingPiecesRef.current[newPiece.playerIndex] = { newPiece, oldPiece };
+
       console.log("handleReceivedPiece=", oldPiece, newPiece);
       handleReceivedPiece(oldPiece, newPiece);
     });
@@ -478,6 +468,34 @@ function MultitrisGame(props) {
       socketRef.current && socketRef.current.off("receive_piece");
     };
   }, [grid.length]);
+
+  const canMoveDownManualy = (movingPiece) => {
+    console.log(movingPiece);
+    const { pieceShape, pieceRow, pieceCol } = movingPiece;
+    let newRow = pieceRow + 1;
+
+    for (let i = 0; i <= pieceShape.length - 1; i++) {
+      for (let j = 0; j <= pieceShape[i].length - 1; j++) {
+        if (pieceShape[i][j] === 0) {
+          continue;
+        }
+
+        const gridPositionX = pieceCol + j;
+        const gridPositionY = newRow + i;
+        if (isCollisionWithMovingPieces(gridPositionX, gridPositionY)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const onArrowDown = (myMovingPiece) => {
+    if (canMoveDownManualy(myMovingPiece)) {
+      handleMoveDown(myMovingPiece);
+    }
+  };
 
   //gestion des touches par le joueur
   useEffect(() => {
@@ -497,7 +515,7 @@ function MultitrisGame(props) {
           break;
         case "ArrowDown":
           e.preventDefault();
-          handleMoveDown(myMovingPiece);
+          onArrowDown(myMovingPiece);
           break;
         case "ArrowUp":
           e.preventDefault();
@@ -516,16 +534,58 @@ function MultitrisGame(props) {
     emitPlayerScore();
   }, [myMovingPiece]);
 
+  const isCollisionWithMovingPieces = (gridPositionX, gridPositionY) => {
+    console.log("----------------------------------------------");
+
+    return Object.values(movingPiecesRef.current).some((elm) => {
+      const piece = elm.newPiece;
+
+      if (myMovingPieceRef.current === piece) {
+        console.log("samePiece");
+        return false;
+      }
+      for (let k = 0; k <= piece.newShape.length - 1; k++) {
+        for (let l = 0; l <= piece.newShape[k].length - 1; l++) {
+          if (piece.newShape[k][l] === 0) {
+            continue;
+          }
+
+          const posX = piece.newCol + l;
+          const posY = piece.newRow + k;
+          console.log(
+            ` | gridPositionX ${gridPositionX}  posX ${posX} | gridPositionY ${gridPositionY} posY ${posY} |, result: ${
+              posX === gridPositionX && posY === gridPositionY
+            }`
+          );
+          if (posX === gridPositionX && posY === gridPositionY) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    });
+  };
+
   //useEffect attendant écoutant le game Over
   useEffect(() => {
     socketRef.current.on("end_game", (code) => {
-      if (code === props.code) {// si le back a bien envoyé le bon code?
+      if (code === props.code) {
+        // si le back a bien envoyé le bon code?
         setGameOver(true);
       }
     });
   }, []);
 
-  const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
+  const isCollision = (
+    oldX,
+    oldY,
+    pieceX,
+    pieceY,
+    oldShape,
+    newShape,
+    direction = ""
+  ) => {
     //pieceX et pieceY = position top left de la pièce après mouvement
     let gridPositionX;
     let gridPositionY;
@@ -568,7 +628,11 @@ function MultitrisGame(props) {
           return true;
         }
 
-        if (tempGrid[gridPositionY][gridPositionX] !== 0) {
+        if (
+          tempGrid[gridPositionY][gridPositionX] !== 0 &&
+          (direction !== DOWN_MOVE ||
+            !isCollisionWithMovingPieces(gridPositionX, gridPositionY))
+        ) {
           return true;
         }
       }
@@ -577,21 +641,64 @@ function MultitrisGame(props) {
     return false;
   };
 
-  const clearCompletedLines = () => {
-    return grid.filter((val) => val.some((val) => val === 0));
+  const setPieceInGrid = (gridParam, shape, rowParam, colParam, val) => {
+    shape.forEach((row, pieceRowIndex) => {
+      row.forEach((block, pieceColIndex) => {
+        if (block === 1) {
+          gridParam[rowParam + pieceRowIndex][colParam + pieceColIndex] = val;
+        }
+      });
+    });
   };
 
-  const rebuildGridAfterClearingLines = (gridTemp) => {
-    const newGrid = Array.from({ length: ROWS - gridTemp.length }, () =>
+  const clearInGamePlayerPieces = (gridParam) => {
+    if (
+      movingPiecesRef.current &&
+      Object.keys(movingPiecesRef.current).length > 0
+    ) {
+      for (const key in movingPiecesRef.current) {
+        const { newShape, newRow, newCol } =
+          movingPiecesRef.current[key].newPiece;
+        const { oldShape, oldRow, oldCol } =
+          movingPiecesRef.current[key].oldPiece;
+
+        setPieceInGrid(gridParam, newShape, newRow, newCol, 0);
+        setPieceInGrid(gridParam, oldShape, oldRow, oldCol, 0);
+      }
+
+      return gridParam;
+    }
+
+    return false;
+  };
+
+  const clearCompletedLines = (gridParam) => {
+    //return grid.filter((val) => val.some((val) => val === 0));
+    if (gridParam.length > 0) {
+      return gridParam.filter((val) => val.some((val) => val === 0));
+    }
+
+    return false;
+  };
+
+  const rebuildGridAfterClearingLines = (gridParam) => {
+    const newGridEmpty = Array.from({ length: ROWS - gridParam.length }, () =>
       Array(numberOfCols).fill(0)
     );
 
-    setGrid([...newGrid, ...gridTemp]);
+    return [...newGridEmpty, ...gridParam];
   };
 
   const checkGridAndUpdate = () => {
-    const clearGrid = clearCompletedLines();
-    rebuildGridAfterClearingLines(clearGrid);
+    const tempGrid = JSON.parse(JSON.stringify(gridRef.current));
+    const clearedMovingPieceGrid = clearInGamePlayerPieces(tempGrid);
+    const clearedGrid = clearCompletedLines(clearedMovingPieceGrid);
+
+    //S'il y a des lignes validés on les supprime
+    if (ROWS - clearedGrid.length > 0) {
+      const newTab = rebuildGridAfterClearingLines(clearedGrid);
+      updateGrid(newTab);
+    }
 
     //sendScoreUpdate
     //updateScoreLocal avec clearGrid
