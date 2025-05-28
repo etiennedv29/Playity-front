@@ -112,10 +112,11 @@ function MultitrisGame(props) {
   // Fonction d'envoie des nouveaux points au serveur
   const emitPlayerScore = () => {
     const playerId = user._id;
-    socket.emit("part_scores", {
+    socket.emit("player_scores", {
       code: props.code, // identifiant unique de la partie
       playerId: playerId, // id du joueur
-      completedLines: 1, // 1 à 4
+      completedLines: 1, // 1 à 4,
+      piecesSpawned:0 //
     });
   };
 
@@ -143,7 +144,8 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
-    await socket.emit("part_scores"), { code: props.code, playerId: user._id, piecesPlaced: 1}
+    await socket.emit("player_scores",
+      { code: props.code, playerId: user._id, completedLines:0, piecesSpawned: 1 });
   };
 
   // au cas où la grille initiale n'est pas générée :
@@ -197,9 +199,10 @@ function MultitrisGame(props) {
               `spawn by playerIndex= ${playerIndex} et fin de partie théorique`
             );
             // alors fin de partie
-            setGameOver(true);
-            //socket.emit("gameOver", {code:props.code, playerIndex})
-            //mutualisation avec Henri pour la gestion de la fin de la partie
+            socketRef.current.emit("end_game", {
+              code: props.code,
+              partId: props.part,
+            });
           }
         });
       });
@@ -429,7 +432,9 @@ function MultitrisGame(props) {
   //Descente automatique tous les TICK_INTERVAL ms
   useEffect(() => {
     console.log("gameOver", gameOver);
-    if(JSON.stringify(myMovingPiece) === "{}"){spawnInitialPiece()}
+    if (JSON.stringify(myMovingPiece) === "{}") {
+      spawnInitialPiece();
+    }
     const interval = setInterval(() => {
       if (myMovingPieceRef.current?.pieceShape && !gameOver) {
         const { playerIndex, pieceShape, pieceRow, pieceCol } =
@@ -511,7 +516,15 @@ function MultitrisGame(props) {
     emitPlayerScore();
   }, [myMovingPiece]);
 
-  //ALEX
+  //useEffect attendant écoutant le game Over
+  useEffect(() => {
+    socketRef.current.on("end_game", (code) => {
+      if (code === props.code) {// si le back a bien envoyé le bon code?
+        setGameOver(true);
+      }
+    });
+  }, []);
+
   const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
     //pieceX et pieceY = position top left de la pièce après mouvement
     let gridPositionX;
@@ -661,7 +674,7 @@ function MultitrisGame(props) {
         </div>
       </div>
       <h2 className={styles.title}>Multitris</h2>
-      {/* {!gameOver & gridToDisplay()} */}
+      {/* {!gameOver & gridToDisplay()}  */}
       {gridToDisplay()}
       {/* {gameOver && endGame()} */}
     </div>

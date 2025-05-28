@@ -68,9 +68,10 @@ export default function LobbyPage() {
       socket.on("gameStartedNow", (gameStarted) => {
         if (gameStarted.gameStartInfo) {
           console.log("gamestarted via socket.on('gameStartedNow'=>", {
-            startedby:gameStarted.startedBy
+            startedby: gameStarted.startedBy,
           });
           setGameStarted(true);
+          setPartId(gameStarted.partId);
         }
       });
     //}
@@ -93,16 +94,18 @@ export default function LobbyPage() {
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
     console.log("partie créée par le back=> ", data);
-    // On ajoute cet id dans un état
-    setPartId(data.partId);
 
     // on envoie à tout le monde que la partie commence
     socket.emit("gameStart", {
       code,
       startedBy: user.username,
+      partId: data.partId,
     });
     console.log("gameStarted");
     //setGameStarted(true);// avant on settait la partie à setGameStarted(true) directement en tant qu'admin
+
+    // On ajoute cet id dans un état
+    // setPartId(data.partId);
   };
 
   return (
@@ -117,8 +120,14 @@ export default function LobbyPage() {
             startGame={handlePartLaunch}
           />
         )}
-        {gameStarted && lobby && (
-          <Multitris game={game} lobby={lobby} code={code} socket={socket} />
+        {gameStarted && lobby && partId && (
+          <Multitris
+            game={game}
+            lobby={lobby}
+            code={code}
+            socket={socket}
+            part={partId}
+          />
         )}
       </div>
     </div>
