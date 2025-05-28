@@ -44,6 +44,7 @@ function MultitrisGame(props) {
   const [teamScore, setTeamScore] = useState(0);
   const [teamLines, setTeamLines] = useState(0);
   const [myMovingPiece, setMyMovingPiece] = useState({});
+  const [gameOver, setGameOver] = useState(false);
   const socket = props.socket;
   let socketRef = useRef(socket);
   const myMovingPieceRef = useRef(null);
@@ -100,7 +101,6 @@ function MultitrisGame(props) {
   useEffect(() => {
     socket.on("part_scores", (data) => {
       const player = data.playersStats.find((p) => p.player === user._id);
-      console.log("player => ", player)
       setTeamScore(data.teamScore);
       setTeamLines(data.completedLines);
       player && setCurrentScore(player.score);
@@ -127,21 +127,22 @@ function MultitrisGame(props) {
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
-    console.log("ALEX A");
-
+    console.log("la grille existe ? gridRef", gridRef.current.length, {
+      isAdmin,
+    });
     if (gridRef.current.length === 0) {
-      console.log("ALEX A IN");
       return;
     }
-    console.log("ALEX B");
+
     let currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
 
     //demande de spawn de pièce par le player currentPlayer
-    console.log("EMIT", { currentPlayerIndex, code: props.code });
-
-    await socket.emit("spawn_piece", { currentPlayerIndex, code: props.code });
+    await socketRef.current.emit("spawn_piece", {
+      currentPlayerIndex,
+      code: props.code,
+    });
     await socket.emit("part_scores"), { code: props.code, playerId: user._id, piecesPlaced: 1}
   };
 
@@ -176,10 +177,30 @@ function MultitrisGame(props) {
 
     // on enlève les cases coloriées de l'ancienne position
     if (oldRow !== "") {
+      console.log("c'est PAS un spawn");
       // au cas où l'ancienne postion n'existe pas parce que c'est une spawn
       oldShape.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           newGrid[oldRow + rowIndex][oldCol + colIndex] = 0;
+        });
+      });
+    } else {
+      // si c'est une spawn on vérifie si elle est posable. Si pas possible => fin de partie
+      newShape.forEach((row, pieceRowIndex) => {
+        row.forEach((block, pieceColIndex) => {
+          if (
+            block === 1 &&
+            newGrid[newRow + pieceRowIndex][newCol + pieceColIndex] !== 0
+            //un block de la pièce =1 et la grille est occupée au spawn
+          ) {
+            console.log(
+              `spawn by playerIndex= ${playerIndex} et fin de partie théorique`
+            );
+            // alors fin de partie
+            setGameOver(true);
+            //socket.emit("gameOver", {code:props.code, playerIndex})
+            //mutualisation avec Henri pour la gestion de la fin de la partie
+          }
         });
       });
     }
@@ -206,10 +227,6 @@ function MultitrisGame(props) {
       pieceRow: newRow,
       pieceCol,
     };
-
-    console.log("handleMovedown", { newMovedPiece });
-
-    // envoyer nouvelle position : forme, x, y de la nouvelle position.
 
     if (
       isCollision(pieceCol, pieceRow, pieceCol, newRow, pieceShape, pieceShape)
@@ -411,8 +428,10 @@ function MultitrisGame(props) {
 
   //Descente automatique tous les TICK_INTERVAL ms
   useEffect(() => {
+    console.log("gameOver", gameOver);
+    // if (gameOver)return
     const interval = setInterval(() => {
-      if (myMovingPieceRef.current?.pieceShape) {
+      if (myMovingPieceRef.current?.pieceShape && !gameOver) {
         const { playerIndex, pieceShape, pieceRow, pieceCol } =
           myMovingPieceRef.current;
         let newRow = pieceRow + 1;
@@ -427,26 +446,28 @@ function MultitrisGame(props) {
             pieceShape
           )
         ) {
-          spawnInitialPiece();
+          !gameOver && spawnInitialPiece();
         } else {
-          console.log("movingpieceRefcurrent=", myMovingPieceRef.current);
-          handleMoveDown(myMovingPieceRef.current);
+          !gameOver && handleMoveDown(myMovingPieceRef.current);
         }
       }
     }, TICK_INTERVAL);
 
     return () => clearInterval(interval); // Nettoyage si le composant est démonté
-  }, []);
+  }, [gameOver]);
 
   //réception de toutes les pièces (nouvelles, mouvement, descente)
   useEffect(() => {
+    if (gridRef.current.length === 0) return;
+    //console.log("spawn appelé dans le useEffect rappelé sur gridLength", {isAdmin})
     // au cas où la grille initiale n'est pas générée :
-    socketRef.current && spawnInitialPiece();
+    gridRef.current.length > 0 && socketRef.current && spawnInitialPiece();
 
     //reception d'une piece générée (par le currentplayer ou un autre)
-    socketRef.current.on("receive_piece", ([oldPiece, newPiece]) =>
-      handleReceivedPiece(oldPiece, newPiece)
-    );
+    socketRef.current.on("receive_piece", ([oldPiece, newPiece]) => {
+      console.log("handleReceivedPiece=", oldPiece, newPiece);
+      handleReceivedPiece(oldPiece, newPiece);
+    });
 
     return () => {
       socketRef.current && socketRef.current.off("receive_piece");
@@ -457,7 +478,7 @@ function MultitrisGame(props) {
   useEffect(() => {
     const handleKeyDown = (e) => {
       //sécurité que myMovingPiece existe
-      if (!myMovingPiece?.pieceShape) {
+      if (gameOver || !myMovingPiece?.pieceShape) {
         return;
       }
       switch (e.key) {
@@ -483,7 +504,7 @@ function MultitrisGame(props) {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [myMovingPiece]);
+  }, [myMovingPiece, gameOver]);
 
   // Lorsqu'une pièce est posée
   useEffect(() => {
@@ -582,6 +603,47 @@ function MultitrisGame(props) {
     );
   };
 
+  // composant endGame
+  const endGame = () => {
+    // afficher un bouton de retour
+    let playersStats = props.lobby.players.map((player) => {
+      <>
+        <div className={styles.statsPlayerName}>{player.id}</div>
+        <div className={styles.statsPlayerDataContainer}>
+          <div className={styles.statsPlayerDataField}>
+            <p>Nombre de lignes</p>
+            <p>Score</p>
+          </div>
+          <div className={styles.statsPlayerDataName}>
+            <p>12</p>
+            <p>320</p>
+          </div>
+        </div>
+      </>;
+    });
+    return (
+      <div className={styles.endGameContainer}>
+        <div className={styles.endGameSectionContainer}>
+          <div className={styles.endGameContainerTitle}>Team Stats</div>
+          <div className={styles.statsContainer}>
+            <div className={styles.statsNames}>
+              <p>Nombre de lignes</p>
+              <p>Score d'équipe</p>
+            </div>
+            <div className={styles.statsValues}>
+              <p>12</p>
+              <p>830</p>
+            </div>
+          </div>
+        </div>
+        <div className={styles.endGameSectionContainer}>
+          <div className={styles.endGameContainerTitle}>Players' Stats</div>
+          <div className={styles.statsContainer}>{playersStats}</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.gameScores}>
@@ -599,7 +661,9 @@ function MultitrisGame(props) {
         </div>
       </div>
       <h2 className={styles.title}>Multitris</h2>
+      {/* {!gameOver & gridToDisplay()} */}
       {gridToDisplay()}
+      {/* {gameOver && endGame()} */}
     </div>
   );
 }
