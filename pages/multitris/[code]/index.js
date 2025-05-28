@@ -90,6 +90,7 @@ export default function LobbyPage() {
       body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
     });
 
+    console.log('id du lobby : ', lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
     console.log("partie créée par le back=> ", data);

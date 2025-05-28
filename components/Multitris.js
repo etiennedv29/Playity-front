@@ -108,16 +108,22 @@ function MultitrisGame(props) {
     });
   }, []);
 
+  // HENRI
   // Fonction d'envoie des nouveaux points au serveur
   const emitPlayerScore = () => {
     const playerId = user._id;
     socket.emit("part_scores", {
       code: props.code, // identifiant unique de la partie
-      playerId: "682eef5ad4c8a63a48013e06", // id du joueur
+      playerId: playerId, // id du joueur
       completedLines: 1, // 1 à 4
-      piecesPlaced: 2, // 1 typiquement, ou cumul
     });
   };
+
+  const endGame = () => {
+    socket.emit("end_game", {
+      code: props.code,
+    })
+  }
 
   const spawnInitialPiece = async () => {
     // si la grille de base n'est pas initialisée, on ne crée pas de première pièce
@@ -137,6 +143,7 @@ function MultitrisGame(props) {
       currentPlayerIndex,
       code: props.code,
     });
+    await socket.emit("part_scores"), { code: props.code, playerId: user._id, piecesPlaced: 1}
   };
 
   // au cas où la grille initiale n'est pas générée :
@@ -502,7 +509,7 @@ function MultitrisGame(props) {
   // Lorsqu'une pièce est posée
   useEffect(() => {
     emitPlayerScore();
-  }, [currentScore]);
+  }, [myMovingPiece]);
 
   //ALEX
   const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
