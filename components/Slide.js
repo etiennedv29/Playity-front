@@ -3,17 +3,16 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 function Slide(props) {
+  const router = useRouter();
 
-    const router = useRouter();
-
-    function goToGame(gameName) {
-        gameName.toLowerCase().replace(" ", "");
-        router.push(`http://localhost:3001/${gameName}`);
-    }
+  function goToGame(gameName) {
+      gameName.toLowerCase().replace(" ", "");
+      router.push(`http://localhost:3001/${gameName}`);
+  }
 
     return (
         <div className={styles.slide}>
-            <div style={{position: "relative"}} >
+            <div style={{position: "relative"}} onClick{() => goToGame(props.name)}>
                 <div className={styles.slideTitle}>{props.name}</div>
                 <Image className={styles.image} src={props.image} alt={props.name} width={300} height={200} />
                 <p className={styles.description}>{props.description}</p>

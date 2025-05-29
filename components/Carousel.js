@@ -2,25 +2,28 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import styles from "../styles/Carousel.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Pagination } from "swiper/modules";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import 'swiper/css';
-import Slide from './Slide';
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import "swiper/css";
+import Slide from "./Slide";
 
 function Slider() {
-  
   const swiperRef = useRef(null);
   const [topGames, setTopGames] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const fetchTopGames = async () => {
-    const response = await fetch('http://localhost:3000/games');
+    const response = await fetch("http://localhost:3000/games");
+    //const response = await fetch("https://p01--playity-back--c9dy8yj49fkp.code.run/games")
     const data = await response.json();
-    const topGamesData = data.filter((e) => e.tags.includes("topGame"))
+    const topGamesData = data.filter((e) => e.tags.includes("topGame"));
     setTopGames(topGamesData);
-    console.log(topGamesData);
-  }
+    //console.log(topGamesData);
+  };
 
   function changeSlide(tagsArr, id) {
     if(tagsArr.includes("mainGame")) {
@@ -30,11 +33,14 @@ function Slider() {
 
   useEffect(() => {
     fetchTopGames();
-  }, [])
+  }, []);
 
-  const currentTopGames = topGames.map((slide, index) => (
 
-      <SwiperSlide key={slide.id} className={styles.slideContainer} style={{
+  const currentTopGames = topGames.map((slide) => (
+    <SwiperSlide
+      key={slide.id}
+      className={styles.slideContainer}
+      style={{
         width: "400px",
         height: "300px",
         display: "flex",
@@ -48,7 +54,6 @@ function Slider() {
       </SwiperSlide>
     
   ))
-
 
   return (
   <div className="relative w-full min-h-[400px] flex justify-center items-center">
@@ -83,9 +88,7 @@ function Slider() {
       {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
       <FontAwesomeIcon icon={faChevronRight} color="white" className={styles.btn} onClick={() => swiperRef.current?.slideNext()}/>
     </div>
-  </Swiper>
-  </div>
-);
+  );
 }
 
 export default Slider;

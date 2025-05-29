@@ -32,7 +32,7 @@ export default function LobbyPage() {
         const res = await axios.get(
           "http://localhost:3000/games?name=" + gameName
         );
-        console.log(res.data[0]);
+        //console.log(res.data[0]);
         setGame(res.data[0]);
       } catch (e) {}
     })();
@@ -52,14 +52,14 @@ export default function LobbyPage() {
 
     // Quand un joueur quitte
     socket.on("userLeft", ({ lobby }) => {
-      console.log("userLeft", lobby);
+      //console.log("userLeft", lobby);
       setLobby(lobby);
     });
 
     // Rejoindre automatiquement le lobby à l’arrivée sur la page
     socket.emit("joinLobby", { code, userId }, (res) => {
       if (res?.success === false) {
-        console.log("Erreur de lobby:", res.error);
+        //console.log("Erreur de lobby:", res.error);
       }
     });
 
@@ -68,9 +68,9 @@ export default function LobbyPage() {
     !gameStarted && // sécurité car le back renvoie 2 fois le lancement de la game (double réception côté socket.on("gameStarted"))
       socket.on("gameStartedNow", (gameStarted) => {
         if (gameStarted.gameStartInfo) {
-          console.log("gamestarted via socket.on('gameStartedNow'=>", {
-            startedby: gameStarted.startedBy,
-          });
+          // console.log("gamestarted via socket.on('gameStartedNow'=>", {
+          //   startedby: gameStarted.startedBy,
+          // });
           setGameStarted(true);
           setPartId(gameStarted.partId);
         }
@@ -86,15 +86,16 @@ export default function LobbyPage() {
 
   const handlePartLaunch = async () => {
     const response = await fetch("http://localhost:3000/parts/start", {
+    //const response = await fetch ("https://p01--playity-back--c9dy8yj49fkp.code.run/start",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
     });
 
-    console.log("id du lobby : ", lobby._id);
+    //console.log("id du lobby : ", lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
     const data = await response.json();
-    console.log("partie créée par le back=> ", data);
+    //console.log("partie créée par le back=> ", data);
 
     // on envoie à tout le monde que la partie commence
     socket.emit("gameStart", {
@@ -102,7 +103,7 @@ export default function LobbyPage() {
       startedBy: user.username,
       partId: data.partId,
     });
-    console.log("gameStarted");
+    //console.log("gameStarted");
     //setGameStarted(true);// avant on settait la partie à setGameStarted(true) directement en tant qu'admin
 
     // On ajoute cet id dans un état
