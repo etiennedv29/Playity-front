@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 // import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
-import { merge } from "lodash";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -45,7 +44,14 @@ function MultitrisGame(props) {
   };
 
   const mergeGrids = (grid1, grid2) => {
-    return merge(grid1, grid2);
+    return grid1.map((row, rowIndex) => {
+      return row.map((col, colIndex) => {
+        if (grid2[rowIndex][colIndex] !== 0) {
+          return grid2[rowIndex][colIndex];
+        }
+        return col;
+      });
+    });
   };
 
   const updateMyMovingPiece = (newMyMovingPiece) => {
@@ -162,22 +168,17 @@ function MultitrisGame(props) {
     }
 
     //on met les pièces dans la grille (si un bloc de la pièce = 1 alors on donne une valeur à la cellule de la grid)
-    setPieceInGrid(
+    const newGrid2 = setPieceInGrid(
       newGrid,
       newShape,
       newRow,
       newCol,
       1 + playerIndex
-    ).forEach((row,rowIndex)=>{row.forEach(cell,colIndex)=>{
-      
-    }})
-    console.log(
-      "setpieceingrid de handlereceived",
-      setPieceInGrid(newGrid, newShape, newRow, newCol, 1 + playerIndex)
     );
-    console.log("handlereceivedGrid", { newGrid });
 
-    movingGridRef.current = newGrid;
+    console.table(newGrid2);
+    console.table(mergeGrids(movingGridRef.current, fixedGridRef.current));
+    movingGridRef.current = newGrid2;
     //update du rendu visible par les joueurs
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
   };
@@ -567,6 +568,7 @@ function MultitrisGame(props) {
 
   const setPieceInGrid = (gridParam, shape, rowParam, colParam, val) => {
     let tempGridParam = gridParam.map((row) => [...row]);
+
     shape.forEach((row, pieceRowIndex) => {
       row.forEach((block, pieceColIndex) => {
         if (block === 1) {
@@ -575,6 +577,9 @@ function MultitrisGame(props) {
         }
       });
     });
+
+    console.table(tempGridParam);
+
     return tempGridParam;
   };
 
