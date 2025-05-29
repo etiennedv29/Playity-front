@@ -49,17 +49,8 @@ export default function Lobby({ lobby, game, code, startGame }) {
           <div className={styles.demoContainer}>
           {game && <YoutubeVideo videoId={game.demo} />}
           </div>
-          {lobby && isAdmin && (
-            <button
-              onClick={() => startGame()}
-              className={`btnPlay ${styles.btnPlay}`}
-              // disabled={disableBtnPlay}
-            >
-              Lancer la partie
-            </button>
-          )}
         </div>
-        <div className={styles.rightContainerLobby2}>
+        <div className={styles.rightContainer}>
           <h1>Lobby: #{code}</h1>
           {playerElements}
           {playersWaiting}
@@ -73,6 +64,17 @@ export default function Lobby({ lobby, game, code, startGame }) {
             <span style={{ marginLeft: "10px", color: "green" }}>Copié ✅</span>
           )}
         </div>
+      </div>
+      <div className={styles.btnStartContainer}>
+      {lobby && isAdmin && (
+        <button
+          onClick={() => startGame()}
+          className={`btnPlay ${styles.btnPlay}`}
+          // disabled={disableBtnPlay}
+        >
+          Lancer la partie
+        </button>
+      )}
       </div>
     </>
   );
