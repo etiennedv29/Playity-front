@@ -77,6 +77,7 @@ export default function HomePage() {
         <title>{`Playity | ${gameName[0].toUpperCase() + gameName.slice(1)}`}</title>
       </Head>
       <div className={styles.lobbyContainer}>
+        <h1 className="gameTitle">Multitris</h1>
         <div className={styles.globalContainer}>
           <div className={styles.leftContainer}>
             {game && <YoutubeVideo videoId={game.demo} />}

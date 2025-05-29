@@ -12,6 +12,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 50px;
 }
 
 
@@ -106,7 +107,7 @@
 .inputCode {
   width: 75px;
   height: 25px;
-  border-radius: 10px;
+  border-radius: 7px;
   border: none;
   text-transform: uppercase;
   margin-left: 10px;
@@ -138,6 +139,10 @@
   cursor: pointer;
   height: 40px;
   width: 120px;
+}
+
+.btnStartContainer {
+  margin-left: 200px;
 }
 
 .btnSecondary {
