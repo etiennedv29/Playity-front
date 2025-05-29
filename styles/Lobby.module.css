@@ -14,21 +14,12 @@
   align-items: center;
 }
 
-/* .mainContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-} */
 
 .lobbyContainer {
   display: flex;
   justify-content: top;
   align-items: center;
-  /* height: 120vh; */
-  /* width: 100vw; */
+  height: 100vh;
   flex-direction: column;
 }
 
