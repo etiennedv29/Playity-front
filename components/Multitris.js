@@ -43,15 +43,6 @@ function MultitrisGame(props) {
   };
 
   const mergeGrids = (grid1, grid2) => {
-    console.log("------------------------------------------------");
-    console.table(grid1);
-
-    console.log("_____________________SEPARATOR________________________");
-
-    console.table(grid2);
-
-    console.log("------------------------------------------------");
-
     return grid1.map((row, rowIndex) =>
       row.map((cell, colIndex) => Math.max(cell, grid2[rowIndex][colIndex]))
     );
@@ -110,7 +101,6 @@ function MultitrisGame(props) {
     }
 
     //demande de spawn de pièce par le player currentPlayer
-    console.log("going to spawnInitialPiece");
     await socketRef.current.emit("spawn_piece", {
       currentPlayerIndex,
       code: props.code,
@@ -189,6 +179,14 @@ function MultitrisGame(props) {
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
   };
 
+  const emitCheckCompletedLine = () => {
+    console.log(`check_completed_line ${currentPlayerIndex}`);
+    socket.emit("check_completed_line", {
+      playerIndex: currentPlayerIndex,
+      code: props.code,
+    });
+  };
+
   const handleMove = (movingPiece, dx, dy) => {
     const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
     const newMovedPiece = {
@@ -209,6 +207,11 @@ function MultitrisGame(props) {
     );
 
     if (collisionResult.isCollision) {
+      //si collision avec fixed_grid_name, emit pour check les completed lines
+      if (collisionResult.gridName === FIXED_GRID_NAME) {
+        console.log("ON MOVE DOWN MANUAL");
+        //emitCheckCompletedLine();
+      }
       return;
     } else {
       //on exécute seulement s'il n'y a pas de collision
@@ -329,6 +332,7 @@ function MultitrisGame(props) {
   };
 
   const handleTransferMovingToFixedGrid = (playerIndex, piece) => {
+    console.log("handleTransferMovingToFixedGrid");
     //clean la moving grid
     const cleanedMovingGrid = movingGridRef.current.map((row) => {
       return row.map((cell) => {
@@ -348,13 +352,47 @@ function MultitrisGame(props) {
       piece.pieceCol,
       playerIndex + 1
     );
-    console.log(
-      `handleTransferMovingToFixedGrid - spawnInitialPiece ${currentPlayerIndex}`
-    );
 
     //si le jeu n'est pas arrêté et je respawne pour moi
     currentPlayerIndex === playerIndex && !gameOver && spawnInitialPiece();
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
+    emitCheckCompletedLine();
+  };
+
+  const handleCheckCompletedLines = (playerId) => {
+    const linesNotCompleted = fixedGridRef.current.filter((row) =>
+      row.some((col) => col === 0)
+    );
+    console.log(
+      "------------------------ handleCheckCompletedLines ------------------------------------"
+    );
+    console.table(linesNotCompleted);
+    const numberCompletedLines = ROWS - linesNotCompleted.length;
+    console.log(
+      `numberCompletedLines ${numberCompletedLines} playerId ${playerId} `
+    );
+
+    if (numberCompletedLines > 0) {
+      //create missing row empty lines
+      const emptyMissingLines = Array.from(
+        { length: numberCompletedLines },
+        () => Array(numberOfCols).fill(0)
+      );
+
+      const newFixedGrid = [...emptyMissingLines, ...linesNotCompleted];
+      console.table(newFixedGrid);
+
+      fixedGridRef.current = newFixedGrid;
+      setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
+
+      if (playerId === currentPlayerIndex) {
+        console.log(`emit ${numberCompletedLines}`);
+        emitPlayerScore(0, numberCompletedLines);
+      }
+    }
+    console.log(
+      "--------------------- handleCheckCompletedLines END ---------------------------------------"
+    );
   };
 
   //Descente automatique tous les TICK_INTERVAL ms
@@ -385,6 +423,7 @@ function MultitrisGame(props) {
           collisionCheck.isCollision &&
           collisionCheck.gridName === FIXED_GRID_NAME
         ) {
+          console.log("IS COLLISION");
           let pieceToTransfer = { pieceShape, pieceRow, pieceCol };
           emitTransferPieceFromMovingToFixed(
             currentPlayerIndex,
@@ -420,32 +459,17 @@ function MultitrisGame(props) {
       }
     );
 
+    socketRef.current.on(
+      "check_completed_line_to_be_done",
+      ({ playerIndex }) => {
+        handleCheckCompletedLines(playerIndex);
+      }
+    );
+
     return () => {
       socketRef.current && socketRef.current.off("receive_piece");
     };
   }, [grid.length]);
-
-  const canMoveDownManualy = (movingPiece) => {
-    //console.log(movingPiece);
-    const { pieceShape, pieceRow, pieceCol } = movingPiece;
-    let newRow = pieceRow + 1;
-
-    for (let i = 0; i <= pieceShape.length - 1; i++) {
-      for (let j = 0; j <= pieceShape[i].length - 1; j++) {
-        if (pieceShape[i][j] === 0) {
-          continue;
-        }
-
-        const gridPositionX = pieceCol + j;
-        const gridPositionY = newRow + i;
-        // if (isCollisionWithMovingPieces(gridPositionX, gridPositionY)) {
-        //   return false;
-        // }
-      }
-    }
-
-    return true;
-  };
 
   //gestion des touches par le joueur
   useEffect(() => {
@@ -479,39 +503,6 @@ function MultitrisGame(props) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [myMovingPiece, gameOver]);
-
-  // const isCollisionWithMovingPieces = (gridPositionX, gridPositionY) => {
-  //   //console.log("----------------------------------------------");
-
-  //   return Object.values(movingPiecesRef.current).some((elm) => {
-  //     const piece = elm.newPiece;
-
-  //     if (myMovingPieceRef.current === piece) {
-  //       //console.log("samePiece");
-  //       return false;
-  //     }
-  //     for (let k = 0; k <= piece.newShape.length - 1; k++) {
-  //       for (let l = 0; l <= piece.newShape[k].length - 1; l++) {
-  //         if (piece.newShape[k][l] === 0) {
-  //           continue;
-  //         }
-
-  //         const posX = piece.newCol + l;
-  //         const posY = piece.newRow + k;
-  //         // //console.log(
-  //         //   ` | gridPositionX ${gridPositionX}  posX ${posX} | gridPositionY ${gridPositionY} posY ${posY} |, result: ${
-  //         //     posX === gridPositionX && posY === gridPositionY
-  //         //   }`
-  //         // );
-  //         if (posX === gridPositionX && posY === gridPositionY) {
-  //           return true;
-  //         }
-  //       }
-  //     }
-
-  //     return false;
-  //   });
-  // };
 
   //useEffect attendant écoutant le game Over
   useEffect(() => {
@@ -576,9 +567,6 @@ function MultitrisGame(props) {
         //gestion collision avec une autre pièce en mouvement
         if (tempMovingGrid[gridPositionY][gridPositionX] !== 0) {
           //console.table(tempMovingGrid);
-          console.log(
-            `isCollision tempMovingGrid ${tempMovingGrid[gridPositionY][gridPositionX]} ${gridPositionY} ${gridPositionX}`
-          );
           return { isCollision: true, gridName: MOVING_GRID_NAME };
         }
       }
@@ -601,44 +589,6 @@ function MultitrisGame(props) {
     //console.table(tempGridParam);
 
     return tempGridParam;
-  };
-
-  // const clearInGamePlayerPieces = (gridParam) => {
-  //   if (
-  //     movingPiecesRef.current &&
-  //     Object.keys(movingPiecesRef.current).length > 0
-  //   ) {
-  //     for (const key in movingPiecesRef.current) {
-  //       const { newShape, newRow, newCol } =
-  //         movingPiecesRef.current[key].newPiece;
-  //       const { oldShape, oldRow, oldCol } =
-  //         movingPiecesRef.current[key].oldPiece;
-
-  //       setPieceInGrid(gridParam, newShape, newRow, newCol, 0);
-  //       setPieceInGrid(gridParam, oldShape, oldRow, oldCol, 0);
-  //     }
-
-  //     return gridParam;
-  //   }
-
-  //   return false;
-  // };
-
-  const clearCompletedLines = (gridParam) => {
-    //return grid.filter((val) => val.some((val) => val === 0));
-    if (gridParam.length > 0) {
-      return gridParam.filter((val) => val.some((val) => val === 0));
-    }
-
-    return false;
-  };
-
-  const rebuildGridAfterClearingLines = (gridParam) => {
-    const newGridEmpty = Array.from({ length: ROWS - gridParam.length }, () =>
-      Array(numberOfCols).fill(0)
-    );
-
-    return [...newGridEmpty, ...gridParam];
   };
 
   // composant grille intégré
