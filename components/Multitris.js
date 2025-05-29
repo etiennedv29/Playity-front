@@ -731,11 +731,13 @@ function MultitrisGame(props) {
             <div className={styles.statsValues}>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id).completedLines}
+                  partScores?.playersStats?.find((e) => e.player === i._id)
+                    .completedLines}
               </div>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id).score}
+                  partScores?.playersStats?.find((e) => e.player === i._id)
+                    .score}
               </div>
             </div>
           </div>
@@ -743,26 +745,32 @@ function MultitrisGame(props) {
       );
     });
     return (
-      <div className={styles.endGameContainer}>
-        <div className={styles.endGameSectionContainerLeft}>
-          <h2 className={styles.endGameContainerTitle}>Perf d'équipe</h2>
-          <div className={styles.statsContainerLeft}>
-            <div className={styles.statsNamesContainer}>
-              <div className={styles.statLineTeam}>Nombre de lignes</div>
-              <div className={styles.statLineTeam}>Score d'équipe</div>
-            </div>
-            <div className={styles.statsValues}>
-              <div className={styles.statLineTeam}>
-                {partScores.completedLines}
+      <div className ={styles.endGameWindow}>
+        <div className={styles.endGameContainer}>
+          <div className={styles.endGameSectionContainerLeft}>
+            <h2 className={styles.endGameContainerTitle}>Perf d'équipe</h2>
+            <div className={styles.statsContainerLeft}>
+              <div className={styles.statsNamesContainer}>
+                <div className={styles.statLineTeam}>Nombre de lignes</div>
+                <div className={styles.statLineTeam}>Score d'équipe</div>
               </div>
-              <div className={styles.statLineTeam}>{partScores.teamScore}</div>
+              <div className={styles.statsValues}>
+                <div className={styles.statLineTeam}>
+                  {partScores.completedLines}
+                </div>
+                <div className={styles.statLineTeam}>
+                  {partScores.teamScore}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className={styles.endGameSectionContainerRight}>
-          <h2 className={styles.endGameContainerTitle}>Stats individuelles</h2>
-          <div className={styles.statsContainerRight}>
-            {playersStatsToDisplay}
+          <div className={styles.endGameSectionContainerRight}>
+            <h2 className={styles.endGameContainerTitle}>
+              Stats individuelles
+            </h2>
+            <div className={styles.statsContainerRight}>
+              {playersStatsToDisplay}
+            </div>
           </div>
         </div>
       </div>
@@ -776,9 +784,7 @@ function MultitrisGame(props) {
           <div className={styles.personalScores}>
             <h2>
               <span>Score perso : {currentPlayerScore.score} </span>
-              <span>
-                Nb lignes perso : {currentPlayerScore.completedLines}
-              </span>
+              <span>Nb lignes perso : {currentPlayerScore.completedLines}</span>
             </h2>
           </div>
           <div className={styles.teamScores}>
