@@ -45,16 +45,14 @@ function Login() {
       return;
     }
 
-    const response = await fetch(
-      "http://localhost:3000/users/login",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, connectionWithSocials }),
-      }
-    );
+    const response = await fetch("http://localhost:3000/users/login", {
+    //const response = await fetch ("https://p01--playity-back--c9dy8yj49fkp.code.run/login",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, connectionWithSocials }),
+    });
     const data = await response.json();
-    console.log("data after signin route:",data)
+    //console.log("data after signin route:",data)
     try {
       if (response.status === 200) {
         dispatch(
@@ -93,7 +91,6 @@ function Login() {
     email,
     connectionWithSocials = false
   ) {
-    
     //missing fields verification
     if (
       firstName === "" ||
@@ -102,7 +99,7 @@ function Login() {
       (!connectionWithSocials && password === "") ||
       email === ""
     ) {
-      console.log("missing fields");
+      //console.log("missing fields");
       setMissingFields(true);
       return;
     } else {
@@ -114,34 +111,32 @@ function Login() {
       return;
     }
 
-    //CGU checkbox verification  
+    //CGU checkbox verification
     if (!connectionWithSocials && !isCheckedCGU) {
       setDisplayWarningCGU(true);
       return;
     } else {
       setDisplayWarningCGU(false);
     }
-console.log("going to call feth register")
+    //console.log("going to call feth register")
     // calling register route
-    const response = await fetch(
-      "http://localhost:3000/users/register",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          username,
-          password,
-          connectionWithSocials,
-        }),
-      }
-    );
+    const response = await fetch("http://localhost:3000/users/register", {
+    //const response  =await fetch ("https://p01--playity-back--c9dy8yj49fkp.code.run/register",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        username,
+        password,
+        connectionWithSocials,
+      }),
+    });
     const data = await response.json();
 
     try {
-      console.log("data after signup:",data)
+      //console.log("data after signup:",data)
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
@@ -358,7 +353,7 @@ console.log("going to call feth register")
                 text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
-                  console.log(jwtDecode(credentialResponse.credential));
+                  //console.log(jwtDecode(credentialResponse.credential));
                   handleSignup(
                     googleUserInfo.given_name,
                     googleUserInfo.family_name,
@@ -448,9 +443,7 @@ console.log("going to call feth register")
               <button
                 className={styles.modalSigninButton}
                 id="connection"
-                onClick={() =>
-                  handleSignin(email, password, false)
-                }
+                onClick={() => handleSignin(email, password, false)}
               >
                 Connexion
               </button>
@@ -472,7 +465,7 @@ console.log("going to call feth register")
                 text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
-                  //console.log(jwtDecode(credentialResponse.credential));
+                  ////console.log(jwtDecode(credentialResponse.credential));
 
                   handleSignin(googleUserInfo.email, "", true);
                 }}

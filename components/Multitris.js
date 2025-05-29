@@ -5,17 +5,14 @@ import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
-const TICK_INTERVAL = 2000; // 500 ms par intervalle de descente des pièces
+const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
 
 const DOWN_MOVE = "down";
 
 function MultitrisGame(props) {
   const user = useSelector((state) => state.users.value);
   const [grid, setGrid] = useState([]);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [completedLines, setCompletedLines] = useState(0);
-  const [teamScore, setTeamScore] = useState(0);
-  const [teamLines, setTeamLines] = useState(0);
+  const [partScores, setPartScores] = useState({});
   const [myMovingPiece, setMyMovingPiece] = useState({});
   const [gameOver, setGameOver] = useState(false);
   const socket = props.socket;
@@ -23,6 +20,7 @@ function MultitrisGame(props) {
   const myMovingPieceRef = useRef(null);
   const gridRef = useRef([]); // nécessaire pour compenser le set_interval qui utilise sinon grid ===[]
   let isAdmin = props?.lobby?.admin === user._id;
+  let currentPlayerScore = {};
 
   //Liste des pieces controlées par les users
   const movingPiecesRef = useRef({});
@@ -76,11 +74,12 @@ function MultitrisGame(props) {
   // On écoute le tableau des scores transmis depuis le serveur
   useEffect(() => {
     socket.on("part_scores", (data) => {
-      const player = data.playersStats.find((p) => p.player === user._id);
-      setTeamScore(data.teamScore);
-      setTeamLines(data.completedLines);
-      player && setCurrentScore(player.score);
-      player && setCompletedLines(player.completedLines);
+      setPartScores(data);
+      currentPlayerScore = data.playersStats.find((p) => p.player === user._id);
+      //setTeamScore(data.teamScore);
+      //setTeamLines(data.completedLines);
+      // player && setCurrentScore(player.score);
+      // player && setCompletedLines(player.completedLines);
     });
   }, []);
 
@@ -151,7 +150,7 @@ function MultitrisGame(props) {
 
     // on enlève les cases coloriées de l'ancienne position
     if (oldRow !== "") {
-      console.log("c'est PAS un spawn");
+      //console.log("c'est PAS un spawn");
       // au cas où l'ancienne postion n'existe pas parce que c'est une spawn
       oldShape.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
@@ -167,9 +166,9 @@ function MultitrisGame(props) {
             newGrid[newRow + pieceRowIndex][newCol + pieceColIndex] !== 0
             //un block de la pièce =1 et la grille est occupée au spawn
           ) {
-            console.log(
-              `spawn by playerIndex= ${playerIndex} et fin de partie théorique`
-            );
+            // //console.log(
+            //   `spawn by playerIndex= ${playerIndex} et fin de partie théorique`
+            // );
             // alors fin de partie
             socketRef.current.emit("end_game", {
               code: props.code,
@@ -412,7 +411,7 @@ function MultitrisGame(props) {
 
   //Descente automatique tous les TICK_INTERVAL ms
   useEffect(() => {
-    console.log("gameOver", gameOver);
+    //console.log("gameOver", gameOver);
     if (JSON.stringify(myMovingPiece) === "{}") {
       spawnInitialPiece();
     }
@@ -446,7 +445,7 @@ function MultitrisGame(props) {
   //réception de toutes les pièces (nouvelles, mouvement, descente)
   useEffect(() => {
     if (gridRef.current.length === 0) return;
-    //console.log("spawn appelé dans le useEffect rappelé sur gridLength", {isAdmin})
+    ////console.log("spawn appelé dans le useEffect rappelé sur gridLength", {isAdmin})
     // au cas où la grille initiale n'est pas générée :
     //gridRef.current.length > 0 && socketRef.current && spawnInitialPiece();
 
@@ -454,7 +453,7 @@ function MultitrisGame(props) {
     socketRef.current.on("receive_piece", ([oldPiece, newPiece]) => {
       movingPiecesRef.current[newPiece.playerIndex] = { newPiece, oldPiece };
 
-      console.log("handleReceivedPiece=", oldPiece, newPiece);
+      //console.log("handleReceivedPiece=", oldPiece, newPiece);
       handleReceivedPiece(oldPiece, newPiece);
     });
 
@@ -464,7 +463,7 @@ function MultitrisGame(props) {
   }, [grid.length]);
 
   const canMoveDownManualy = (movingPiece) => {
-    console.log(movingPiece);
+    //console.log(movingPiece);
     const { pieceShape, pieceRow, pieceCol } = movingPiece;
     let newRow = pieceRow + 1;
 
@@ -524,13 +523,13 @@ function MultitrisGame(props) {
   }, [myMovingPiece, gameOver]);
 
   const isCollisionWithMovingPieces = (gridPositionX, gridPositionY) => {
-    console.log("----------------------------------------------");
+    //console.log("----------------------------------------------");
 
     return Object.values(movingPiecesRef.current).some((elm) => {
       const piece = elm.newPiece;
 
       if (myMovingPieceRef.current === piece) {
-        console.log("samePiece");
+        //console.log("samePiece");
         return false;
       }
       for (let k = 0; k <= piece.newShape.length - 1; k++) {
@@ -541,11 +540,11 @@ function MultitrisGame(props) {
 
           const posX = piece.newCol + l;
           const posY = piece.newRow + k;
-          console.log(
-            ` | gridPositionX ${gridPositionX}  posX ${posX} | gridPositionY ${gridPositionY} posY ${posY} |, result: ${
-              posX === gridPositionX && posY === gridPositionY
-            }`
-          );
+          // //console.log(
+          //   ` | gridPositionX ${gridPositionX}  posX ${posX} | gridPositionY ${gridPositionY} posY ${posY} |, result: ${
+          //     posX === gridPositionX && posY === gridPositionY
+          //   }`
+          // );
           if (posX === gridPositionX && posY === gridPositionY) {
             return true;
           }
@@ -683,10 +682,10 @@ function MultitrisGame(props) {
     const clearedMovingPieceGrid = clearInGamePlayerPieces(tempGrid);
     const clearedGrid = clearCompletedLines(clearedMovingPieceGrid);
 
-    //S'il y a des lignes validés on les supprime
+    //S'il y a des lignes validées on les supprime
     if (ROWS - clearedGrid.length > 0) {
       // Lorsqu'une pièce est posée -> quand une ligne est posée
-      emitPlayerScore(0, clearedGrid.length);
+      emitPlayerScore(0, ROWS - clearedGrid.length);
       const newTab = rebuildGridAfterClearingLines(clearedGrid);
       updateGrid(newTab);
     }
@@ -714,42 +713,65 @@ function MultitrisGame(props) {
     );
   };
 
+  //console.log(props.lobby.players[0]);
+
   // composant endGame
   const endGame = () => {
     // afficher un bouton de retour
-    let playersStats = props.lobby.players.map((player) => {
-      <>
-        <div className={styles.statsPlayerName}>{player.id}</div>
-        <div className={styles.statsPlayerDataContainer}>
-          <div className={styles.statsPlayerDataField}>
-            <p>Nombre de lignes</p>
-            <p>Score</p>
-          </div>
-          <div className={styles.statsPlayerDataName}>
-            <p>12</p>
-            <p>320</p>
-          </div>
-        </div>
-      </>;
-    });
-    return (
-      <div className={styles.endGameContainer}>
-        <div className={styles.endGameSectionContainer}>
-          <div className={styles.endGameContainerTitle}>Team Stats</div>
+
+    let playersStatsToDisplay = props.lobby.players.map((i) => {
+      return (
+        <div className={styles.individualPlayerStatContainer}>
+          <div className={styles.statsPlayerName}>{i.username}</div>
           <div className={styles.statsContainer}>
             <div className={styles.statsNames}>
-              <p>Nombre de lignes</p>
-              <p>Score d'équipe</p>
+              <div className={styles.statLine}>Lignes</div>
+              <div className={styles.statLine}>Score</div>
             </div>
             <div className={styles.statsValues}>
-              <p>12</p>
-              <p>830</p>
+              <div className={styles.statLine}>
+                {partScores.playersStats &&
+                  partScores?.playersStats?.find((e) => e.player === i._id)
+                    .completedLines}
+              </div>
+              <div className={styles.statLine}>
+                {partScores.playersStats &&
+                  partScores?.playersStats?.find((e) => e.player === i._id)
+                    .score}
+              </div>
             </div>
           </div>
         </div>
-        <div className={styles.endGameSectionContainer}>
-          <div className={styles.endGameContainerTitle}>Players' Stats</div>
-          <div className={styles.statsContainer}>{playersStats}</div>
+      );
+    });
+    return (
+      <div className ={styles.endGameWindow}>
+        <div className={styles.endGameContainer}>
+          <div className={styles.endGameSectionContainerLeft}>
+            <h2 className={styles.endGameContainerTitle}>Perf d'équipe</h2>
+            <div className={styles.statsContainerLeft}>
+              <div className={styles.statsNamesContainer}>
+                <div className={styles.statLineTeam}>Nombre de lignes</div>
+                <div className={styles.statLineTeam}>Score d'équipe</div>
+              </div>
+              <div className={styles.statsValues}>
+                <div className={styles.statLineTeam}>
+                  {partScores.completedLines}
+                </div>
+                <div className={styles.statLineTeam}>
+                  {partScores.teamScore}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.endGameSectionContainerRight}>
+            <h2 className={styles.endGameContainerTitle}>
+              Stats individuelles
+            </h2>
+            <div className={styles.statsContainerRight}>
+              {playersStatsToDisplay}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -757,24 +779,27 @@ function MultitrisGame(props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.gameScores}>
-        <div className={styles.personalScores}>
-          <h2>
-            <span>Score perso : {currentScore} </span>{" "}
-            <span>Nb lignes perso : {completedLines} </span>
-          </h2>
+      {!gameOver && (
+        <div className={styles.gameScores}>
+          <div className={styles.personalScores}>
+            <h2>
+              <span>Score perso : {currentPlayerScore.score} </span>
+              <span>Nb lignes perso : {currentPlayerScore.completedLines}</span>
+            </h2>
+          </div>
+          <div className={styles.teamScores}>
+            <div>
+              <span>Score équipe : {partScores.teamScore} </span>
+              <span>Nb lignes équipe : {partScores.completedLines} </span>
+            </div>
+          </div>
         </div>
-        <div className={styles.teamScores}>
-          <h2>
-            <span>Score équipe : {teamScore} </span>{" "}
-            <span>Nb lignes équipe : {teamLines} </span>
-          </h2>
-        </div>
-      </div>
-      <h2 className={styles.title}>Multitris</h2>
-      {/* {!gameOver & gridToDisplay()}  */}
+      )}
+      {/* {!gameOver && gridToDisplay()} */}
+      {/*{gameOver && endGame()} */}
+
       {gridToDisplay()}
-      {/* {gameOver && endGame()} */}
+      {endGame()}
     </div>
   );
 }
