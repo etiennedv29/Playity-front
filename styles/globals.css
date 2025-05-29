@@ -53,3 +53,25 @@ body {
   margin-top: 0;
   margin-bottom: 20px;
 }
+
+.modal{
+    padding: 0px;
+    border: 0px;
+    background-color: rgb(34, 34, 43);
+}
+
+
+.ant-modal-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+
+  background: none !important;
+}
+
+svg {
+  color: #cfa75f;
+}
+
+
+

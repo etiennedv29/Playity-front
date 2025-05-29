@@ -443,7 +443,7 @@ function Login() {
               <button
                 className={styles.modalSigninButton}
                 id="connection"
-                onClick={() => handleSignin(email, password, false)}
+                onClick={() => {handleSignin(email, password, false)}}
               >
                 Connexion
               </button>

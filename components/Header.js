@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/users";
 import styles from "../styles/Header.module.css";
 
-function Header() {
+function Header({ changeModalState }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.users.value);
@@ -26,6 +26,10 @@ function Header() {
       dispatch(logout());
     }
   };
+
+  // if (isGuest || !token) {} else {
+  //   changeModalState();
+  // }
 
   return (
     <header className={styles.header}>
@@ -61,9 +65,7 @@ function Header() {
           </div>
           <div >
             {isGuest || !token ? (
-              <Link href="/login" className={styles.link}>
-                <FontAwesomeIcon icon={faUser} className={styles.userImage} />
-              </Link>
+              <FontAwesomeIcon icon={faUser} className={styles.userImage} onClick={() => changeModalState()}/>
             ) : (
               <div className={styles.userInfoContainer}>
                 <Link href="/account" className={styles.link}>
@@ -79,14 +81,12 @@ function Header() {
                 {/* <Link href="/account" className={styles.link}>
                   <div className={styles.userName}>{user.username}</div>
                 </Link> */}
-                <Link href="/login" className={styles.link}>
                   <div
-                    className={styles.userName}
+                    className={styles.btnLogout}
                     onClick={() => handleLogout()}
                   >
                     Déconnexion
                   </div>
-                </Link>
               </div>
             )}
             {/* {token ? (

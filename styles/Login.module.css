@@ -6,23 +6,24 @@
   justify-content: space-around;
   align-items: flex-start;
   background-color: #122846;
-  padding-top: 3vh;
+  border-radius: 15px;
+  padding: 0 0 30px 0;
+  border: 1px solid #F5C242;
 }
 .registerContainer {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 500px;
+  width: 100%;
   transition: opacity 0.1s ease 0s;
 }
 
 .registerSection {
-  border: 1px solid #f5c242;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  width: 80%;
+  width: 100%;
   padding-bottom: 2vh;
   border-radius: 8px;
 }
@@ -36,7 +37,7 @@
 .connectsSeparator {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: 80%;
   align-items: center;
   justify-content: center;
 }
@@ -45,7 +46,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
 }
 .passwordArea {
   margin-bottom: 10px;
@@ -62,11 +62,15 @@
   border: 1px solid #122846;
   background: #fff;
   font-family: 'Caveat Brush';
+  font-size: 15px;
+  padding-left: 10px;
 }
 .loginField:focus {
+  outline: none;
   border: 1px solid #f5c242;
 }
 .loginField:hover {
+  outline: none;
   border: 1px solid #4a90e2;
 }
 .loginFieldPassword {
@@ -75,12 +79,16 @@
   border-radius: 8px;
   border: 1px solid #122846;
   background: #fff;
+  font-size: 15px;
+  padding-left: 10px;
   font-family: 'Caveat Brush';
 }
 .loginFieldPassword:hover {
+  outline: none;
   border: 1px solid #4a90e2;
 }
 .loginFieldPassword:focus {
+  outline: none;
   border: 1px solid #f5c242;
 }
 
@@ -123,28 +131,37 @@
   align-items: center;
 }
 .warningCGU {
-  color: lightcoral;
+  color: #FF6B6B;
   font-size: 12px;
 }
 .loginModalTitle {
+  margin-top: 13px;
   color: #f5c242;
   text-align: center;
-  font-size: 60;
+  font-size: 30px;
+  font-family: 'Caveat Brush';
+  font-weight: 100;
 }
 
 .modalSigninButton {
   background-color: #f5c242;
   color: #122846;
   margin-top: 10px;
-  font-weight: 800;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 100;
+  font-family: 'Caveat Brush';
   width: 186px;
-  height: 42.028px;
+  height: 60px;
   flex-shrink: 0;
   border-radius: 8px;
+  outline: none;
+  border: 0;
 }
 .modalSigninButton:hover {
-  color: #fff;
-  background-color: #cfa75f;
+  color: #F5C242;
+  border: 1px solid #F5C242;
+  background-color: #122846;
 }
 .switchSignup {
   color: #f5c242;
