@@ -27,6 +27,7 @@ function MultitrisGame(props) {
     (player) => player._id === user._id
   );
   let currentPlayerScore = {};
+  console.log(currentPlayerIndex);
 
   // largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
@@ -603,7 +604,7 @@ function MultitrisGame(props) {
             key={i}
             className={
               cell
-                ? `${styles.cell} ${styles[`filled${currentPlayerIndex}`] || styles.filled}`
+                ? `${styles.cell} ${styles[`filled${cell}`] || styles.filled}`
                 : `${styles.cell} ${styles.empty}`
             }
           ></div>
@@ -681,16 +682,16 @@ function MultitrisGame(props) {
       {!gameOver && (
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
-            <h2>
-              <span>Score perso : {currentPlayerScore.score} </span>
-              <span>Nb lignes perso : {currentPlayerScore.completedLines}</span>
+            <h2 className={styles.scoreTitle}>
+              <p>Score perso : {currentPlayerScore.score} </p>
+              <p>Nb lignes perso : {currentPlayerScore.completedLines}</p>
             </h2>
           </div>
           <div className={styles.teamScores}>
-            <div>
-              <span>Score équipe : {partScores.teamScore} </span>
-              <span>Nb lignes équipe : {partScores.completedLines} </span>
-            </div>
+            <h2 className={styles.scoreTitle}>
+              <p>Score équipe : {partScores.teamScore} </p>
+              <p>Nb lignes équipe : {partScores.completedLines} </p>
+            </h2>
           </div>
         </div>
       )}
@@ -698,7 +699,7 @@ function MultitrisGame(props) {
       {/*{gameOver && endGame()} */}
 
       {gridToDisplay()}
-      {endGame()}
+      {/* {endGame()} */}
     </div>
   );
 }
