@@ -66,10 +66,10 @@ function Slider() {
         initialSlide={2}
         loop={false}
         coverflowEffect={{
-          rotate: 10,          // pas de rotation
-          stretch: 10,       // slides plus proches (valeur négative = elles se recouvrent)
-          depth: 200,         // profondeur pour le Z-index
-          modifier: 2,      // augmente l'effet de profondeur
+          rotate: 5,          // pas de rotation
+          stretch: 30,       // slides plus proches (valeur négative = elles se recouvrent)
+          depth: 120,         // profondeur pour le Z-index
+          modifier: 3,      // augmente l'effet de profondeur
           slideShadows: false // tu peux passer à true si tu veux un effet 3D
         }}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
