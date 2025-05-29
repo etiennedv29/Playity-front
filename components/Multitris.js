@@ -48,6 +48,7 @@ function MultitrisGame(props) {
   const socket = props.socket;
   let socketRef = useRef(socket);
   const myMovingPieceRef = useRef(null);
+  let currentPlayerIndex = 1;
   const gridRef = useRef([]); // nécessaire pour compenser le set_interval qui utilise sinon grid ===[]
   let isAdmin = props?.lobby?.admin === user._id;
 
@@ -135,7 +136,7 @@ function MultitrisGame(props) {
       return;
     }
 
-    let currentPlayerIndex = props.lobby.players.findIndex(
+    currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
 
@@ -609,7 +610,11 @@ function MultitrisGame(props) {
         {grid.flat().map((cell, i) => (
           <div
             key={i}
-            className={`${styles.cell} ${cell ? styles.filled : styles.empty}`}
+            className={
+              cell
+                ? `${styles.cell} ${styles[`filled${currentPlayerIndex}`] || styles.filled}`
+                : `${styles.cell} ${styles.empty}`
+            }
           ></div>
         ))}
       </div>

@@ -33,8 +33,20 @@
   background-color: #1f1f1f;
 }
 
-.filled {
-  background-color: #00d9ff; /* Couleur temporaire pour bloc rempli */
+.filled1 {
+  background-color: #6EB5FF; /* Couleur temporaire pour bloc rempli */
+}
+
+.filled2 {
+  background-color: #F5C242; /* Couleur temporaire pour bloc rempli */
+}
+
+.filled3 {
+  background-color: #FF6B6B; /* Couleur temporaire pour bloc rempli */
+}
+
+.filled4 {
+  background-color: #FFFFFF; /* Couleur temporaire pour bloc rempli */
 }
 
 .empty {

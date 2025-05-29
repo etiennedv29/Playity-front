@@ -1,9 +1,9 @@
 .header {
-  grid-column-start: 1;
-  grid-column-end: 15;
-  grid-row-start: 1;
-  grid-row-end: 2;
-  background-color: #122846;
+    grid-column-start: 1;
+    grid-column-end: 15;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    background-color: #122846;
 }
 
 .globalInfo {
