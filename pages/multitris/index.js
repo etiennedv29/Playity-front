@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import YoutubeVideo from "../../components/YoutubeVideo";
-import styles from "../../styles/Multitris.module.css";
+import styles from "../../styles/Lobby.module.css";
 import { getGameNameFromUrl } from "../../utils/url";
 
 export default function HomePage() {
@@ -74,11 +74,11 @@ export default function HomePage() {
     <div>
       <div className={styles.lobbyContainer}>
         <h1 className="gameTitle">Multitris</h1>
-        <div className={styles.mainContainer}>
+        <div className={styles.globalContainer}>
           <div className={styles.leftContainer}>
             {game && <YoutubeVideo videoId={game.demo} />}
           </div>
-          <div className={styles.rightContainerBorderless}>
+          <div className={styles.rightContainer}>
             <div className={styles.rightTopContainer}>
               <div>
                 <label htmlFor="mySelect">Players</label>
