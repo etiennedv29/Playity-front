@@ -14,6 +14,7 @@ import Slide from "./Slide";
 function Slider() {
   const swiperRef = useRef(null);
   const [topGames, setTopGames] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const fetchTopGames = async () => {
     const response = await fetch("http://localhost:3000/games");
@@ -24,9 +25,16 @@ function Slider() {
     //console.log(topGamesData);
   };
 
+  function changeSlide(tagsArr, id) {
+    if(tagsArr.includes("mainGame")) {
+
+    }
+  }
+
   useEffect(() => {
     fetchTopGames();
   }, []);
+
 
   const currentTopGames = topGames.map((slide) => (
     <SwiperSlide
@@ -39,55 +47,46 @@ function Slider() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-      }}
-    >
-      <Slide {...slide} className={styles.slide} />
-    </SwiperSlide>
-  ));
+        }}
+        onClick={() => swiperRef.current.slideTo(topGames.findIndex(g => g.id === slide.id))}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}>
+        <Slide {...slide} className={styles.slide} isActive={index === activeIndex}/>
+      </SwiperSlide>
+    
+  ))
 
   return (
-    <div className="relative w-full min-h-[400px] flex justify-center items-center">
-      <Swiper
-        modules={[EffectCoverflow, Pagination]}
-        effect="coverflow"
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView="auto"
-        initialSlide={2}
-        loop={false}
-        coverflowEffect={{
-          rotate: 10, // pas de rotation
-          stretch: 10, // slides plus proches (valeur négative = elles se recouvrent)
-          depth: 200, // profondeur pour le Z-index
-          modifier: 2.5, // augmente l'effet de profondeur
-          slideShadows: false, // tu peux passer à true si tu veux un effet 3D
-        }}
-        onSwiper={(swiper) => (swiperRef.current = swiper)}
-        style={{
-          width: "100vw",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        pagination={{ clickable: true }}
-        className={styles.carouselContainer}
-      >
-        {currentTopGames}
-        <div className={styles.buttonsBox}>
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            color="white"
-            className={styles.btn}
-            onClick={() => swiperRef.current?.slidePrev()}
-          />
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            color="white"
-            className={styles.btn}
-            onClick={() => swiperRef.current?.slideNext()}
-          />
-        </div>
-      </Swiper>
+  <div className="relative w-full min-h-[400px] flex justify-center items-center">
+  <Swiper
+      modules={[EffectCoverflow, Pagination]}
+      effect="coverflow"
+      grabCursor={true}
+      centeredSlides={true}
+      slidesPerView="auto"
+      initialSlide={2}
+      loop={false}
+      coverflowEffect={{
+        rotate: 10,          // pas de rotation
+        stretch: 10,       // slides plus proches (valeur négative = elles se recouvrent)
+        depth: 200,         // profondeur pour le Z-index
+        modifier: 2,      // augmente l'effet de profondeur
+        slideShadows: false // tu peux passer à true si tu veux un effet 3D
+      }}
+      onSwiper={(swiper) => (swiperRef.current = swiper)}
+      style={{
+        width: "100vw",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      pagination={{ clickable: true }}
+      className={styles.carouselContainer}
+  >
+    {currentTopGames}
+    <div className={styles.buttonsBox}>
+      <FontAwesomeIcon icon={faChevronLeft} color="white" className={styles.btn} onClick={() => swiperRef.current?.slidePrev()}/>
+      {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
+      <FontAwesomeIcon icon={faChevronRight} color="white" className={styles.btn} onClick={() => swiperRef.current?.slideNext()}/>
     </div>
   );
 }

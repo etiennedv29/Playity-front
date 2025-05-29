@@ -25,6 +25,12 @@
   cursor: pointer;
 }
 
+/* .btnStartGame{
+  width: 150px;
+  height: 40px;
+  margin: 0 50px;
+} */
+
 .slide {
   display: flex;
   flex-direction: column;

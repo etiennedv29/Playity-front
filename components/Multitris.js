@@ -22,7 +22,6 @@ function MultitrisGame(props) {
   const socket = props.socket;
   let socketRef = useRef(socket);
   const myMovingPieceRef = useRef(null);
-
   let isAdmin = props?.lobby?.admin === user._id;
   const currentPlayerIndex = props.lobby.players.findIndex(
     (player) => player._id === user._id
@@ -130,6 +129,7 @@ function MultitrisGame(props) {
     const { oldShape, oldRow, oldCol } = oldPiece;
 
     // Si c'est la pièce du currentPlayer, on la définit comme myMovingPiece
+
     if (playerIndex === currentPlayerIndex) {
       updateMyMovingPiece({
         playerIndex,
@@ -651,7 +651,11 @@ function MultitrisGame(props) {
         {grid.flat().map((cell, i) => (
           <div
             key={i}
-            className={`${styles.cell} ${cell ? styles.filled : styles.empty}`}
+            className={
+              cell
+                ? `${styles.cell} ${styles[`filled${currentPlayerIndex}`] || styles.filled}`
+                : `${styles.cell} ${styles.empty}`
+            }
           ></div>
         ))}
       </div>

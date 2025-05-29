@@ -59,7 +59,7 @@ export default function Lobby({ lobby, game, code, startGame }) {
             </button>
           )}
         </div>
-        <div className={styles.rightContainer}>
+        <div className={styles.rightContainerLobby2}>
           <h1>Lobby: #{code}</h1>
           {playerElements}
           {playersWaiting}
