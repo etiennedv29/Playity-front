@@ -36,8 +36,8 @@ function Header() {
               className={styles.logoImage}
               src="/playity-logo.png"
               alt="Playity logo"
-              width={100}
-              height={100}
+              width={80}
+              height={80}
               style={{ cursor: "pointer" }}
             />
           </Link>
@@ -59,13 +59,13 @@ function Header() {
               className={styles.searchInput}
             ></input>
           </div>
-          <div className={styles.userInfoContainer}>
+          <div >
             {isGuest || !token ? (
               <Link href="/login" className={styles.link}>
                 <FontAwesomeIcon icon={faUser} className={styles.userImage} />
               </Link>
             ) : (
-              <div>
+              <div className={styles.userInfoContainer}>
                 <Link href="/account" className={styles.link}>
                   <Image
                     src={avatar}
@@ -76,6 +76,9 @@ function Header() {
                     height={50}
                   />
                 </Link>
+                {/* <Link href="/account" className={styles.link}>
+                  <div className={styles.userName}>{user.username}</div>
+                </Link> */}
                 <Link href="/login" className={styles.link}>
                   <div
                     className={styles.userName}

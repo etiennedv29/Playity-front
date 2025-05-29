@@ -5,7 +5,7 @@ import styles from "../styles/Multitris.module.css";
 
 const COLS_PER_PLAYER = 10; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
-const TICK_INTERVAL = 2000; // 500 ms par intervalle de descente des pièces
+const TICK_INTERVAL = 1000; // 500 ms par intervalle de descente des pièces
 
 const DOWN_MOVE = "down";
 
@@ -113,7 +113,7 @@ function MultitrisGame(props) {
     currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
-
+    console.log('Index du joueur : ', currentPlayerIndex)
     //demande de spawn de pièce par le player currentPlayer
     await socketRef.current.emit("spawn_piece", {
       currentPlayerIndex,
@@ -135,7 +135,7 @@ function MultitrisGame(props) {
     const { oldShape, oldRow, oldCol } = oldPiece;
 
     // Si c'est la pièce du currentPlayer, on la définit comme myMovingPiece
-    let currentPlayerIndex = props.lobby.players.findIndex(
+    currentPlayerIndex = props.lobby.players.findIndex(
       (player) => player._id === user._id
     );
 

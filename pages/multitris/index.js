@@ -80,13 +80,14 @@ export default function HomePage() {
           </div>
           <div className={styles.rightContainer}>
             <div className={styles.rightTopContainer}>
-              <div>
+              <div className={styles.selectContainer}>
                 <label htmlFor="mySelect">Players</label>
                 <select
                   id="mySelect"
                   value={String(playerNumber)}
                   onChange={(e) => setPlayerNumber(e.target.value)}
                   required={true}
+                  className={styles.selectInput}
                 >
                   {selectPlayerNumberElements}
                 </select>
@@ -101,7 +102,7 @@ export default function HomePage() {
             </div>
 
             <div className={styles.rightBottomContainer}>
-              <div>
+              <div className={styles.lobbyCodeContainer}>
                 <label>Code du lobby</label>
                 <input
                   className={styles.inputCode}
@@ -109,7 +110,6 @@ export default function HomePage() {
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value)}
                   maxLength={5}
-                  style={{ textTransform: "uppercase", marginLeft: "10px" }}
                 />
               </div>
 

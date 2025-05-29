@@ -4,9 +4,7 @@
   justify-content: center;
   align-items: center;
   min-height: 250vh;
-  width: 100vw;
   padding: 0;
-  overflow: hidden;
 }
 
 .globalContainer {
@@ -14,26 +12,23 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 98vw;
-  height: 100%;
-  padding: 0 100px;
 }
 
-.mainContainer {
+/* .mainContainer {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   width: 100vw;
   height: 100vh;
-}
+} */
 
 .lobbyContainer {
   display: flex;
-  justify-content: center;
+  justify-content: top;
   align-items: center;
-  height: 130vh;
-  width: 100%;
+  /* height: 120vh; */
+  /* width: 100vw; */
   flex-direction: column;
 }
 
@@ -43,8 +38,6 @@
   align-items: center;
   flex-direction: column;
   color: white;
-  width: 57vw;
-  height: 80vh;
 }
 
 .demoContainer {
@@ -57,14 +50,27 @@
 .rightContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: top;
   flex-direction: column;
   height: 325px;
+  width: 320px;
   color: white;
   border: solid 1px white;
   border-radius: 15px;
-  width: 300px;
+  padding: 0 20px;
+}
 
+.rightContainerLobby2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 325px;
+  width: 320px;
+  color: white;
+  border: solid 1px white;
+  font-weight: 100;
+  border-radius: 15px;
   padding: 0 20px;
 }
 
@@ -72,14 +78,53 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  width: 100%;
+}
+
+.selectContainer {
+  width: 50%;
+}
+
+.selectInput {
+  margin-left: 35px;
+  outline: none;
+  border-radius: 5px;
+  border: 0;
+  width: 50px;
+  height: 25px;
+  border-radius: 7px;
+  padding: 5px;
 }
 
 .rightBottomContainer {
   display: flex;
   justify-content: space-between;
+  align-items: top;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.lobbyCodeContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  width: 80%;
+  width: 50%;
+}
+
+.inputCode {
+  width: 75px;
+  height: 25px;
+  border-radius: 10px;
+  border: none;
+  text-transform: uppercase;
+  margin-left: 10px;
+  border: 1px solid #FFFFFF;
+}
+
+.inputCode:focus {
+  outline: none;
+  border: 1px solid #4A90E2;
 }
 
 .btnPlay {
@@ -87,6 +132,21 @@
   cursor: pointer;
   height: 60px;
   width: 180px;
+}
+
+.btnCreateGame{
+  font-size: 15px;
+  margin-left: 20px;
+  cursor: pointer;
+  height: 40px;
+  width: 120px;
+}
+
+.btnJoin{
+  margin-left: 20px;
+  cursor: pointer;
+  height: 40px;
+  width: 120px;
 }
 
 .btnSecondary {

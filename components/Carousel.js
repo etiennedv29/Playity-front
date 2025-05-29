@@ -12,6 +12,7 @@ function Slider() {
   
   const swiperRef = useRef(null);
   const [topGames, setTopGames] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const fetchTopGames = async () => {
     const response = await fetch('http://localhost:3000/games');
@@ -21,11 +22,18 @@ function Slider() {
     console.log(topGamesData);
   }
 
+  function changeSlide(tagsArr, id) {
+    if(tagsArr.includes("mainGame")) {
+
+    }
+  }
+
   useEffect(() => {
     fetchTopGames();
   }, [])
 
-  const currentTopGames = topGames.map((slide) => (
+  const currentTopGames = topGames.map((slide, index) => (
+
       <SwiperSlide key={slide.id} className={styles.slideContainer} style={{
         width: "400px",
         height: "300px",
@@ -33,10 +41,13 @@ function Slider() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        }}>
-        <Slide {...slide} className={styles.slide}/>
+        }}
+        onClick={() => swiperRef.current.slideTo(topGames.findIndex(g => g.id === slide.id))}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}>
+        <Slide {...slide} className={styles.slide} isActive={index === activeIndex}/>
       </SwiperSlide>
-    ))
+    
+  ))
 
 
   return (
@@ -69,6 +80,7 @@ function Slider() {
     {currentTopGames}
     <div className={styles.buttonsBox}>
       <FontAwesomeIcon icon={faChevronLeft} color="white" className={styles.btn} onClick={() => swiperRef.current?.slidePrev()}/>
+      {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
       <FontAwesomeIcon icon={faChevronRight} color="white" className={styles.btn} onClick={() => swiperRef.current?.slideNext()}/>
     </div>
   </Swiper>
