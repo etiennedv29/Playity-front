@@ -115,7 +115,7 @@ export default function LobbyPage() {
         <Head>
           <title>{`Playity | ${gameName[0].toUpperCase() + gameName.slice(1)}`}</title>
         </Head>
-        <h1 className="gameTitle">Multitris</h1>
+        {!gameStarted && (<h1 className="gameTitle">Multitris</h1>)}
         <div className={styles.mainContainer}>
           {!gameStarted && lobby && (
             <Lobby

@@ -18,10 +18,10 @@
 
 .grid {
   display: grid;
-  width: 500px;
-  height: 700px;
+  width: 50vw;
+  height: 90vh;
   aspect-ratio: calc(var(--cols) / 20); /* Pour s'adapter à la hauteur */
-  gap: 0.5px; /* Espace entre cellules */
+  gap: 0.8px; /* Espace entre cellules */
   background-color: #000000;
 }
 
