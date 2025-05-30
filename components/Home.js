@@ -14,29 +14,26 @@ function Home() {
 
   const [gamesData, setGamesData] = useState([]);
 
-  let gamesMock = []
+  let gamesMock = [];
 
   const getAllGames = async () => {
-    const response = await fetch('http://localhost:3000/games');
-    //const response = await fetch ('https://p01--playity-back--c9dy8yj49fkp.code.run/games')
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/games`
+    );
+
     const data = await response.json();
-    const otherGamesData = data.filter((e) => !e.tags.includes("topGame"))
+    const otherGamesData = data.filter((e) => !e.tags.includes("topGame"));
     setGamesData(otherGamesData);
-  }
+  };
 
   useEffect(() => {
     getAllGames();
-  }, [])
+  }, []);
 
-    // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
-    let games = gamesData.map((data, i) => {
-      return (
-        <GameMiniature
-          key={i}
-          {...data}
-        />
-      );
-    });
+  // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
+  let games = gamesData.map((data, i) => {
+    return <GameMiniature key={i} {...data} />;
+  });
 
   return (
     <div>
@@ -45,12 +42,14 @@ function Home() {
       </Head>
       <div className={styles.main}>
         <div className={styles.carrouselContainer}>
-          <Carousel data={gamesMock} activeSlide={2} className={styles.slider}></Carousel>
+          <Carousel
+            data={gamesMock}
+            activeSlide={2}
+            className={styles.slider}
+          ></Carousel>
         </div>
         <h3 className={styles.gamesGridTitle}>Plus de jeux</h3>
-        <div className={styles.gamesGridContainer}>
-          {games}
-        </div>
+        <div className={styles.gamesGridContainer}>{games}</div>
         <div className={styles.footer}></div>
       </div>
     </div>

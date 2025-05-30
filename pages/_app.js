@@ -1,8 +1,9 @@
+require('dotenv').config();
 import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Login from "../components/Login";
-import { Modal } from "antd";
+import Modal from "antd/lib/modal";
 import { useState } from 'react';
 import "../styles/globals.css";
 //imports google connect

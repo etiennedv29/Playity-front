@@ -85,12 +85,14 @@ export default function LobbyPage() {
   }, [router.isReady, code, userId]);
 
   const handlePartLaunch = async () => {
-    const response = await fetch("http://localhost:3000/parts/start", {
-    //const response = await fetch("https://p01--playity-back--c9dy8yj49fkp.code.run/parts/starts",{
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/parts/start`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
+      }
+    );
 
     console.log("id du lobby : ", lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
@@ -114,9 +116,11 @@ export default function LobbyPage() {
     <>
       <div className={styles.lobbyContainer}>
         <Head>
-          <title>{`Playity | ${gameName[0].toUpperCase() + gameName.slice(1)}`}</title>
+          <title>{`Playity | ${
+            gameName[0].toUpperCase() + gameName.slice(1)
+          }`}</title>
         </Head>
-        {!gameStarted && (<h1 className="gameTitle">Multitris</h1>)}
+        {!gameStarted && <h1 className="gameTitle">Multitris</h1>}
         <div className={styles.mainContainer}>
           {!gameStarted && lobby && (
             <Lobby
