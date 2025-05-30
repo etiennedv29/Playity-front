@@ -138,11 +138,26 @@ function MultitrisGame(props) {
     if (oldRow !== "") {
       //console.log("c'est PAS un spawn");
       // au cas où l'ancienne postion n'existe pas parce que c'est une spawn
-      oldShape.forEach((row, rowIndex) => {
-        row.forEach((cell, colIndex) => {
-          newGrid[oldRow + rowIndex][oldCol + colIndex] = 0;
+      
+      //clean la moving grid
+      const cleanedMovingGrid = newGrid.map((row) => {
+        return row.map((cell) => {
+          if (cell === playerIndex + 1) {
+            return 0;
+          }
+          return cell;
         });
       });
+      newGrid = cleanedMovingGrid;
+
+
+
+
+      // oldShape.forEach((row, rowIndex) => {
+      //   row.forEach((cell, colIndex) => {
+      //     newGrid[oldRow + rowIndex][oldCol + colIndex] = 0;
+      //   });
+      // });
     } else {
       // si c'est une spawn on vérifie si elle est posable. Si pas possible => fin de partie
       newShape.forEach((row, pieceRowIndex) => {
