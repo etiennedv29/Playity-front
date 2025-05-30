@@ -110,7 +110,6 @@ function MultitrisGame(props) {
     }
 
     //demande de spawn de pièce par le player currentPlayer
-    console.log("going to spawnInitialPiece");
     await socketRef.current.emit("spawn_piece", {
       currentPlayerIndex,
       code: props.code,
