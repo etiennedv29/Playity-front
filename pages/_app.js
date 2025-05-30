@@ -16,8 +16,9 @@ import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
 import AuthProvider from "../components/auth/Provider";
 import users from "../reducers/users";
+import searches from "../reducers/searches"
 
-const reducers = combineReducers({ users });
+const reducers = combineReducers({ users,searches });
 const persistConfig = { key: "playity", storage };
 const store = configureStore({
   reducer: persistReducer(persistConfig, reducers),
