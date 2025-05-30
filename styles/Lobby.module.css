@@ -15,12 +15,12 @@
   gap: 50px;
 }
 
-
 .lobbyContainer {
+  margin-bottom: 50px;
   display: flex;
   justify-content: top;
   align-items: center;
-  height: 100vh;
+  height: 120%;
   flex-direction: column;
 }
 
