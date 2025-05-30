@@ -7,10 +7,12 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { logout } from "../reducers/users";
-import {saveSearchValue} from "../reducers/searches"
+import { saveSearchValue } from "../reducers/searches";
 import styles from "../styles/Header.module.css";
+import Modal from "antd/lib/modal";
+import Login from "./Login"
 
-function Header({ changeModalState }) {
+function Header() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.users.value);
@@ -19,6 +21,7 @@ function Header({ changeModalState }) {
   const token = user.token;
   const isGuest = !user.roles.includes("member");
   const [searchValue, setSearchValue] = useState("");
+  const [visibleModal,setVisibleModal] = useState(false)
 
   const handleLogout = () => {
     router.push("/");
@@ -35,8 +38,23 @@ function Header({ changeModalState }) {
     dispatch(saveSearchValue(searchValue));
   }, [searchValue]);
 
+  function changeModalState() {
+    setVisibleModal(!visibleModal);
+   }
+
   return (
     <header className={styles.header}>
+      <Modal
+        getContainer="#react-modals"
+        open={visibleModal}
+        closable={true}
+        footer={null}
+        onCancel={() => setVisibleModal(null)}
+        width={500}
+        className="modal"
+      >
+        {visibleModal && <Login  changeVisibleModal={changeModalState} />}
+      </Modal>
       <div className={styles.globalInfo}>
         <div className={styles.globalInfoLeft}>
           <Link href="/" className={styles.link}>
@@ -76,7 +94,7 @@ function Header({ changeModalState }) {
               <FontAwesomeIcon
                 icon={faUser}
                 className={styles.userImage}
-                onClick={() => changeModalState()}
+                onClick={() => setVisibleModal(true)}
               />
             ) : (
               <div className={styles.userInfoContainer}>
@@ -90,9 +108,6 @@ function Header({ changeModalState }) {
                     height={50}
                   />
                 </Link>
-                {/* <Link href="/account" className={styles.link}>
-                  <div className={styles.userName}>{user.username}</div>
-                </Link> */}
                 <div
                   className={styles.btnLogout}
                   onClick={() => handleLogout()}
