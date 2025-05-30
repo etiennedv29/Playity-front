@@ -15,7 +15,7 @@ function Home() {
   const router = useRouter();
   const [gamesData, setGamesData] = useState([]);
   const searchValue = useSelector((state) => state.searches.value.search);
-  console.log({searchValue})
+  console.log({ searchValue });
   let gamesMock = [];
 
   const getAllGames = async () => {
@@ -24,13 +24,18 @@ function Home() {
     );
 
     const data = await response.json();
-    const otherGamesData = data.filter((e) => !e.tags.includes("topGame"));
+    const otherGamesData = data;
     setGamesData(otherGamesData);
   };
 
   useEffect(() => {
     getAllGames();
   }, []);
+
+  let carouselBoxSize = {
+    height: searchValue.length===0 ? "400px" : "1px",
+    transition: "height 0.4s ease 0s"
+  };
 
   // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
   let games = gamesData
@@ -45,12 +50,14 @@ function Home() {
         <title>Playity | Home</title>
       </Head>
       <div className={styles.main}>
-        <div className={styles.carrouselContainer}>
-          <Carousel
-            data={gamesMock}
-            activeSlide={2}
-            className={styles.slider}
-          ></Carousel>
+        <div className={styles.carrouselContainer} style ={carouselBoxSize}>
+          {searchValue.length ===0 && (
+            <Carousel
+              data={gamesMock}
+              activeSlide={2}
+              className={styles.slider}
+            ></Carousel>
+          )}
         </div>
         <h3 className={styles.gamesGridTitle}>Plus de jeux</h3>
         <div className={styles.gamesGridContainer}>{games}</div>

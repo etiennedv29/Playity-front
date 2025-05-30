@@ -31,9 +31,7 @@ function App({ Component, pageProps }) {
 
   const [visibleModal, setVisibleModal] = useState(false);
 
-  function activateModal() {
-    setVisibleModal(!visibleModal);
-  }
+
 
   return (
     <>
@@ -65,17 +63,18 @@ function App({ Component, pageProps }) {
                   rel="stylesheet"
                 ></link>
               </Head>
-              <Header changeModalState={activateModal}/>
-              <Modal
+              <Header />
+              {/* <Modal
                 getContainer="#react-modals"
                 open={visibleModal}
                 closable={true}
                 footer={null}
                 onCancel={() => setVisibleModal(null)}
                 width={500}
+                className="modal"
               >
                 {visibleModal && <Login />}
-              </Modal>
+              </Modal> */}
               <Component {...pageProps} />
               <Footer />
             </AuthProvider>

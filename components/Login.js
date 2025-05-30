@@ -1,5 +1,5 @@
 import styles from "../styles/Login.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-function Login() {
+function Login({changeVisibleModal}) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
@@ -30,8 +30,11 @@ function Login() {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#*?&])[A-Za-z\d@$#!%*?&]{8,}$/;
 
-  // User connection
+  useEffect(()=>{
+    setIsSignupDisplay(false)
+  },[changeVisibleModal])
 
+  // User connection
   async function handleSignin(email, password, connectionWithSocials = false) {
     if ((!connectionWithSocials && password === "") || email === "") {
       setMissingFields(true);
@@ -73,6 +76,7 @@ function Login() {
         setPassword("");
         setEmail("");
         setCorrectCredentials(true);
+        changeVisibleModal()
 
         router.push("/");
       } else if (response.status === 401) {
@@ -161,6 +165,7 @@ function Login() {
         setLastName("");
         setEmail("");
         router.push("/");
+        changeVisibleModal()
       } else if (response.status === 409) {
         setExistingUser(true);
       }
@@ -176,7 +181,7 @@ function Login() {
 
   //signin and signup box design
   let boxSize = {
-    height: isSignupDisplay ? 580 : 410,
+    height: isSignupDisplay ? 600 : 410,
     transition: "height 0.15s ease-out",
   };
 
