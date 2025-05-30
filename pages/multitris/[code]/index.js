@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../../../client/socketClient";
-import Lobby from "../../../components/multitris/Lobby";
+import Lobby from "../../../components/multitris/lobby";
 import Head from "next/head";
 import styles from "../../../styles/Lobby.module.css";
 import { getGameNameFromUrl } from "../../../utils/url";
