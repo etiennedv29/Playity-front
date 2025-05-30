@@ -30,7 +30,7 @@ export default function LobbyPage() {
     (async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/games?name=" + gameName
+          `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/games?name=` + gameName
         );
         console.log(res.data[0]);
         setGame(res.data[0]);

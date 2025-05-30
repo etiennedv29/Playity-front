@@ -13,7 +13,7 @@ export default function AuthProvider({ children }) {
       try {
         if (!token) {
           const res = await axios.post(
-            "http://localhost:3000/users/register-guest"
+            `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/users/register-guest`
           );
 
           dispatch(loginGuest(res.data));

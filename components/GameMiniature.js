@@ -8,7 +8,7 @@ function GameMiniature(props) {
 
     function handleNormalGame(gameName) {
         gameName.toLowerCase().replace(" ", "");
-        router.push(`http://localhost:3001/${gameName}`);
+        router.push(`/${gameName}`);
     }
 
     return (
