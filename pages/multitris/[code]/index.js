@@ -85,7 +85,8 @@ export default function LobbyPage() {
   }, [router.isReady, code, userId]);
 
   const handlePartLaunch = async () => {
-    const response = await fetch("http://localhost:3000/parts/start", {
+    //const response = await fetch("http://localhost:3000/parts/start", {
+    const response = await fetch("https://p01--playity-back--c9dy8yj49fkp.code.run/parts/starts",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),

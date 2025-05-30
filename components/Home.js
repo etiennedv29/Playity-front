@@ -17,8 +17,8 @@ function Home() {
   let gamesMock = []
 
   const getAllGames = async () => {
-    const response = await fetch('http://localhost:3000/games');
-    //const response = await fetch ('https://p01--playity-back--c9dy8yj49fkp.code.run/games')
+    //const response = await fetch('http://localhost:3000/games');
+    const response = await fetch ('https://p01--playity-back--c9dy8yj49fkp.code.run/games')
     const data = await response.json();
     const otherGamesData = data.filter((e) => !e.tags.includes("topGame"))
     setGamesData(otherGamesData);
