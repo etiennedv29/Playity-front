@@ -1,6 +1,6 @@
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import Head from 'next/head';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import YoutubeVideo from "../../components/YoutubeVideo";
@@ -52,7 +52,7 @@ export default function HomePage() {
   const handleJoinClick = (e) => {
     e.preventDefault();
     if (joinCode.trim().length === 5) {
-      router.push(`/${joinCode.toUpperCase()}`);
+      router.push(`/multitris/${joinCode.toUpperCase()}`);
     } else {
       alert("Code invalide");
     }
@@ -74,7 +74,9 @@ export default function HomePage() {
   return (
     <div>
       <Head>
-        <title>{`Playity | ${gameName[0].toUpperCase() + gameName.slice(1)}`}</title>
+        <title>{`Playity | ${
+          gameName[0].toUpperCase() + gameName.slice(1)
+        }`}</title>
       </Head>
       <div className={styles.lobbyContainer}>
         <h1 className="gameTitle">Multitris</h1>
