@@ -682,24 +682,25 @@ function MultitrisGame(props) {
       {!gameOver && (
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
-            <h2 className={styles.scoreTitle}>
+            <div className={styles.scoreTitle}>
               <p>Score perso : {currentPlayerScore.score} </p>
               <p>Nb lignes perso : {currentPlayerScore.completedLines}</p>
-            </h2>
+            </div>
           </div>
           <div className={styles.teamScores}>
-            <h2 className={styles.scoreTitle}>
+            <div className={styles.scoreTitle}>
               <p>Score équipe : {partScores.teamScore} </p>
               <p>Nb lignes équipe : {partScores.completedLines} </p>
-            </h2>
+            </div>
           </div>
         </div>
       )}
       {/* {!gameOver && gridToDisplay()} */}
       {/*{gameOver && endGame()} */}
-
+      <div className={styles.gameContainer}>
       {gridToDisplay()}
       {/* {endGame()} */}
+      </div>
     </div>
   );
 }
