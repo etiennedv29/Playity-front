@@ -17,8 +17,9 @@ function Slider() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const fetchTopGames = async () => {
-    const response = await fetch("http://localhost:3000/games");
-    //const response = await fetch("https://p01--playity-back--c9dy8yj49fkp.code.run/games")
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/games`
+    );
     const data = await response.json();
     const topGamesData = data.filter((e) => e.tags.includes("topGame"));
     setTopGames(topGamesData);
@@ -26,15 +27,13 @@ function Slider() {
   };
 
   function changeSlide(tagsArr, id) {
-    if(tagsArr.includes("mainGame")) {
-
+    if (tagsArr.includes("mainGame")) {
     }
   }
 
   useEffect(() => {
     fetchTopGames();
   }, []);
-
 
   const currentTopGames = topGames.map((slide, index) => (
     <SwiperSlide
@@ -47,17 +46,23 @@ function Slider() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        }}
-        onClick={() => swiperRef.current.slideTo(topGames.findIndex(g => g.id === slide.id))}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}>
-        <Slide {...slide} className={styles.slide} isActive={index === activeIndex}/>
-      </SwiperSlide>
-    
-  ))
+      }}
+      onClick={() =>
+        swiperRef.current.slideTo(topGames.findIndex((g) => g.id === slide.id))
+      }
+      onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+    >
+      <Slide
+        {...slide}
+        className={styles.slide}
+        isActive={index === activeIndex}
+      />
+    </SwiperSlide>
+  ));
 
   return (
-  <div className="relative w-full min-h-[400px] flex justify-center items-center">
-    <Swiper
+    <div className="relative w-full min-h-[400px] flex justify-center items-center">
+      <Swiper
         modules={[EffectCoverflow, Pagination]}
         effect="coverflow"
         grabCursor={true}
@@ -66,11 +71,11 @@ function Slider() {
         initialSlide={2}
         loop={false}
         coverflowEffect={{
-          rotate: 5,          // pas de rotation
-          stretch: 30,       // slides plus proches (valeur négative = elles se recouvrent)
-          depth: 120,         // profondeur pour le Z-index
-          modifier: 3,      // augmente l'effet de profondeur
-          slideShadows: false // tu peux passer à true si tu veux un effet 3D
+          rotate: 5, // pas de rotation
+          stretch: 30, // slides plus proches (valeur négative = elles se recouvrent)
+          depth: 120, // profondeur pour le Z-index
+          modifier: 3, // augmente l'effet de profondeur
+          slideShadows: false, // tu peux passer à true si tu veux un effet 3D
         }}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         style={{
@@ -81,15 +86,25 @@ function Slider() {
         }}
         pagination={{ clickable: true }}
         className={styles.carouselContainer}
-    >
-      {currentTopGames}
-      <div className={styles.buttonsBox}>
-        <FontAwesomeIcon icon={faChevronLeft} color="white" className={styles.btn} onClick={() => swiperRef.current?.slidePrev()}/>
-        {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
-        <FontAwesomeIcon icon={faChevronRight} color="white" className={styles.btn} onClick={() => swiperRef.current?.slideNext()}/>
-      </div>
-    </Swiper>
-  </div>
+      >
+        {currentTopGames}
+        <div className={styles.buttonsBox}>
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            color="white"
+            className={styles.btn}
+            onClick={() => swiperRef.current?.slidePrev()}
+          />
+          {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            color="white"
+            className={styles.btn}
+            onClick={() => swiperRef.current?.slideNext()}
+          />
+        </div>
+      </Swiper>
+    </div>
   );
 }
 

@@ -20,7 +20,7 @@ export default function HomePage() {
     (async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/games?name=" + gameName
+          `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/games?name=` + gameName
         );
         setGame(res.data[0]);
       } catch (e) {}
@@ -32,7 +32,7 @@ export default function HomePage() {
       try {
         //Je crée le lobby dans mongo
         const res = await axios.post(
-          "http://localhost:3000/lobbies",
+          `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/lobbies`,
           { nbPlayers: playerNumber, gameId: game["_id"] },
           {
             headers: {

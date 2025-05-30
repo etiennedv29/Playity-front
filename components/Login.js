@@ -45,12 +45,14 @@ function Login() {
       return;
     }
 
-    const response = await fetch("http://localhost:3000/users/login", {
-    //const response = await fetch ("https://p01--playity-back--c9dy8yj49fkp.code.run/login",{
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, connectionWithSocials }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/users/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, connectionWithSocials }),
+      }
+    );
     const data = await response.json();
     //console.log("data after signin route:",data)
     try {
@@ -120,19 +122,21 @@ function Login() {
     }
     //console.log("going to call feth register")
     // calling register route
-    const response = await fetch("http://localhost:3000/users/register", {
-    //const response  =await fetch ("https://p01--playity-back--c9dy8yj49fkp.code.run/register",{
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        username,
-        password,
-        connectionWithSocials,
-      }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/users/register`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          username,
+          password,
+          connectionWithSocials,
+        }),
+      }
+    );
     const data = await response.json();
 
     try {
@@ -443,7 +447,9 @@ function Login() {
               <button
                 className={styles.modalSigninButton}
                 id="connection"
-                onClick={() => {handleSignin(email, password, false)}}
+                onClick={() => {
+                  handleSignin(email, password, false);
+                }}
               >
                 Connexion
               </button>

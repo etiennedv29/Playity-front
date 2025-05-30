@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { socket } from "../../../client/socketClient";
-import Lobby from "../../../components/multitris/Lobby";
+import Lobby from "../../../components/multitris/lobby";
 import Head from "next/head";
 import styles from "../../../styles/Lobby.module.css";
 import { getGameNameFromUrl } from "../../../utils/url";
@@ -30,7 +30,7 @@ export default function LobbyPage() {
     (async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3000/games?name=" + gameName
+          `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/games?name=` + gameName
         );
         console.log(res.data[0]);
         setGame(res.data[0]);
@@ -85,11 +85,14 @@ export default function LobbyPage() {
   }, [router.isReady, code, userId]);
 
   const handlePartLaunch = async () => {
-    const response = await fetch("http://localhost:3000/parts/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/parts/start`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gameId: game._id, lobbyId: lobby._id }),
+      }
+    );
 
     console.log("id du lobby : ", lobby._id);
     // La partie est créée en base, on récupère la réponse qui contient l'id de la partie
@@ -113,9 +116,11 @@ export default function LobbyPage() {
     <>
       <div className={styles.lobbyContainer}>
         <Head>
-          <title>{`Playity | ${gameName[0].toUpperCase() + gameName.slice(1)}`}</title>
+          <title>{`Playity | ${
+            gameName[0].toUpperCase() + gameName.slice(1)
+          }`}</title>
         </Head>
-        {!gameStarted && (<h1 className="gameTitle">Multitris</h1>)}
+        {!gameStarted && <h1 className="gameTitle">Multitris</h1>}
         <div className={styles.mainContainer}>
           {!gameStarted && lobby && (
             <Lobby
