@@ -380,7 +380,7 @@ function MultitrisGame(props) {
       !gameOver &&
       spawnInitialPiece();
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
-    emitCheckCompletedLine();
+    currentPlayerIndex === playerIndex && emitCheckCompletedLine();
   };
 
   // Fonction améliorée pour déclencher une explosion sur une ligne
@@ -459,6 +459,9 @@ function MultitrisGame(props) {
         setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
 
         if (playerId === currentPlayerIndex) {
+          console.log(
+            `emitPlayerScore ${numberCompletedLines} player: ${playerId} currentPlayerIndex ${currentPlayerIndex}`
+          );
           emitPlayerScore(0, numberCompletedLines);
         }
       }, 900); // Délai pour laisser les explosions se terminer
@@ -791,8 +794,20 @@ function MultitrisGame(props) {
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
             <div className={styles.scoreTitle}>
-              <p>Score perso : {partScores.playersStats?.find((p) => p.player === user._id)?.score} </p>
-              <p>Nb lignes perso : {partScores.playersStats?.find((p) => p.player === user._id)?.completedLines}</p>
+              <p>
+                Score perso :{" "}
+                {
+                  partScores.playersStats?.find((p) => p.player === user._id)
+                    ?.score
+                }{" "}
+              </p>
+              <p>
+                Nb lignes perso :{" "}
+                {
+                  partScores.playersStats?.find((p) => p.player === user._id)
+                    ?.completedLines
+                }
+              </p>
             </div>
           </div>
           <div className={styles.teamScores}>
