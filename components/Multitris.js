@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 // import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
+import Modal from "antd/lib/modal";
 
 const COLS_PER_PLAYER = 9; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -19,6 +20,7 @@ function MultitrisGame(props) {
   const [partScores, setPartScores] = useState({});
   const [myMovingPiece, setMyMovingPiece] = useState({});
   const [gameOver, setGameOver] = useState(false);
+  const [visibleModal, setVisibleModal] = useState(false);
   const socket = props.socket;
   let socketRef = useRef(socket);
   const myMovingPieceRef = useRef(null);
@@ -587,6 +589,7 @@ function MultitrisGame(props) {
       if (code === props.code) {
         // si le back a bien envoyé le bon code?
         setGameOver(true);
+        setVisibleModal(true);
       }
     });
 
@@ -740,16 +743,16 @@ function MultitrisGame(props) {
               <div className={styles.statLine}>Score</div>
             </div>
             <div className={styles.statsValues}>
-              {/* <div className={styles.statLine}>
+              <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id)
-                    .completedLines}
+                  partScores.playersStats?.find((p) => p.player === i._id)
+                    ?.completedLines}
               </div>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id)
-                    .score}
-              </div> */}
+                  partScores.playersStats?.find((p) => p.player === i._id)
+                    ?.score}
+              </div>
             </div>
           </div>
         </div>
@@ -790,6 +793,17 @@ function MultitrisGame(props) {
 
   return (
     <div className={styles.container}>
+      <Modal
+        getContainer="#react-modals"
+        closable={false}
+        onCancel={() => setVisibleModal(null)}
+        open={visibleModal}
+        footer={null}
+        width={600}
+        className="modal"
+      >
+        {visibleModal && endGame()}
+      </Modal>
       {!gameOver && (
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
@@ -819,10 +833,7 @@ function MultitrisGame(props) {
         </div>
       )}
 
-      <div className={styles.gameContainer}>
-        {gridToDisplay()}
-        {/* {endGame()} */}
-      </div>
+      <div className={styles.gameContainer}>{gridToDisplay()}</div>
     </div>
   );
 }

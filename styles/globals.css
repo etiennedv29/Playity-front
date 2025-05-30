@@ -60,7 +60,9 @@ h3 {
     padding: 0px;
     border: 0px;
     background-color: rgb(34, 34, 43);
-    color:#F5C242
+    color:#F5C242;
+    font-family: "Caveat Brush";
+    border-radius: 8px;
 }
 
 
