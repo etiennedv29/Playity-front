@@ -681,8 +681,12 @@ function MultitrisGame(props) {
   const gridToDisplay = () => {
     return (
       <div
-        className={styles.gridContainer}
-        style={{ position: "relative", display: "inline-block" }}
+        className={styles.grid}
+        style={{
+          position: "relative",
+          display: "inline-block",
+          gridTemplateColumns: `repeat(${numberOfCols}, 1fr)`,
+        }}
       >
         <div
           className={styles.grid}
@@ -812,9 +816,10 @@ function MultitrisGame(props) {
         </div>
       )}
 
-      {gridToDisplay()}
-
-      {gameOver && endGame()}
+      <div className={styles.gameContainer}>
+        {gridToDisplay()}
+        {/* {endGame()} */}
+      </div>
     </div>
   );
 }
