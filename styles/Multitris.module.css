@@ -40,20 +40,20 @@
   background-color: #1f1f1f;
 }
 
-.filled0 {
-  background-color: #6EB5FF; /* Couleur temporaire pour bloc rempli */
-}
-
 .filled1 {
-  background-color: #F5C242; /* Couleur temporaire pour bloc rempli */
+  background-color: #F5C242;
 }
 
 .filled2 {
-  background-color: #FF6B6B; /* Couleur temporaire pour bloc rempli */
+  background-color: #FF6B6B; 
 }
 
 .filled3 {
-  background-color: #FFFFFF; /* Couleur temporaire pour bloc rempli */
+  background-color: #FFFFFF; 
+}
+
+.filled4 {
+  background-color: #6EB5FF; 
 }
 
 .empty {

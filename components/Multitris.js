@@ -88,7 +88,8 @@ function MultitrisGame(props) {
   useEffect(() => {
     socket.on("part_scores", (data) => {
       setPartScores(data);
-      currentPlayerScore = data.playersStats.find((p) => p.player === user._id);
+      console.log('STATS DU JOUEUR : ', currentPlayerScore);
+      currentPlayerScore = partScores.playersStats?.find((p) => p.player === user._id);
     });
   }, []);
 
@@ -681,8 +682,8 @@ function MultitrisGame(props) {
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
             <div className={styles.scoreTitle}>
-              <p>Score perso : {currentPlayerScore.score} </p>
-              <p>Nb lignes perso : {currentPlayerScore.completedLines}</p>
+              <p>Score perso : {partScores.playersStats?.find((p) => p.player === user._id).score} </p>
+              <p>Nb lignes perso : {partScores.playersStats?.find((p) => p.player === user._id).completedLines}</p>
             </div>
           </div>
           <div className={styles.teamScores}>
