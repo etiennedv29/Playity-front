@@ -4,10 +4,11 @@
   background-color: transparent;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: top;
   justify-content: center;
   box-sizing: border-box;
   overflow: hidden;
+  gap: 25px;
 }
 
 .title {
@@ -16,13 +17,22 @@
   margin-bottom: 1rem;
 }
 
+.gameContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  min-width: 500px;
+}
+
 .grid {
+  border: 1px solid white;
   display: grid;
-  min-width: 50vw;
-  height: 90vh;
+  width: 100%;
+  height: 100%;
   aspect-ratio: calc(var(--cols) / 20); /* Pour s'adapter à la hauteur */
   gap: 0.8px; /* Espace entre cellules */
-  background-color: #000000;
+  background-color: #041122;
 }
 
 .cell {
@@ -35,15 +45,19 @@
 }
 
 .filled1 {
-  background-color: #f5c242; /* Couleur temporaire pour bloc rempli */
+  background-color: #f5c242;
 }
 
 .filled2 {
-  background-color: #ff6b6b; /* Couleur temporaire pour bloc rempli */
+  background-color: #ff6b6b;
 }
 
 .filled3 {
-  background-color: #ffffff; /* Couleur temporaire pour bloc rempli */
+  background-color: #ffffff;
+}
+
+.filled4 {
+  background-color: #6eb5ff;
 }
 
 .empty {
@@ -55,15 +69,16 @@
   flex-direction: column;
   justify-content: top;
   align-items: bottom;
-  width: 300px;
-  height: 700px;
+  min-width: 200px;
+  height: 100%;
 }
 
 .personalScores {
-  color: white;
+  color: #f5c242;
   display: flex;
   justify-content: top;
   align-items: center;
+  width: 100%;
   height: 15%;
   padding-left: 10px;
 }
@@ -71,14 +86,16 @@
 .scoreTitle {
   font-size: 20px;
   font-weight: 100;
+  width: 100%;
 }
 
 .teamScores {
-  color: white;
+  color: #f5c242;
   display: flex;
-  justify-content: top;
+  justify-content: center;
   align-items: center;
-  height: 15%;
+  /* height: 15%;
+  width: 100%; */
   padding-left: 10px;
 }
 

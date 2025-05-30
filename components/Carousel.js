@@ -26,11 +26,6 @@ function Slider() {
     //console.log(topGamesData);
   };
 
-  function changeSlide(tagsArr, id) {
-    if (tagsArr.includes("mainGame")) {
-    }
-  }
-
   useEffect(() => {
     fetchTopGames();
   }, []);
@@ -91,14 +86,13 @@ function Slider() {
         <div className={styles.buttonsBox}>
           <FontAwesomeIcon
             icon={faChevronLeft}
-            color="white"
+            style={{color: "white"}}
             className={styles.btn}
             onClick={() => swiperRef.current?.slidePrev()}
           />
-          {/* <button className={`btnPlay ${styles.btnStartGame}`}>PLAY</button> */}
           <FontAwesomeIcon
             icon={faChevronRight}
-            color="white"
+            style={{color: "white"}}
             className={styles.btn}
             onClick={() => swiperRef.current?.slideNext()}
           />
