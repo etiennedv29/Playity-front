@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import { logout } from "../reducers/users";
+import {saveSearchValue} from "../reducers/searches"
 import styles from "../styles/Header.module.css";
 
 function Header({ changeModalState }) {
@@ -16,6 +18,7 @@ function Header({ changeModalState }) {
   const avatar = user.avatar;
   const token = user.token;
   const isGuest = !user.roles.includes("member");
+  const [searchValue, setSearchValue] = useState("");
 
   const handleLogout = () => {
     router.push("/");
@@ -27,9 +30,10 @@ function Header({ changeModalState }) {
     }
   };
 
-  // if (isGuest || !token) {} else {
-  //   changeModalState();
-  // }
+  //passer en reducer chaque changement de valeur de la recherche pour l'envoyer dans le composant Home
+  useEffect(() => {
+    dispatch(saveSearchValue(searchValue));
+  }, [searchValue]);
 
   return (
     <header className={styles.header}>
@@ -61,11 +65,19 @@ function Header({ changeModalState }) {
               type="text"
               placeholder="Rechercher un jeu"
               className={styles.searchInput}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+              value={searchValue}
             ></input>
           </div>
-          <div >
+          <div>
             {isGuest || !token ? (
-              <FontAwesomeIcon icon={faUser} className={styles.userImage} onClick={() => changeModalState()}/>
+              <FontAwesomeIcon
+                icon={faUser}
+                className={styles.userImage}
+                onClick={() => changeModalState()}
+              />
             ) : (
               <div className={styles.userInfoContainer}>
                 <Link href="/account" className={styles.link}>
@@ -81,12 +93,12 @@ function Header({ changeModalState }) {
                 {/* <Link href="/account" className={styles.link}>
                   <div className={styles.userName}>{user.username}</div>
                 </Link> */}
-                  <div
-                    className={styles.btnLogout}
-                    onClick={() => handleLogout()}
-                  >
-                    Déconnexion
-                  </div>
+                <div
+                  className={styles.btnLogout}
+                  onClick={() => handleLogout()}
+                >
+                  Déconnexion
+                </div>
               </div>
             )}
             {/* {token ? (
