@@ -745,12 +745,12 @@ function MultitrisGame(props) {
             <div className={styles.statsValues}>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores.playersStats?.find((p) => p.player === user._id)
+                  partScores.playersStats?.find((p) => p.player === i._id)
                     ?.completedLines}
               </div>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores.playersStats?.find((p) => p.player === user._id)
+                  partScores.playersStats?.find((p) => p.player === i._id)
                     ?.score}
               </div>
             </div>
