@@ -33,7 +33,6 @@
   aspect-ratio: calc(var(--cols) / 20); /* Pour s'adapter à la hauteur */
   gap: 0.8px; /* Espace entre cellules */
   background-color: #041122;
-  border-radius: 15px;
 }
 
 .cell {
