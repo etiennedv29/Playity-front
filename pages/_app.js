@@ -1,6 +1,9 @@
 import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Login from "../components/Login";
+import { Modal } from "antd";
+import { useState } from 'react';
 import "../styles/globals.css";
 //imports google connect
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -23,6 +26,13 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 function App({ Component, pageProps }) {
+
+  const [visibleModal, setVisibleModal] = useState(false);
+
+  function activateModal() {
+    setVisibleModal(!visibleModal);
+  }
+
   return (
     <>
       <GoogleOAuthProvider clientId="989907452331-35nuap8qhtt317b0j93dkt2d0u6u0svl.apps.googleusercontent.com">
@@ -53,7 +63,17 @@ function App({ Component, pageProps }) {
                   rel="stylesheet"
                 ></link>
               </Head>
-              <Header />
+              <Header changeModalState={activateModal}/>
+              <Modal
+                getContainer="#react-modals"
+                open={visibleModal}
+                closable={true}
+                footer={null}
+                onCancel={() => setVisibleModal(null)}
+                width={500}
+              >
+                {visibleModal && <Login />}
+              </Modal>
               <Component {...pageProps} />
               <Footer />
             </AuthProvider>
