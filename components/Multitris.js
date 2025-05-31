@@ -230,7 +230,6 @@ function MultitrisGame(props) {
     if (collisionResult.isCollision) {
       //si collision avec fixed_grid_name, emit pour check les completed lines
       if (collisionResult.gridName === FIXED_GRID_NAME) {
-        //emitCheckCompletedLine();
       }
       return;
     } else {
@@ -294,11 +293,13 @@ function MultitrisGame(props) {
     );
 
     if (
-      collisionResult.isCollision &&
-      collisionResult.gridName === FIXED_GRID_NAME
+       collisionResult.isCollision 
+      //&&
+      // collisionResult.gridName === FIXED_GRID_NAME
     ) {
       return;
-    } else {
+    } 
+    else {
       let newGrid = movingGridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne position
