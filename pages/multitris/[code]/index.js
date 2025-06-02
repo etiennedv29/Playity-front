@@ -47,17 +47,19 @@ export default function LobbyPage() {
 
     // Quand un autre joueur rejoint
     socket.on("userJoined", ({ lobby }) => {
+      console.log("userjoined",{lobby})
       setLobby(lobby);
     });
 
     // Quand un joueur quitte
     socket.on("userLeft", ({ lobby }) => {
-      console.log("userLeft", lobby);
+      console.log("userLeft", {lobby});
       setLobby(lobby);
     });
 
     // Rejoindre automatiquement le lobby à l’arrivée sur la page
     socket.emit("joinLobby", { code, userId }, (res) => {
+      console.log("emit.joinLobby", {code}, {userId})
       if (res?.success === false) {
         console.log("Erreur de lobby:", res.error);
       }
