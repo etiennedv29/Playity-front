@@ -5,6 +5,7 @@ import styles from "../../styles/Lobby.module.css";
 import YoutubeVideo from "../YoutubeVideo";
 import PlayerLobby from "./PlayerLobby";
 import WaitingPlayerLobby from "./WaitingPlayerLobby";
+import MenuDivider from "antd/es/menu/MenuDivider";
 
 export default function Lobby({ lobby, game, code, startGame }) {
   const [copied, setCopied] = useState(false);
@@ -47,18 +48,18 @@ export default function Lobby({ lobby, game, code, startGame }) {
       <div className={styles.globalContainer}>
         <div className={styles.leftContainer}>
           <div className={styles.demoContainer}>
-          {game && <YoutubeVideo videoId={game.demo} />}
+            {game && <YoutubeVideo videoId={game.demo} />}
           </div>
         </div>
         <div className={styles.rightContainer}>
-          <h1>Lobby: #{code}</h1>
+          <h1>Code : {code}</h1>
           {playerElements}
           {playersWaiting}
           <button
             onClick={handleCopy}
             className={`btnSecondary ${styles.btnSecondary}`}
           >
-            Share Code
+            Partager le code
           </button>
           {copied && (
             <span style={{ marginLeft: "10px", color: "green" }}>Copié ✅</span>
@@ -66,15 +67,18 @@ export default function Lobby({ lobby, game, code, startGame }) {
         </div>
       </div>
       <div className={styles.btnStartContainer}>
-      {lobby && isAdmin && (
-        <button
-          onClick={() => startGame()}
-          className={`btnPlay ${styles.btnPlay}`}
-          // disabled={disableBtnPlay}
-        >
-          Lancer la partie
-        </button>
-      )}
+        {lobby && isAdmin && (
+          <button
+            onClick={() => startGame()}
+            className={`btnPlay ${styles.btnPlay}`}
+            // disabled={disableBtnPlay}
+          >
+            Lancer la partie
+          </button>
+        )}
+        {lobby && !isAdmin && (
+          <div className={styles.nonAdminWaitingMessage}>On attend tout le monde, l'admin lancera la partie !</div>
+        )}
       </div>
     </>
   );
