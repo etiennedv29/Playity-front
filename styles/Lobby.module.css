@@ -123,7 +123,7 @@
   margin-top: 50px;
   cursor: pointer;
   height: 60px;
-  width: 180px;
+  width: 400px;
 }
 
 .btnCreateGame{
@@ -150,5 +150,18 @@
   margin-bottom: 15px;
   cursor: pointer;
   height: 40px;
-  width: 120px;
+  width: 160px;
+}
+
+.nonAdminWaitingMessage{
+  margin-top: 50px;
+  height: 60px;
+  width: 400px;
+  color:#122846;
+  background-color: #B1B1B1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  font-size: 19px;
 }

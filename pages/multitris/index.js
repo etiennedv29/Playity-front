@@ -103,13 +103,13 @@ export default function HomePage() {
                 className={`btnPlay ${styles.btnCreateGame}`}
                 onClick={handleCreateLobby}
               >
-                Créer un lobby
+                Créer une partie
               </button>
             </div>
 
             <div className={styles.rightBottomContainer}>
               <div className={styles.lobbyCodeContainer}>
-                <label>Code du lobby</label>
+                <label>Code de la partie</label>
                 <input
                   className={styles.inputCode}
                   type="text"
