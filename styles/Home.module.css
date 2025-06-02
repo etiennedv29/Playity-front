@@ -5,6 +5,8 @@
   align-items: center;
   min-height: 250vh;
   background-color: #122846;
+  height: 100%;
+  width: 100vw;
 }
 
 .gamesGridTitle {
@@ -31,8 +33,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 90vw;
-  height: 60vh;
+  width: 90%;
+  /* height: 60%; */
   color: white;
   margin-top: 80px;
 }
@@ -40,10 +42,9 @@
 .gamesGridContainer {
   display: flex;
   flex-wrap: wrap;
-justify-content: center;
-  align-items: top;
+  justify-content: center;
+  align-items: flex-start;
   width: 100vw;
-  min-height: 100vh;
   background-color: transparent;
   color: white;
   padding: 0 100px;

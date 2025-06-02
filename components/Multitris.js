@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 // import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
-
+import Modal from "antd/lib/modal";
 
 const COLS_PER_PLAYER = 9; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -20,6 +20,7 @@ function MultitrisGame(props) {
   const [partScores, setPartScores] = useState({});
   const [myMovingPiece, setMyMovingPiece] = useState({});
   const [gameOver, setGameOver] = useState(false);
+  const [visibleModal, setVisibleModal] = useState(false);
   const socket = props.socket;
   let socketRef = useRef(socket);
   const myMovingPieceRef = useRef(null);
@@ -29,8 +30,8 @@ function MultitrisGame(props) {
   );
   let currentPlayerScore = {};
 
-  console.log('PARTSCORES : ', partScores);
-  console.log('PLAYERSSTATS : ', partScores.playersStats);
+  const [explosions, setExplosions] = useState([]);
+  const [explodingLines, setExplodingLines] = useState(new Set());
 
   // largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
@@ -92,7 +93,7 @@ function MultitrisGame(props) {
   useEffect(() => {
     socket.on("part_scores", (data) => {
       setPartScores(data);
-      console.log('PARTSCORES RECEIVED : ', data);
+      console.log('STATS DU JOUEUR : ', currentPlayerScore);
       currentPlayerScore = partScores.playersStats?.find((p) => p.player === user._id);
     });
   }, []);
@@ -160,7 +161,7 @@ function MultitrisGame(props) {
       //     return cell;
       //   });
       // });
-      newGrid = cleanMovingGridForOnePlayer(newGrid,playerIndex);
+      newGrid = cleanMovingGridForOnePlayer(newGrid, playerIndex);
     } else {
       // si c'est une spawn on vérifie si elle est posable. Si pas possible => fin de partie
       newShape.forEach((row, pieceRowIndex) => {
@@ -227,7 +228,6 @@ function MultitrisGame(props) {
     if (collisionResult.isCollision) {
       //si collision avec fixed_grid_name, emit pour check les completed lines
       if (collisionResult.gridName === FIXED_GRID_NAME) {
-        //emitCheckCompletedLine();
       }
       return;
     } else {
@@ -235,7 +235,7 @@ function MultitrisGame(props) {
       let newGrid = movingGridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne grille pour le player (évitant les pixels rémanant)
-      newGrid = cleanMovingGridForOnePlayer(newGrid,currentPlayerIndex)
+      newGrid = cleanMovingGridForOnePlayer(newGrid, currentPlayerIndex);
 
       // pieceShape.forEach((row, rowIndex) => {
       //   row.forEach((cell, colIndex) => {
@@ -291,15 +291,17 @@ function MultitrisGame(props) {
     );
 
     if (
-      collisionResult.isCollision &&
-      collisionResult.gridName === FIXED_GRID_NAME
+       collisionResult.isCollision 
+      //&&
+      // collisionResult.gridName === FIXED_GRID_NAME
     ) {
       return;
-    } else {
+    } 
+    else {
       let newGrid = movingGridRef.current.map((e) => [...e]);
 
       //mettre à 0 les cases de l'ancienne position
-      newGrid = cleanMovingGridForOnePlayer(newGrid, currentPlayerIndex)
+      newGrid = cleanMovingGridForOnePlayer(newGrid, currentPlayerIndex);
 
       // pieceShape.forEach((row, rowIndex) => {
       //   row.forEach((cell, colIndex) => {
@@ -379,33 +381,91 @@ function MultitrisGame(props) {
       !gameOver &&
       spawnInitialPiece();
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
-    emitCheckCompletedLine();
+    currentPlayerIndex === playerIndex && emitCheckCompletedLine();
+  };
+
+  // Fonction améliorée pour déclencher une explosion sur une ligne
+  const triggerLineExplosion = (lineIndex) => {
+    // Marquer la ligne comme en explosion
+    setExplodingLines((prev) => new Set([...prev, lineIndex]));
+
+    // Créer des explosions individuelles pour chaque case de la ligne
+    for (let colIndex = 0; colIndex < numberOfCols; colIndex++) {
+      const delay = colIndex * 50; // Décalage progressif pour un effet de vague
+      setTimeout(() => {
+        triggerExplosion(colIndex, lineIndex);
+      }, delay);
+    }
+
+    // Retirer la ligne de l'état d'explosion après l'animation
+    setTimeout(() => {
+      setExplodingLines((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(lineIndex);
+        return newSet;
+      });
+    }, 800);
+  };
+
+  const triggerExplosion = (col, row) => {
+    const id = Date.now() + Math.random(); // ID unique pour éviter les conflits
+    const explosion = {
+      id,
+      col,
+      row,
+      timestamp: Date.now(),
+    };
+
+    setExplosions((prev) => [...prev, explosion]);
+
+    // Supprimer l'explosion après l'animation
+    setTimeout(() => {
+      setExplosions((prev) => prev.filter((e) => e.id !== id));
+    }, 600);
   };
 
   const handleCheckCompletedLines = (playerId) => {
-    const linesNotCompleted = fixedGridRef.current.filter((row) =>
-      row.some((col) => col === 0)
-    );
+    const completedLineIndices = [];
+    const linesNotCompleted = [];
 
-    const numberCompletedLines = ROWS - linesNotCompleted.length;
+    // Identifier les lignes complétées et les conserver
+    fixedGridRef.current.forEach((row, index) => {
+      if (row.every((col) => col !== 0)) {
+        completedLineIndices.push(index);
+      } else {
+        linesNotCompleted.push(row);
+      }
+    });
+
+    const numberCompletedLines = completedLineIndices.length;
 
     if (numberCompletedLines > 0) {
-      //create missing row empty lines
-      const emptyMissingLines = Array.from(
-        { length: numberCompletedLines },
-        () => Array(numberOfCols).fill(0)
-      );
+      // Déclencher les explosions pour chaque ligne complétée
+      completedLineIndices.forEach((lineIndex, i) => {
+        setTimeout(() => {
+          triggerLineExplosion(lineIndex);
+        }, i * 100); // Décaler légèrement chaque ligne
+      });
 
-      const newFixedGrid = [...emptyMissingLines, ...linesNotCompleted];
-      console.table(newFixedGrid);
+      // Attendre la fin des animations avant de supprimer les lignes
+      setTimeout(() => {
+        // Créer les nouvelles lignes vides en haut
+        const emptyMissingLines = Array.from(
+          { length: numberCompletedLines },
+          () => Array(numberOfCols).fill(0)
+        );
 
-      fixedGridRef.current = newFixedGrid;
-      setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
+        const newFixedGrid = [...emptyMissingLines, ...linesNotCompleted];
+        fixedGridRef.current = newFixedGrid;
+        setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
 
-      if (playerId === currentPlayerIndex) {
-        emitPlayerScore(0, numberCompletedLines);
-        console.log(`EMIT COMPLETED LINES : ${numberCompletedLines} `)
-      }
+        if (playerId === currentPlayerIndex) {
+          console.log(
+            `emitPlayerScore ${numberCompletedLines} player: ${playerId} currentPlayerIndex ${currentPlayerIndex}`
+          );
+          emitPlayerScore(0, numberCompletedLines);
+        }
+      }, 900); // Délai pour laisser les explosions se terminer
     }
   };
 
@@ -462,13 +522,16 @@ function MultitrisGame(props) {
     socketRef.current.on(
       "check_completed_line_to_be_done",
       ({ playerIndex }) => {
-        handleCheckCompletedLines(playerIndex);
+        setTimeout(() => {
+          handleCheckCompletedLines(playerIndex);
+        }, 100);
       }
     );
 
     return () => {
-      [];
       socketRef.current && socketRef.current.off("receive_piece");
+      socketRef.current &&
+        socketRef.current.off("check_completed_line_to_be_done");
     };
   }, [grid.length]);
 
@@ -476,9 +539,15 @@ function MultitrisGame(props) {
     socketRef.current.on(
       "transfer_grid_to_grid_to_be_done",
       ({ playerIndex, piece }) => {
+        console.log("Appel from playerIndex =>", playerIndex);
         handleTransferMovingToFixedGrid(playerIndex, piece);
       }
     );
+
+    return () => {
+      socketRef.current &&
+        socketRef.current.off("transfer_grid_to_grid_to_be_done");
+    };
   }, []);
 
   //gestion des touches par le joueur
@@ -504,7 +573,6 @@ function MultitrisGame(props) {
         case "ArrowUp":
           e.preventDefault();
           handleRotation(myMovingPiece);
-
           break;
         default:
           break;
@@ -520,8 +588,13 @@ function MultitrisGame(props) {
       if (code === props.code) {
         // si le back a bien envoyé le bon code?
         setGameOver(true);
+        setVisibleModal(true);
       }
     });
+
+    return () => {
+      socketRef.current && socketRef.current.off("end_game");
+    };
   }, []);
 
   const isCollision = (oldX, oldY, pieceX, pieceY, oldShape, newShape) => {
@@ -573,7 +646,6 @@ function MultitrisGame(props) {
         }
         //gestion collision avec une autre pièce en mouvement
         if (tempMovingGrid[gridPositionY][gridPositionX] !== 0) {
-          //console.table(tempMovingGrid);
           return { isCollision: true, gridName: MOVING_GRID_NAME };
         }
       }
@@ -593,28 +665,65 @@ function MultitrisGame(props) {
       });
     });
 
-    //console.table(tempGridParam);
-
     return tempGridParam;
   };
 
-  // composant grille intégré
+  // Fonction pour obtenir la classe CSS d'une cellule
+  const getCellClass = (cell, rowIndex, colIndex) => {
+    const baseClass = cell
+      ? `${styles.cell} ${styles[`filled${cell}`] || styles.filled}`
+      : `${styles.cell} ${styles.empty}`;
+
+    // Ajouter une classe spéciale si la ligne est en explosion
+    const explosionClass = explodingLines.has(rowIndex)
+      ? ` ${styles.exploding}`
+      : "";
+
+    return baseClass + explosionClass;
+  };
+
+  // composant grille intégré avec explosions
   const gridToDisplay = () => {
     return (
       <div
         className={styles.grid}
-        style={{ gridTemplateColumns: `repeat(${numberOfCols}, 1fr)` }}
+        style={{
+          position: "relative",
+          display: "inline-block",
+          gridTemplateColumns: `repeat(${numberOfCols}, 1fr)`,
+        }}
       >
-        {grid.flat().map((cell, i) => (
-          <div
-            key={i}
-            className={
-              cell
-                ? `${styles.cell} ${styles[`filled${cell}`] || styles.filled}`
-                : `${styles.cell} ${styles.empty}`
-            }
-          ></div>
-        ))}
+        <div
+          className={styles.grid}
+          style={{ gridTemplateColumns: `repeat(${numberOfCols}, 1fr)` }}
+        >
+          {grid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={getCellClass(cell, rowIndex, colIndex)}
+              ></div>
+            ))
+          )}
+        </div>
+
+        {/* Conteneur des explosions */}
+        <div className={styles.explosionsContainer}>
+          {explosions.map((explosion) => (
+            <div
+              key={explosion.id}
+              className={styles.explosion}
+              style={{
+                left: `${(explosion.col * 100) / numberOfCols}%`,
+                top: `${(explosion.row * 100) / ROWS}%`,
+                width: `${100 / numberOfCols}%`,
+                height: `${100 / ROWS}%`,
+              }}
+            >
+              💥
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -625,7 +734,7 @@ function MultitrisGame(props) {
 
     let playersStatsToDisplay = props.lobby.players.map((i, key) => {
       return (
-        <div className={styles.individualPlayerStatContainer}>
+        <div key={key} className={styles.individualPlayerStatContainer}>
           <div className={styles.statsPlayerName}>{i.username}</div>
           <div className={styles.statsContainer}>
             <div className={styles.statsNames}>
@@ -633,16 +742,16 @@ function MultitrisGame(props) {
               <div className={styles.statLine}>Score</div>
             </div>
             <div className={styles.statsValues}>
-              {/* <div className={styles.statLine}>
+              <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id)
-                    .completedLines}
+                  partScores.playersStats?.find((p) => p.player === i._id)
+                    ?.completedLines}
               </div>
               <div className={styles.statLine}>
                 {partScores.playersStats &&
-                  partScores?.playersStats?.find((e) => e.player === i._id)
-                    .score}
-              </div> */}
+                  partScores.playersStats?.find((p) => p.player === i._id)
+                    ?.score}
+              </div>
             </div>
           </div>
         </div>
@@ -683,12 +792,35 @@ function MultitrisGame(props) {
 
   return (
     <div className={styles.container}>
+      <Modal
+        getContainer="#react-modals"
+        closable={false}
+        onCancel={() => setVisibleModal(null)}
+        open={visibleModal}
+        footer={null}
+        width={600}
+        className="modal"
+      >
+        {visibleModal && endGame()}
+      </Modal>
       {!gameOver && (
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
             <div className={styles.scoreTitle}>
-              <p>Score : {partScores.playersStats?.find((p) => p.player === user._id).score} </p>
-              <p>Nb lignes : {partScores.playersStats?.find((p) => p.player === user._id).completedLines} </p>
+              <p>
+                Score perso :{" "}
+                {
+                  partScores.playersStats?.find((p) => p.player === user._id)
+                    ?.score
+                }{" "}
+              </p>
+              <p>
+                Nb lignes perso :{" "}
+                {
+                  partScores.playersStats?.find((p) => p.player === user._id)
+                    ?.completedLines
+                }
+              </p>
             </div>
           </div>
           <div className={styles.teamScores}>
@@ -699,12 +831,8 @@ function MultitrisGame(props) {
           </div>
         </div>
       )}
-      {/* {!gameOver && gridToDisplay()} */}
-      {/*{gameOver && endGame()} */}
-      <div className={styles.gameContainer}>
-        {gridToDisplay()}
-        {/* {endGame()} */}
-      </div>
+
+      <div className={styles.gameContainer}>{gridToDisplay()}</div>
     </div>
   );
 }

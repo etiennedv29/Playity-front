@@ -6,7 +6,9 @@ body {
   font-weight: 100;
   background-color: #122846;
 }
-
+h3 {
+  margin-top:0
+}
 * {
   box-sizing: border-box;
 }
@@ -58,6 +60,9 @@ body {
     padding: 0px;
     border: 0px;
     background-color: rgb(34, 34, 43);
+    color:#F5C242;
+    font-family: "Caveat Brush";
+    border-radius: 8px;
 }
 
 
@@ -70,7 +75,7 @@ body {
 }
 
 svg {
-  color: #cfa75f;
+  color: #F5C242;
 }
 
 
