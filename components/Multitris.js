@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
 
+
 const COLS_PER_PLAYER = 9; // 10 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
 const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
@@ -27,6 +28,9 @@ function MultitrisGame(props) {
     (player) => player._id === user._id
   );
   let currentPlayerScore = {};
+
+  console.log('PARTSCORES : ', partScores);
+  console.log('PLAYERSSTATS : ', partScores.playersStats);
 
   // largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
@@ -88,7 +92,7 @@ function MultitrisGame(props) {
   useEffect(() => {
     socket.on("part_scores", (data) => {
       setPartScores(data);
-      console.log('STATS DU JOUEUR : ', currentPlayerScore);
+      console.log('PARTSCORES RECEIVED : ', data);
       currentPlayerScore = partScores.playersStats?.find((p) => p.player === user._id);
     });
   }, []);
@@ -400,6 +404,7 @@ function MultitrisGame(props) {
 
       if (playerId === currentPlayerIndex) {
         emitPlayerScore(0, numberCompletedLines);
+        console.log(`EMIT COMPLETED LINES : ${numberCompletedLines} `)
       }
     }
   };
@@ -682,8 +687,8 @@ function MultitrisGame(props) {
         <div className={styles.gameScores}>
           <div className={styles.personalScores}>
             <div className={styles.scoreTitle}>
-              <p>Score perso : {partScores.playersStats?.find((p) => p.player === user._id).score} </p>
-              <p>Nb lignes perso : {partScores.playersStats?.find((p) => p.player === user._id).completedLines}</p>
+              <p>Score : {partScores.playersStats?.find((p) => p.player === user._id).score} </p>
+              <p>Nb lignes : {partScores.playersStats?.find((p) => p.player === user._id).completedLines} </p>
             </div>
           </div>
           <div className={styles.teamScores}>
