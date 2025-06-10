@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
-import { GoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -57,7 +57,6 @@ function Login({changeVisibleModal}) {
       }
     );
     const data = await response.json();
-    //console.log("data after signin route:",data)
     try {
       if (response.status === 200) {
         dispatch(
@@ -87,8 +86,7 @@ function Login({changeVisibleModal}) {
     }
   }
 
-  // WARNING - adapter à playity
-  //Create account
+  // Create account
   async function handleSignup(
     firstName,
     lastName,
@@ -97,7 +95,7 @@ function Login({changeVisibleModal}) {
     email,
     connectionWithSocials = false
   ) {
-    //missing fields verification
+    // Missing fields verification
     if (
       firstName === "" ||
       lastName === "" ||
@@ -105,27 +103,25 @@ function Login({changeVisibleModal}) {
       (!connectionWithSocials && password === "") ||
       email === ""
     ) {
-      //console.log("missing fields");
       setMissingFields(true);
       return;
     } else {
       setMissingFields(false);
     }
 
-    //abort signup process if password is not satisfying regex
+    // Abort signup process if password is not satisfying regex
     if (!connectionWithSocials && !passwordRegex.test(password)) {
       return;
     }
 
-    //CGU checkbox verification
+    // CGU checkbox verification
     if (!connectionWithSocials && !isCheckedCGU) {
       setDisplayWarningCGU(true);
       return;
     } else {
       setDisplayWarningCGU(false);
     }
-    //console.log("going to call feth register")
-    // calling register route
+    // Calling register route
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/users/register`,
       {
@@ -144,7 +140,6 @@ function Login({changeVisibleModal}) {
     const data = await response.json();
 
     try {
-      //console.log("data after signup:",data)
       if (response.status === 200) {
         setExistingUser(false);
         dispatch(
@@ -174,28 +169,27 @@ function Login({changeVisibleModal}) {
     }
   }
 
-  //forgot password functionality -> Nice to have
+  // Forgot password functionality -> Nice to have
   async function handleForgotPasswordClick() {
     alert("this functionality is not available yet");
   }
 
-  //signin and signup box design
+  // Signin and signup box design
   let boxSize = {
     height: isSignupDisplay ? 600 : 410,
     transition: "height 0.15s ease-out",
   };
 
-  //switch from signin and signup
+  // Switch from signin and signup
   const handleSwitchSignupClick = () => {
     setIsSignupDisplay(!isSignupDisplay);
   };
 
-  //switch to visible password and back
+  // Switch to visible password and back
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  // WARNING - adapter à playity ()
   return (
     <div className={styles.connectSectionContainer}>
       <div className={styles.registerContainer} style={boxSize}>
@@ -206,7 +200,6 @@ function Login({changeVisibleModal}) {
             </h2>
             {existingUser && (
               <p style={{ color: "lightcoral" }}>
-                {" "}
                 Il y en a déjà un qui a ton mail ou ton pseudo !
               </p>
             )}
@@ -341,8 +334,7 @@ function Login({changeVisibleModal}) {
                   )
                 }
               >
-                {" "}
-                Crée ton compte{" "}
+                Crée ton compte
               </button>
               <div
                 className={styles.switchSignup}
@@ -362,7 +354,6 @@ function Login({changeVisibleModal}) {
                 text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
-                  //console.log(jwtDecode(credentialResponse.credential));
                   handleSignup(
                     googleUserInfo.given_name,
                     googleUserInfo.family_name,
@@ -476,8 +467,6 @@ function Login({changeVisibleModal}) {
                 text="continue_with"
                 onSuccess={(credentialResponse) => {
                   let googleUserInfo = jwtDecode(credentialResponse.credential);
-                  ////console.log(jwtDecode(credentialResponse.credential));
-
                   handleSignin(googleUserInfo.email, "", true);
                 }}
               />

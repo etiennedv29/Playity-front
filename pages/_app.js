@@ -1,10 +1,7 @@
-require('dotenv').config();
+require("dotenv").config();
 import Head from "next/head";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Login from "../components/Login";
-import Modal from "antd/lib/modal";
-import { useState } from 'react';
 import "../styles/globals.css";
 //imports google connect
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -16,9 +13,9 @@ import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
 import AuthProvider from "../components/auth/Provider";
 import users from "../reducers/users";
-import searches from "../reducers/searches"
+import searches from "../reducers/searches";
 
-const reducers = combineReducers({ users,searches });
+const reducers = combineReducers({ users, searches });
 const persistConfig = { key: "playity", storage };
 const store = configureStore({
   reducer: persistReducer(persistConfig, reducers),
@@ -28,10 +25,6 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 function App({ Component, pageProps }) {
-
-  const [visibleModal, setVisibleModal] = useState(false);
-
-
 
   return (
     <>
@@ -64,17 +57,6 @@ function App({ Component, pageProps }) {
                 ></link>
               </Head>
               <Header />
-              {/* <Modal
-                getContainer="#react-modals"
-                open={visibleModal}
-                closable={true}
-                footer={null}
-                onCancel={() => setVisibleModal(null)}
-                width={500}
-                className="modal"
-              >
-                {visibleModal && <Login />}
-              </Modal> */}
               <Component {...pageProps} />
               <Footer />
             </AuthProvider>

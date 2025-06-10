@@ -71,7 +71,6 @@ export default function Lobby({ lobby, game, code, startGame }) {
           <button
             onClick={() => startGame()}
             className={`btnPlay ${styles.btnPlay}`}
-            // disabled={disableBtnPlay}
           >
             Lancer la partie
           </button>
