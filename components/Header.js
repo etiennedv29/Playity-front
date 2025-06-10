@@ -33,7 +33,7 @@ function Header() {
     }
   };
 
-  //passer en reducer chaque changement de valeur de la recherche pour l'envoyer dans le composant Home
+  // Passer en reducer chaque changement de valeur de la recherche pour l'envoyer dans le composant Home
   useEffect(() => {
     dispatch(saveSearchValue(searchValue));
   }, [searchValue]);
@@ -116,17 +116,6 @@ function Header() {
                 </div>
               </div>
             )}
-            {/* {token ? (
-              <Link href="/login" className={styles.link}>
-                <div className={styles.userName}>Se connecter</div>
-              </Link>
-            ) : (
-              <Link href="/" className={styles.link}>
-                <div className={styles.userName} onClick={() => handleLogout()}>
-                  Déconnexion
-                </div>
-              </Link>
-            )} */}
           </div>
         </div>
       </div>

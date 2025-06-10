@@ -1,21 +1,13 @@
 import styles from "../styles/Home.module.css";
 import Carousel from "./Carousel";
 import GameMiniature from "./GameMiniature";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import { useRouter } from "next/router"; //récupération de l'url
-import Link from "next/link";
-
 function Home() {
-  const router = useRouter();
   const [gamesData, setGamesData] = useState([]);
   const searchValue = useSelector((state) => state.searches.value.search);
-  console.log({ searchValue });
   let gamesMock = [];
 
   const getAllGames = async () => {
@@ -37,7 +29,6 @@ function Home() {
     transition: "height 0.4s ease 0s"
   };
 
-  // ci-dessous à transformer après avoir créé le composant des miniatures de jeux
   let games = gamesData
     .filter((e) => e.name.toLowerCase().includes(searchValue.toLowerCase()))
     .map((data, i) => {
