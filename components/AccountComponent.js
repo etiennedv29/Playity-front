@@ -1,15 +1,11 @@
 import styles from "../styles/AccountComponent.module.css";
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faCrown } from "@fortawesome/free-solid-svg-icons";
 
 function AccountComponent(props) {
   let userData = useSelector((state) => state.users.value);
-
-  //console.log("userData=", userData);
 
   return (
     <div className={styles.accountContainer}>

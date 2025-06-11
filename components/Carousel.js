@@ -23,7 +23,6 @@ function Slider() {
     const data = await response.json();
     const topGamesData = data.filter((e) => e.tags.includes("topGame"));
     setTopGames(topGamesData);
-    //console.log(topGamesData);
   };
 
   useEffect(() => {
@@ -66,7 +65,7 @@ function Slider() {
         initialSlide={2}
         loop={false}
         coverflowEffect={{
-          rotate: 5, // pas de rotation
+          rotate: 5, // Pas de rotation
           stretch: 30, // slides plus proches (valeur négative = elles se recouvrent)
           depth: 120, // profondeur pour le Z-index
           modifier: 3, // augmente l'effet de profondeur
