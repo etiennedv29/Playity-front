@@ -84,9 +84,7 @@ function MultitrisGame(props) {
     })();
 
     // Nettoyage à la destruction
-    return () => {
-      //s.disconnect();
-    };
+ 
   }, []);
 
   // On écoute le tableau des scores transmis depuis le serveur
