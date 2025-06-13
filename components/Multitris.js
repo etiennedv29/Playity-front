@@ -37,23 +37,38 @@ function Multitris(props) {
     socketRef.current = props.socket;
   }, [props.socket]);
 
-  // Fonction pour mettre à jour la grille Fixed tout en ayant le tick_intercal fonctionnel
+  /**
+   * Fonction pour mettre à jour la grille Fixed tout en ayant le tick_interval fonctionnel
+   * 
+   * @param {*} newGrid 
+   */
   const updateGrid = (newGrid) => {
     gridRef.current = newGrid;
     setGrid(newGrid);
   };
 
+  /**
+   * Fonction fusionnant deux grilles
+   * 
+   * @param {*} grid1 
+   * @param {*} grid2 
+   * @returns 
+   */
   const mergeGrids = (grid1, grid2) => {
     return grid1.map((row, rowIndex) =>
       row.map((cell, colIndex) => Math.max(cell, grid2[rowIndex][colIndex]))
     );
   };
 
+
   const updateMyMovingPiece = (newMyMovingPiece) => {
     myMovingPieceRef.current = newMyMovingPiece;
     setMyMovingPiece(newMyMovingPiece);
   };
-  // Initialisation des grilles vides
+
+/**
+ *  Initialisation des grilles vides
+ */
   const initializeGrids = () => {
     const newGrid = Array.from({ length: ROWS }, () =>
       Array(numberOfCols).fill(0)
@@ -64,6 +79,13 @@ function Multitris(props) {
     updateGrid(newGrid);
   };
 
+  /**
+   * avant de déplacer une pièce, on clean la movingGrid de tous les blocs du joueur en question. Cela évite les reliquats de mauvaise syncrhonisation
+   * 
+   * @param {*} grid 
+   * @param {*} playerIndex 
+   * @returns 
+   */
   const cleanMovingGridForOnePlayer = (grid, playerIndex) => {
     return grid.map((row) => {
       return row.map((cell) => {
@@ -74,6 +96,7 @@ function Multitris(props) {
       });
     });
   };
+
   // Connexion socket et initialisation
   useEffect(() => {
     (async () => {
@@ -94,7 +117,12 @@ function Multitris(props) {
     });
   }, []);
 
-  // Fonction d'envoi des nouveaux points au serveur
+ /**
+  *  Fonction d'envoi des nouveaux scores au serveur
+  * 
+  * @param {*} numberOfPiecesSpawned 
+  * @param {*} numberOfCompletedLines 
+  */
   const emitPlayerScore = (numberOfPiecesSpawned, numberOfCompletedLines) => {
     const playerId = user._id;
     socketRef.current.emit("player_scores", {
@@ -105,6 +133,10 @@ function Multitris(props) {
     });
   };
 
+  /**
+   * Losqu'un joueur a besoin d'une nouvelle pièce, il la demande au backend
+   * @returns 
+   */
   const spawnInitialPiece = async () => {
     // Si la grille de base n'est pas initialisée, on ne crée pas de première pièce
 
@@ -121,6 +153,13 @@ function Multitris(props) {
     await emitPlayerScore(1, 0);
   };
 
+  /**
+   * Fonction clé, qui permet de gérer la réception d'une pièce : spawn ou mouvement de picèe d'un autre joueur
+   * 
+   * @param {*} oldPiece 
+   * @param {*} newPiece 
+   * @returns 
+   */
   const handleReceivedPiece = (oldPiece, newPiece) => {
     if (grid.length === 0) {
       return;
@@ -309,6 +348,12 @@ function Multitris(props) {
     }
   };
 
+  /**
+   * Un joueur ayant bougé sa pièce envoie aux autres joueurs l'information de la position avant, puis après mouvement
+   * 
+   * @param {*} previousPiece 
+   * @param {*} newPiece 
+   */
   const emitPieceMove = (previousPiece, newPiece) => {
     const { playerIndex, pieceShape, pieceRow, pieceCol } = newPiece;
     socketRef.current.emit("move_piece", [
@@ -327,6 +372,13 @@ function Multitris(props) {
     ]);
   };
 
+  /**
+   * Dans le cas d'une arrivée en bas, le joueur transmet aux autres joueurs l'information de transférer cette pièce dans la fixedGrid
+   * 
+   * @param {*} playerIndex 
+   * @param {*} code 
+   * @param {*} piece 
+   */
   const emitTransferPieceFromMovingToFixed = (playerIndex, code, piece) => {
     socketRef.current.emit("transfer_piece_from_moving_to_fixed", {
       playerIndex,
@@ -335,6 +387,12 @@ function Multitris(props) {
     });
   };
 
+  /**
+   * Transfert de la movingGrid vers la fixedGrid : clean de la movingGrid puis remplissage de la fixedGrid
+   * 
+   * @param {*} playerIndex 
+   * @param {*} piece 
+   */
   const handleTransferMovingToFixedGrid = (playerIndex, piece) => {
     // Clean la moving grid
     const cleanedMovingGrid = movingGridRef.current.map((row) => {
@@ -366,7 +424,11 @@ function Multitris(props) {
     currentPlayerIndex === playerIndex && emitCheckCompletedLine();
   };
 
-  // Fonction améliorée pour déclencher une explosion sur une ligne
+ /**
+  *  // Fonction améliorée pour déclencher une explosion sur une ligne
+  * 
+  * @param {*} lineIndex 
+  */
   const triggerLineExplosion = (lineIndex) => {
     // Marquer la ligne comme en explosion
     setExplodingLines((prev) => new Set([...prev, lineIndex]));
@@ -386,9 +448,15 @@ function Multitris(props) {
         newSet.delete(lineIndex);
         return newSet;
       });
-    }, 800);
+    }, 700);
   };
 
+  /**
+   * Déclenchement de l'explosion pour une case donnée
+   * 
+   * @param {*} col 
+   * @param {*} row 
+   */
   const triggerExplosion = (col, row) => {
     const id = Date.now() + Math.random(); // ID unique pour éviter les conflits
     const explosion = {
@@ -406,6 +474,11 @@ function Multitris(props) {
     }, 600);
   };
 
+  /**
+   * Vérification qu'une ligne est complète 
+   * 
+   * @param {*} playerId 
+   */
   const handleCheckCompletedLines = (playerId) => {
     const completedLineIndices = [];
     const linesNotCompleted = [];
