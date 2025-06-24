@@ -5,7 +5,7 @@ import Modal from "antd/lib/modal";
 
 const COLS_PER_PLAYER = 9; // 9 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
-const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
+//const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
 
 const FIXED_GRID_NAME = "fixedGrid";
 const MOVING_GRID_NAME = "movingGrid";
@@ -28,6 +28,8 @@ function Multitris(props) {
   );
   const [explosions, setExplosions] = useState([]);
   const [explodingLines, setExplodingLines] = useState(new Set());
+  const [tickInterval, setTickInterval] = useState(500);
+  const tickIntervalRef = useRef(tickInterval);
 
   // Largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
@@ -39,8 +41,8 @@ function Multitris(props) {
 
   /**
    * Fonction pour mettre à jour la grille Fixed tout en ayant le tick_interval fonctionnel
-   * 
-   * @param {*} newGrid 
+   *
+   * @param {*} newGrid
    */
   const updateGrid = (newGrid) => {
     gridRef.current = newGrid;
@@ -49,10 +51,10 @@ function Multitris(props) {
 
   /**
    * Fonction fusionnant deux grilles
-   * 
-   * @param {*} grid1 
-   * @param {*} grid2 
-   * @returns 
+   *
+   * @param {*} grid1
+   * @param {*} grid2
+   * @returns
    */
   const mergeGrids = (grid1, grid2) => {
     return grid1.map((row, rowIndex) =>
@@ -60,15 +62,14 @@ function Multitris(props) {
     );
   };
 
-
   const updateMyMovingPiece = (newMyMovingPiece) => {
     myMovingPieceRef.current = newMyMovingPiece;
     setMyMovingPiece(newMyMovingPiece);
   };
 
-/**
- *  Initialisation des grilles vides
- */
+  /**
+   *  Initialisation des grilles vides
+   */
   const initializeGrids = () => {
     const newGrid = Array.from({ length: ROWS }, () =>
       Array(numberOfCols).fill(0)
@@ -81,10 +82,10 @@ function Multitris(props) {
 
   /**
    * avant de déplacer une pièce, on clean la movingGrid de tous les blocs du joueur en question. Cela évite les reliquats de mauvaise syncrhonisation
-   * 
-   * @param {*} grid 
-   * @param {*} playerIndex 
-   * @returns 
+   *
+   * @param {*} grid
+   * @param {*} playerIndex
+   * @returns
    */
   const cleanMovingGridForOnePlayer = (grid, playerIndex) => {
     return grid.map((row) => {
@@ -113,16 +114,18 @@ function Multitris(props) {
   useEffect(() => {
     socketRef.current.on("part_scores", (data) => {
       setPartScores(data);
-      currentPlayerScore = partScores.playersStats?.find((p) => p.player === user._id);
+      let currentPlayerScore = partScores.playersStats?.find(
+        (p) => p.player === user._id
+      );
     });
   }, []);
 
- /**
-  *  Fonction d'envoi des nouveaux scores au serveur
-  * 
-  * @param {*} numberOfPiecesSpawned 
-  * @param {*} numberOfCompletedLines 
-  */
+  /**
+   *  Fonction d'envoi des nouveaux scores au serveur
+   *
+   * @param {*} numberOfPiecesSpawned
+   * @param {*} numberOfCompletedLines
+   */
   const emitPlayerScore = (numberOfPiecesSpawned, numberOfCompletedLines) => {
     const playerId = user._id;
     socketRef.current.emit("player_scores", {
@@ -135,7 +138,7 @@ function Multitris(props) {
 
   /**
    * Losqu'un joueur a besoin d'une nouvelle pièce, il la demande au backend
-   * @returns 
+   * @returns
    */
   const spawnInitialPiece = async () => {
     // Si la grille de base n'est pas initialisée, on ne crée pas de première pièce
@@ -155,10 +158,10 @@ function Multitris(props) {
 
   /**
    * Fonction clé, qui permet de gérer la réception d'une pièce : spawn ou mouvement de picèe d'un autre joueur
-   * 
-   * @param {*} oldPiece 
-   * @param {*} newPiece 
-   * @returns 
+   *
+   * @param {*} oldPiece
+   * @param {*} newPiece
+   * @returns
    */
   const handleReceivedPiece = (oldPiece, newPiece) => {
     if (grid.length === 0) {
@@ -216,7 +219,7 @@ function Multitris(props) {
       1 + playerIndex
     );
     movingGridRef.current = newGrid2;
-    
+
     // Update du rendu visible par les joueurs
     setGrid(mergeGrids(movingGridRef.current, fixedGridRef.current));
   };
@@ -228,15 +231,15 @@ function Multitris(props) {
     });
   };
 
-/**
- * handleMove permet de modifier la position d'une pièce localement dans la grille de pièces mobiles (movingGrid)
- * 
- * @param {*} movingPiece 
- * @param {*} dx 
- * @param {*} dy 
- * @returns 
- */
-  const handleMove = (movingPiece, dx, dy) => { 
+  /**
+   * handleMove permet de modifier la position d'une pièce localement dans la grille de pièces mobiles (movingGrid)
+   *
+   * @param {*} movingPiece
+   * @param {*} dx
+   * @param {*} dy
+   * @returns
+   */
+  const handleMove = (movingPiece, dx, dy) => {
     const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
     const newMovedPiece = {
       playerIndex,
@@ -287,12 +290,12 @@ function Multitris(props) {
     }
   };
 
-/**
- * Fonction handleRotation pour faire pivoter une matrice 2D dans le sens horaire
- * 
- * @param {*} movingPiece 
- * @returns 
- */
+  /**
+   * Fonction handleRotation pour faire pivoter une matrice 2D dans le sens horaire
+   *
+   * @param {*} movingPiece
+   * @returns
+   */
   const handleRotation = (movingPiece) => {
     const { playerIndex, pieceShape, pieceRow, pieceCol } = movingPiece;
 
@@ -319,12 +322,9 @@ function Multitris(props) {
       newMovedPiece.pieceShape
     );
 
-    if (
-       collisionResult.isCollision 
-    ) {
+    if (collisionResult.isCollision) {
       return;
-    } 
-    else {
+    } else {
       let newGrid = movingGridRef.current.map((e) => [...e]);
 
       // Mettre à 0 les cases de l'ancienne position
@@ -350,9 +350,9 @@ function Multitris(props) {
 
   /**
    * Un joueur ayant bougé sa pièce envoie aux autres joueurs l'information de la position avant, puis après mouvement
-   * 
-   * @param {*} previousPiece 
-   * @param {*} newPiece 
+   *
+   * @param {*} previousPiece
+   * @param {*} newPiece
    */
   const emitPieceMove = (previousPiece, newPiece) => {
     const { playerIndex, pieceShape, pieceRow, pieceCol } = newPiece;
@@ -374,10 +374,10 @@ function Multitris(props) {
 
   /**
    * Dans le cas d'une arrivée en bas, le joueur transmet aux autres joueurs l'information de transférer cette pièce dans la fixedGrid
-   * 
-   * @param {*} playerIndex 
-   * @param {*} code 
-   * @param {*} piece 
+   *
+   * @param {*} playerIndex
+   * @param {*} code
+   * @param {*} piece
    */
   const emitTransferPieceFromMovingToFixed = (playerIndex, code, piece) => {
     socketRef.current.emit("transfer_piece_from_moving_to_fixed", {
@@ -389,9 +389,9 @@ function Multitris(props) {
 
   /**
    * Transfert de la movingGrid vers la fixedGrid : clean de la movingGrid puis remplissage de la fixedGrid
-   * 
-   * @param {*} playerIndex 
-   * @param {*} piece 
+   *
+   * @param {*} playerIndex
+   * @param {*} piece
    */
   const handleTransferMovingToFixedGrid = (playerIndex, piece) => {
     // Clean la moving grid
@@ -424,11 +424,11 @@ function Multitris(props) {
     currentPlayerIndex === playerIndex && emitCheckCompletedLine();
   };
 
- /**
-  *  // Fonction améliorée pour déclencher une explosion sur une ligne
-  * 
-  * @param {*} lineIndex 
-  */
+  /**
+   *  // Fonction améliorée pour déclencher une explosion sur une ligne
+   *
+   * @param {*} lineIndex
+   */
   const triggerLineExplosion = (lineIndex) => {
     // Marquer la ligne comme en explosion
     setExplodingLines((prev) => new Set([...prev, lineIndex]));
@@ -453,9 +453,9 @@ function Multitris(props) {
 
   /**
    * Déclenchement de l'explosion pour une case donnée
-   * 
-   * @param {*} col 
-   * @param {*} row 
+   *
+   * @param {*} col
+   * @param {*} row
    */
   const triggerExplosion = (col, row) => {
     const id = Date.now() + Math.random(); // ID unique pour éviter les conflits
@@ -475,9 +475,9 @@ function Multitris(props) {
   };
 
   /**
-   * Vérification qu'une ligne est complète 
-   * 
-   * @param {*} playerId 
+   * Vérification qu'une ligne est complète
+   *
+   * @param {*} playerId
    */
   const handleCheckCompletedLines = (playerId) => {
     const completedLineIndices = [];
@@ -521,7 +521,23 @@ function Multitris(props) {
     }
   };
 
-  // Descente automatique tous les TICK_INTERVAL ms
+  //synchronisation du tickIntervalRef
+  useEffect(() => {
+    tickIntervalRef.current = tickInterval;
+  }, [tickInterval]);
+
+  //Détection de toute les 10 lignes pour accélérer le tickinterval
+  useEffect(() => {
+    if (!partScores?.completedLines) return;
+    const linesCompletedForAcceleration = 10;
+    const threshold = Math.floor(
+      partScores.completedLines / linesCompletedForAcceleration
+    );
+    const newInterval = Math.max(150, 500 - threshold * 50);
+    setTickInterval(newInterval);
+  }, [partScores?.completedLines]);
+
+  // Descente automatique tous les TICK_INTERVAL/tickIntervalRef.current ms
   useEffect(() => {
     if (
       gridRef.current.length !== 0 &&
@@ -557,10 +573,10 @@ function Multitris(props) {
           !gameOver && handleMove(myMovingPieceRef.current, 0, 1);
         }
       }
-    }, TICK_INTERVAL);
+    }, tickInterval);
 
     return () => clearInterval(interval); // Nettoyage si le composant est démonté
-  }, [gameOver]);
+  }, [tickInterval, gameOver]);
 
   // Réception de toutes les pièces (nouvelles, mouvement, descente)
   useEffect(() => {
