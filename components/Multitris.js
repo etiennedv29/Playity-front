@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
 import Modal from "antd/lib/modal";
+import { useRouter } from "next/router";
+
+
+
 
 const COLS_PER_PLAYER = 9; // 9 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -11,6 +15,7 @@ const FIXED_GRID_NAME = "fixedGrid";
 const MOVING_GRID_NAME = "movingGrid";
 
 function Multitris(props) {
+  const router = useRouter();
   const user = useSelector((state) => state.users.value);
   const [grid, setGrid] = useState([]);
   const gridRef = useRef([]); // Nécessaire pour compenser le set_interval qui utilise sinon grid ===[]
@@ -797,6 +802,10 @@ function Multitris(props) {
 
   // Composant endGame
   const endGame = () => {
+    const handleReplayClick = () => {
+      router.push(`/${props.game.name}`);
+    };
+
     let playersStatsToDisplay = props.lobby.players.map((i, key) => {
       return (
         <div key={key} className={styles.individualPlayerStatContainer}>
@@ -851,6 +860,12 @@ function Multitris(props) {
             </div>
           </div>
         </div>
+        <button
+          onClick={() => handleReplayClick()}
+          className={styles.btnReplay}
+        >
+          Rejouer
+        </button>
       </div>
     );
   };
