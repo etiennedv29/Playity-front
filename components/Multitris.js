@@ -440,7 +440,7 @@ function Multitris(props) {
 
     // Créer des explosions individuelles pour chaque case de la ligne
     for (let colIndex = 0; colIndex < numberOfCols; colIndex++) {
-      const delay = colIndex * 50; // Décalage progressif pour un effet de vague
+      const delay = colIndex * 25; // Décalage progressif pour un effet de vague
       setTimeout(() => {
         triggerExplosion(colIndex, lineIndex);
       }, delay);
@@ -453,7 +453,7 @@ function Multitris(props) {
         newSet.delete(lineIndex);
         return newSet;
       });
-    }, 700);
+    }, 400);
   };
 
   /**

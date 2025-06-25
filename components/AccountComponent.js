@@ -7,6 +7,22 @@ import { faPenToSquare, faCrown } from "@fortawesome/free-solid-svg-icons";
 function AccountComponent(props) {
   let userData = useSelector((state) => state.users.value);
 
+  async function handleAccountModificationsValidation (userId, username, email, name, birthday){
+    await fetch("/api/updateAccount", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId,
+        username,
+        email,
+        name,
+        birthday
+      })
+    });
+  }
+
   return (
     <div className={styles.accountContainer}>
       <div className={styles.accountLeft}>
