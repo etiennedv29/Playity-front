@@ -87,7 +87,7 @@ export default function HomePage() {
           <div className={styles.rightContainer}>
             <div className={styles.rightTopContainer}>
               <div className={styles.selectContainer}>
-                <label htmlFor="mySelect">Players</label>
+                <label htmlFor="mySelect">Joueurs</label>
                 <select
                   id="mySelect"
                   value={String(playerNumber)}

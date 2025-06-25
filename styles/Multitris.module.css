@@ -240,6 +240,17 @@
   position: relative;
 }
 
+.btnReplay{
+  margin-bottom: 10px;
+  background-color: #f5c242;
+  color:#122846;
+  border-radius: 8px;
+  height: 50px;
+  width: 200px;
+  font-family: 'Caveat Brush';
+  font-size: 23px;
+}
+
 .explosion {
   position: absolute;
   width: 30px;
