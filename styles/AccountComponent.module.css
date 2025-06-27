@@ -11,7 +11,7 @@
 }
 
 .sectionTitleNav {
-  color: #F5C242;
+  color: #f5c242;
   width: 100%;
 }
 
@@ -30,7 +30,7 @@
   align-items: center;
   border-radius: 8px;
   margin-bottom: 20px;
-  padding-bottom:5px
+  padding-bottom: 5px;
 }
 
 .sectionTitle {
@@ -70,7 +70,6 @@
   flex-direction: row;
   align-items: center;
   font-size: 18px;
-  
 }
 .detailedInfoUserDataField {
   height: 46px;
@@ -85,13 +84,14 @@
   padding-right: 10px;
   align-items: center;
   color: black;
-  cursor:default
+  cursor: default;
 }
 .detailedInfoUserDataField:hover {
   border: 1px solid #4a90e2;
 }
-.detailedInfoUSerDataField:disabled{
-    caret-color: transparent;
+.detailedInfoUSerDataField:disabled {
+  caret-color: transparent;
+  background-color: #b0b5ba;
 }
 .modifyAccountInfoIcon {
   margin-left: 10px;
@@ -116,19 +116,18 @@
   color: #fff;
   background-color: #cfa75f;
 }
-.modifyPasswordButton:disabled{
-    background-color: gray;
-    color:#122846;
-    cursor: default;
+.modifyPasswordButton:disabled {
+  background-color: #b0b5ba;
+  color: #122846;
+  cursor: default;
 }
 
-.profileSection{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width:100%;
-
+.profileSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 .profileLeft {
   width: 50%;
@@ -149,20 +148,20 @@
 }
 .profileAvatarPicture {
   border-radius: 50%;
-  border: 1px solid #F5C242;
+  border: 1px solid #f5c242;
   margin-right: 15px;
 }
 .profileUsername {
   font-size: 25px;
-  color: #F5C242
+  color: #f5c242;
 }
-.profileChangeAvatarContainer{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.profileChangeAvatarContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-.modifyAvatarPictureButton{
-    background-color: #f5c242;
+.modifyAvatarPictureButton {
+  background-color: #f5c242;
   color: #122846;
   font-weight: 800;
   width: 186px;
@@ -176,15 +175,40 @@
   color: #fff;
   background-color: #cfa75f;
 }
-.warningAvatarChangePremiumOnly{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: 18px;
-    
+.warningAvatarChangePremiumOnly {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 18px;
 }
-.avatarChangePremiumIcon{
-    margin-right: 5px;
+.avatarChangePremiumIcon {
+  margin-right: 5px;
 }
 
+.validationButtonEnabled {
+  font-family: "Caveat Brush";
+  font-size: 20px;
+  margin-top: 25px;
+  width: 150px;
+  height: 50px;
+  background-color: #a7d8a2;
+  color: #122846;
+  border-radius: 8px;
+  border-color: #a7d8a2;
+  cursor:pointer
+}
 
+.validationButtonEnabled:hover {
+  color : #a7d8a2;
+  background-color: #122846;
+}
+.validationButtonDisabled {
+  font-family: "Caveat Brush";
+  font-size: 20px;
+  margin-top: 25px;
+  width: 150px;
+  height: 50px;
+  background-color: #b0b5ba;
+  color: black;
+  border-radius: 8px;
+}

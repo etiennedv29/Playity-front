@@ -29,6 +29,7 @@ export const usersSlice = createSlice({
       state.value.email = "";
     },
     login: (state, action) => {
+      console.log("into reducer")
       state.value._id = action.payload._id;
       state.value.token = action.payload.token;
       state.value.username = action.payload.username;
