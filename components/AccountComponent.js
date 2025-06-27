@@ -1,26 +1,101 @@
 import styles from "../styles/AccountComponent.module.css";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faCrown } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/users";
 
 function AccountComponent(props) {
   let userData = useSelector((state) => state.users.value);
+  let msg = "";
+  const dispatch = useDispatch();
+  const [values, setValues] = useState({
+    name: userData.name,
+    username: userData.username,
+    birthday: "",
+    email: userData.email,
+  });
+  const [isEditableState, setIsEditableState] = useState({
+    name: false,
+    email: false,
+    birthday: false,
+    username: false,
+  });
+  const [activeField, setActiveField] = useState(null);
+  const refs = {
+    name: useRef(null),
+    email: useRef(null),
+    birthday: useRef(null),
+    username: useRef(null),
+  };
 
-  async function handleAccountModificationsValidation (userId, username, email, name, birthday){
-    await fetch("/api/updateAccount", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userId,
-        username,
-        email,
-        name,
-        birthday
-      })
-    });
+  useEffect(() => {
+    if (activeField && refs[activeField]?.current) {
+      refs[activeField].current.focus();
+    }
+  }, [activeField]);
+
+  const handleEdit = (field) => {
+    setActiveField(field); 
+  };
+
+  const handleChange = (e, field) => {
+    setValues((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  const accountInfoHasChanged = () => {
+    return (
+      values.username !== userData.username || values.email !== userData.email
+      //values.birthday !== userData.birthday
+    );
+  };
+
+  async function handleAccountModificationsValidation(
+    userId,
+    username,
+    email,
+    name,
+    birthday
+  ) {
+    //update du back
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ADDRESS}/users/updateAccount`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          username,
+          email,
+          name,
+          birthday,
+        }),
+      }
+    );
+    const updateUserResponse = await response.json();
+
+    try {
+      if (response.status === 200) {
+        dispatch(
+          login({
+            _id: updateUserResponse._id,
+            firstName: updateUserResponse.firstName,
+            username: updateUserResponse.username,
+            token: updateUserResponse.token,
+            avatar: updateUserResponse.avatar,
+            connectionWithSocials: updateUserResponse.connectionWithSocials,
+            email: updateUserResponse.email,
+            roles: updateUserResponse.roles,
+          })
+        );
+      }
+    } catch (exception) {
+      msg = updateUserResponse.error;
+    }
   }
 
   return (
@@ -45,6 +120,7 @@ function AccountComponent(props) {
                   alt="User Avatar"
                   width={150}
                   height={150}
+                  priority
                 />
                 <div className={styles.profileUsername}>
                   {userData.username}
@@ -81,19 +157,24 @@ function AccountComponent(props) {
                 Date de naissance
               </div>
               <div className={styles.detailedInfoFieldName}>Email</div>
-              <div className={styles.detailedInfoFieldName}>Roles</div>
+              <div className={styles.detailedInfoFieldName}>Rôles</div>
             </div>
             <div className={styles.detailedInfoDataRight}>
               <div className={styles.detailedInfoUserDataContainer}>
                 <input
-                  value={userData.username}
                   className={styles.detailedInfoUserDataField}
-                  onChange={() => {}}
+                  onChange={(e) => {
+                    handleChange(e, "username");
+                  }}
+                  value={values.username}
+                  readOnly={activeField !== "username"}
+                  ref={refs.username}
                 />
                 <FontAwesomeIcon
                   icon={faPenToSquare}
                   color="#F5C242"
                   className={styles.modifyAccountInfoIcon}
+                  onClick={() => handleEdit("username")}
                 />
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
@@ -129,14 +210,17 @@ function AccountComponent(props) {
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
                 <input
-                  value={userData.email}
+                  value={values.email}
                   className={styles.detailedInfoUserDataField}
-                  onChange={() => {}}
+                  onChange={(e) => handleChange(e, "email")}
+                  readOnly={activeField !== "email"}
+                  ref={refs.email}
                 />
                 <FontAwesomeIcon
                   icon={faPenToSquare}
                   color="#F5C242"
                   className={styles.modifyAccountInfoIcon}
+                  onClick={() => handleEdit("email")}
                 />
               </div>
               <div className={styles.detailedInfoUserDataContainer}>
@@ -146,6 +230,26 @@ function AccountComponent(props) {
               </div>
             </div>
           </div>
+          <button
+            className={
+              accountInfoHasChanged()
+                ? styles.validationButtonEnabled
+                : styles.validationButtonDisabled
+            }
+            disabled={!accountInfoHasChanged()}
+            onClick={() =>
+              handleAccountModificationsValidation(
+                userData._id,
+                values.username,
+                values.email,
+                values.name,
+                values.birthday
+              )
+            }
+          >
+            Enregistrer
+          </button>
+          <div className={styles.errorMsg}> {msg} </div>
         </div>
         <div className={styles.sectionContainer}>
           <h2 className={styles.sectionTitle}>Statistiques</h2>

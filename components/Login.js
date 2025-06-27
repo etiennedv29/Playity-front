@@ -1,6 +1,6 @@
 import styles from "../styles/Login.module.css";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { login } from "../reducers/users";
 import { GoogleLogin } from "@react-oauth/google";
