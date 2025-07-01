@@ -4,9 +4,6 @@ import styles from "../styles/Multitris.module.css";
 import Modal from "antd/lib/modal";
 import { useRouter } from "next/router";
 
-
-
-
 const COLS_PER_PLAYER = 9; // 9 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
 //const TICK_INTERVAL = 500; // 500 ms par intervalle de descente des pièces
@@ -35,6 +32,13 @@ function Multitris(props) {
   const [explodingLines, setExplodingLines] = useState(new Set());
   const [tickInterval, setTickInterval] = useState(500);
   const tickIntervalRef = useRef(tickInterval);
+
+  // Récupérer l'info que l'utilisateur est sur mobile ou desktop
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    setIsMobile(/android|iphone|ipad|mobile/i.test(userAgent));
+  }, []);
 
   // Largeur de la grille=f(qté players)
   const numberOfCols = props.lobby.players.length * COLS_PER_PLAYER;
