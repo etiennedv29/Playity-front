@@ -25,6 +25,7 @@
     "moment": "^2.30.1",
     "next": "^15.3.2",
     "react": "18.1.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "18.1.0",
     "react-redux": "^9.2.0",
     "react-youtube": "^10.1.0",

@@ -126,6 +126,7 @@ export default function HomePage() {
               >
                 Rejoindre
               </button>
+              
             </div>
           </div>
         </div>

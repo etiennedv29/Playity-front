@@ -67,7 +67,7 @@
 .gameScores {
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: space-between;
   align-items: bottom;
   min-width: 200px;
   height: 100%;
@@ -270,5 +270,53 @@
   100% {
     transform: scale(3);
     opacity: 0;
+  }
+}
+
+@media screen and (max-width: 1024px) and (orientation: landscape) and (pointer: coarse) {
+  .container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 0 10px;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .mobileLayout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+
+  .gameContainer {
+    flex: 0 1 auto;
+    max-height: 80vh; /* ✅ moins haut pour éviter barre URL */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid {
+    height: 80vh;
+    width: auto;
+    aspect-ratio: var(--cols) / 20;
+    grid-template-columns: repeat(var(--cols), 1fr);
+  }
+
+  .scoreTitle {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .personalScores,
+  .teamScores {
+    padding: 0 5px;
   }
 }

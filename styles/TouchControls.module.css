@@ -1,0 +1,39 @@
+.touchControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: 10px;
+  top: 30%;
+  gap: 10px;
+}
+
+/* Ligne du haut : flèche haut */
+.touchControls .upRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* Ligne du bas : flèches gauche, bas, droite */
+.touchControls .bottomRow {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Style des boutons */
+.touchControls button {
+  font-size: 2rem;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f5c242;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Masquer les contrôles sur desktop */
+@media (min-width: 769px) {
+  .touchControls {
+    display: none;
+  }
+}

@@ -15,6 +15,9 @@ import AuthProvider from "../components/auth/Provider";
 import users from "../reducers/users";
 import searches from "../reducers/searches";
 
+// autres imports
+import { useEffect, useState } from "react";
+
 const reducers = combineReducers({ users, searches });
 const persistConfig = { key: "playity", storage };
 const store = configureStore({
@@ -25,6 +28,43 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 function App({ Component, pageProps }) {
+  const [isPortraitMobile, setIsPortraitMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return; // 🔒 S'assurer que ce code s'exécute côté client uniquement
+
+    const checkOrientation = () => {
+      const isPortrait = window.innerHeight > window.innerWidth;
+
+      // 🔍 UA plus large que react-device-detect
+      const isMobileUA =
+        /Mobi|Android|iPhone|iPad|iPod|Samsung|SM-|Pixel/i.test(navigator.userAgent) || window.innerWidth < 800;
+
+      console.log("🧪 UA:", navigator.userAgent);
+      console.log(
+        "📐 innerWidth:",
+        window.innerWidth,
+        "| innerHeight:",
+        window.innerHeight
+      );
+      console.log("🧭 isPortrait:", isPortrait, "| isMobileUA:", isMobileUA);
+
+      setIsPortraitMobile(isPortrait && isMobileUA);
+    };
+
+    checkOrientation();
+
+    // 🕒 Certaines mises à jour prennent un instant après le 1er render
+    setTimeout(checkOrientation, 0);
+
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation);
+
+    return () => {
+      window.removeEventListener("resize", checkOrientation);
+      window.removeEventListener("orientationchange", checkOrientation);
+    };
+  }, []);
 
   return (
     <>
@@ -56,6 +96,35 @@ function App({ Component, pageProps }) {
                   rel="stylesheet"
                 ></link>
               </Head>
+              {/* ⛔️ Blocker fullscreen overlay */}
+              {isPortraitMobile && (
+                <div
+                  style={{
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    zIndex: 9999,
+                    width: "90vw",
+                    height: "90vh",
+                    backgroundColor: "#000000ee",
+                    color: "white",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.5rem",
+                    textAlign: "center",
+                    padding: "20px",
+                    borderRadius: "12px",
+                  }}
+                >
+                  Pour profiter de l'expérience, passe ton mobile en mode
+                  paysage ! 📱↔️
+                </div>
+              )}
+
+              {/* Normal layout */}
               <Header />
               <Component {...pageProps} />
               <Footer />
