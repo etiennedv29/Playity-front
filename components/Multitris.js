@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import styles from "../styles/Multitris.module.css";
 import Modal from "antd/lib/modal";
 import { useRouter } from "next/router";
+import TouchControls from "./TouchControls";
+import { ismMobile } from "react-device-detect";
 
 const COLS_PER_PLAYER = 9; // 9 colonnes par joueur
 const ROWS = 20; // 20 lignes fixes = Tetris classique
@@ -764,6 +766,7 @@ function Multitris(props) {
       <div
         className={styles.grid}
         style={{
+          "--cols": numberOfCols,
           position: "relative",
           display: "inline-block",
           gridTemplateColumns: `repeat(${numberOfCols}, 1fr)`,
@@ -913,10 +916,22 @@ function Multitris(props) {
               <p>Nb lignes équipe : {partScores.completedLines} </p>
             </div>
           </div>
+          {isMobile && !gameOver && (
+          <TouchControls
+            onMoveLeft={() => handleMove(myMovingPiece, -1, 0)}
+            onMoveRight={() => handleMove(myMovingPiece, 1, 0)}
+            onRotate={() => handleRotation(myMovingPiece)}
+            onDown={() => handleMove(myMovingPiece, 0, 1)}
+          />
+        )}
         </div>
       )}
 
-      <div className={styles.gameContainer}>{gridToDisplay()}</div>
+      <div className={styles.mobileLayout}>
+        
+
+        <div className={styles.gameContainer}>{gridToDisplay()}</div>
+      </div>
     </div>
   );
 }
